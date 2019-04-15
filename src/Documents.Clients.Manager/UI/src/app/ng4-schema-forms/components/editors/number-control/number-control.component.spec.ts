@@ -8,9 +8,8 @@ describe('NumberControlComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NumberControlComponent ]
-    })
-    .compileComponents();
+      declarations: [NumberControlComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

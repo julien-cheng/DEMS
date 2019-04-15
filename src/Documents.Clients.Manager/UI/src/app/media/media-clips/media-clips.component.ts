@@ -1,8 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ToastsManager } from 'ng2-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { LoadingService, AppConfigService } from '../index';
-import { IFolderIdentifier, IPathIdentifier, IFileIdentifier, IBatchResponse, FileService, IMediaSet, IMediaSegment, IVideoProperties } from '../index';
+import {
+  IFolderIdentifier,
+  IPathIdentifier,
+  IFileIdentifier,
+  IBatchResponse,
+  FileService,
+  IMediaSet,
+  IMediaSegment,
+  IVideoProperties
+} from '../index';
 import { IAllowedOperation, BatchOperationService, BatchOperationsComponent, IRequestBatchData, BatchResponse } from '../index';
 import { MediaToolsService } from '../services/media-tools.service';
 import { MediaTimelineComponent } from '../media-timeline/media-timeline.component';
@@ -14,8 +23,10 @@ import { VideoBasicComponent } from '../video-basic/video-basic.component';
   styleUrls: ['./media-clips.component.scss']
 })
 export class MediaClipsComponent implements OnInit {
-  @ViewChild(BatchOperationsComponent) BatchOperationsComponent: BatchOperationsComponent;
-  @ViewChild(MediaTimelineComponent) mediaTimelineComponent: MediaTimelineComponent;
+  @ViewChild(BatchOperationsComponent)
+  BatchOperationsComponent: BatchOperationsComponent;
+  @ViewChild(MediaTimelineComponent)
+  mediaTimelineComponent: MediaTimelineComponent;
   @ViewChild(VideoBasicComponent) videoBasicComponent: VideoBasicComponent;
   public folderIdentifier: IFolderIdentifier;
   public pathIdentifier: IPathIdentifier;
@@ -27,26 +38,26 @@ export class MediaClipsComponent implements OnInit {
   public videoDuration: number;
   public activeSegment: IMediaSegment;
   public segments: IMediaSegment[] = [];
-  private _activeSegmentTriggeredPause = false; //For pausing video at end of active segment
-  public videoStartTime:number=0; //number in sec
+  private _activeSegmentTriggeredPause = false; // For pausing video at end of active segment
+  public videoStartTime = 0; // number in sec
   constructor(
     private route: ActivatedRoute,
     private fileService: FileService,
     public batchOperationService: BatchOperationService,
     public mediaToolsService: MediaToolsService,
     public loadingService: LoadingService,
-    public toastr: ToastsManager
-  ) { }
+    public toastr: ToastrService
+  ) {}
 
   ngOnInit() {
     this.loadingService.setLoading(false);
-    this.route.data.forEach((data) => {
-      this.folderIdentifier = this.route.snapshot.data['identifiers'].folderIdentifier;
-      this.pathIdentifier = this.route.snapshot.data['identifiers'].pathIdentifier;
-      this.fileIdentifier = this.route.snapshot.data['identifiers'].fileIdentifier;
+    this.route.data.forEach(data => {
+      this.folderIdentifier = this.route.snapshot.data.identifiers.folderIdentifier;
+      this.pathIdentifier = this.route.snapshot.data.identifiers.pathIdentifier;
+      this.fileIdentifier = this.route.snapshot.data.identifiers.fileIdentifier;
       this.route.queryParams.subscribe(params => {
-        let startTime: number = <number>(params.startTime),
-          endTime: number = <number>(params.endTime);
+        const startTime = params.startTime as number,
+          endTime = params.endTime as number;
         this.setFileObject(Number(startTime), Number(endTime));
       });
     });
@@ -58,26 +69,26 @@ export class MediaClipsComponent implements OnInit {
       // Call the proper set and pass it to the detailviewType
       this.fileService.getFileMediaSet(this.fileIdentifier, 'clip').subscribe(
         (response: IBatchResponse) => {
-          this.setMediaProperties(<IMediaSet>response.response);
+          this.setMediaProperties(response.response as IMediaSet);
           // Preselect a segment and set video to startTime
           if (!!startTime && !!endTime) {
-            let index = this.mediaToolsService.getSegmentIndexByTime(this.segments, Number(startTime), Number(endTime));
+            const index = this.mediaToolsService.getSegmentIndexByTime(this.segments, Number(startTime), Number(endTime));
             if (index >= 0) {
-              (this.activeSegment = this.segments[index]);
-              this.videoStartTime = startTime/1000;
-            } else { 
+              this.activeSegment = this.segments[index];
+              this.videoStartTime = startTime / 1000;
+            } else {
               this.toastr.warning('The segment you are looking for does not exist.');
-            };
+            }
           }
           this.segments = this.mediaToolsService.setActiveSegment(this.segments, this.activeSegment);
         },
-        (error) => {
+        error => {
           console.error(error);
         },
         () => {
           this.loadingService.setLoading(false);
         }
-      )
+      );
     }
   }
 
@@ -99,8 +110,9 @@ export class MediaClipsComponent implements OnInit {
   public changeClipActiveSegment(activeSegment: IMediaSegment) {
     // console.log('changeClipActiveSegment', activeSegment);
     this.activeSegment = activeSegment; // Reset activeSegment if undefined
-    !!this.activeSegment ? this.mediaToolsService.setActiveSegment(this.segments, this.activeSegment) :
-      this.mediaToolsService.resetActiveSegment(this.segments);
+    !!this.activeSegment
+      ? this.mediaToolsService.setActiveSegment(this.segments, this.activeSegment)
+      : this.mediaToolsService.resetActiveSegment(this.segments);
     this._activeSegmentTriggeredPause = false;
   }
 
@@ -117,10 +129,11 @@ export class MediaClipsComponent implements OnInit {
 
   public onVideoUpdate(currentTime: number) {
     const msCurrentTime = currentTime * 1000;
-    (!isNaN(currentTime) && currentTime >= 0) &&
+    if (!isNaN(currentTime) && currentTime >= 0) {
       this.mediaTimelineComponent.updateVideoCurrentTime(msCurrentTime);
+    }
 
-    //check active segment and pause at the end of it
+    // check active segment and pause at the end of it
     if (!!this.activeSegment && this.activeSegment.endTime <= msCurrentTime && !this._activeSegmentTriggeredPause) {
       this.videoBasicComponent.pauseVideo();
       this._activeSegmentTriggeredPause = true;
@@ -129,18 +142,21 @@ export class MediaClipsComponent implements OnInit {
 
   public updateVideoProperties(videoProperties: IVideoProperties) {
     this.videoProperties = videoProperties;
-    this.videoDuration = (!!this.videoProperties.duration) ? (this.videoProperties.duration * 1000) : 0;
+    this.videoDuration = !!this.videoProperties.duration ? this.videoProperties.duration * 1000 : 0;
   }
 
   // Batch operations:
   public processBatchUiAction(requestBatchData: IRequestBatchData) {
     if (requestBatchData.requestType === 'ExportClipRequest') {
-      (!!requestBatchData.batchOperations && requestBatchData.batchOperations.length > 0) && (requestBatchData.batchOperations[0].clip = this.activeSegment);
+      if (!!requestBatchData.batchOperations && requestBatchData.batchOperations.length > 0) {
+        requestBatchData.batchOperations[0].clip = this.activeSegment;
+      }
     }
 
     if (requestBatchData.requestType === 'ExportFrameRequest') {
-      (!!requestBatchData.batchOperations && requestBatchData.batchOperations.length > 0) &&
-        (requestBatchData.batchOperations[0].milliseconds = this.videoBasicComponent.player.nativeElement.currentTime * 1000);
+      if (!!requestBatchData.batchOperations && requestBatchData.batchOperations.length > 0) {
+        requestBatchData.batchOperations[0].milliseconds = this.videoBasicComponent.player.nativeElement.currentTime * 1000;
+      }
     }
     return this.BatchOperationsComponent.processBatchUiAction(requestBatchData);
   }

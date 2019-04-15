@@ -8,9 +8,7 @@ import { IMediaSegment } from '../index';
 })
 export class MediaSubtitlesComponent implements OnInit {
   @Input() activeSegment: IMediaSegment;
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-   
-  }
+  ngOnInit() {}
 }

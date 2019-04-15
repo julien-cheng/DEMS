@@ -8,9 +8,8 @@ describe('SearchBadgesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SearchBadgesComponent ]
-    })
-    .compileComponents();
+      declarations: [SearchBadgesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

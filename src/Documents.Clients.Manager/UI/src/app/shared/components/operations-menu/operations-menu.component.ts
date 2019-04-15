@@ -5,16 +5,24 @@ import { BatchOperationService } from '../../services/batch-operation.service';
 @Component({
   selector: '[app-operations-menu]',
   template: `
-  <ng-container *ngFor="let operation of allowedOperations; let i=index" >
-      <button *ngIf="isButton && batchOperationService.displayButtonByOperation(operation)" [class]="itemClass"
-        [title]="operation.displayName" (click)="saveCallback(operation.batchOperation, 'initialize')">
-        <i class="icon fa {{ operation.icons | iconClass: this.iconDefaults[operation.batchOperation.type] }}"></i> 
-        {{showText? (batchOperationService.modalLoading? 'Loading...': operation.displayName): ''}}
+    <ng-container *ngFor="let operation of allowedOperations; let i = index">
+      <button
+        *ngIf="isButton && batchOperationService.displayButtonByOperation(operation)"
+        [class]="itemClass"
+        [title]="operation.displayName"
+        (click)="saveCallback(operation.batchOperation, 'initialize')"
+      >
+        <i class="icon fa {{ operation.icons | iconClass: this.iconDefaults[operation.batchOperation.type] }}"></i>
+        {{ showText ? (batchOperationService.modalLoading ? 'Loading...' : operation.displayName) : '' }}
       </button>
-      <a *ngIf="!isButton && batchOperationService.displayButtonByOperation(operation)"  [class]="itemClass" [ngClass]="{ 'd-none': operation?.isDisabled }"  
-          (click)="saveCallback(operation.batchOperation, 'initialize')" >
-            <i class="icon fa {{ operation.icons | iconClass: this.iconDefaults[operation.batchOperation.type] }}"></i> 
-            {{showText? (batchOperationService.modalLoading? 'Loading...': operation.displayName): ''}} 
+      <a
+        *ngIf="!isButton && batchOperationService.displayButtonByOperation(operation)"
+        [class]="itemClass"
+        [ngClass]="{ 'd-none': operation?.isDisabled }"
+        (click)="saveCallback(operation.batchOperation, 'initialize')"
+      >
+        <i class="icon fa {{ operation.icons | iconClass: this.iconDefaults[operation.batchOperation.type] }}"></i>
+        {{ showText ? (batchOperationService.modalLoading ? 'Loading...' : operation.displayName) : '' }}
       </a>
     </ng-container>
   `,
@@ -22,25 +30,25 @@ import { BatchOperationService } from '../../services/batch-operation.service';
 })
 export class OperationsMenuComponent implements OnInit {
   @Input() allowedOperations: IAllowedOperation[];
-  @Input() isButton: boolean = true; //Default to buttons
+  @Input() isButton = true; // Default to buttons
   @Input() itemClass: string;
-  @Input() showText: boolean = true;
+  @Input() showText = true;
   @Output() processBatchUiAction = new EventEmitter();
   public iconDefaults: any = batchOperationsDefaults.icons;
 
-  constructor(public batchOperationService: BatchOperationService) { }
+  constructor(public batchOperationService: BatchOperationService) {}
 
   ngOnInit() {
     // console.log(this.allowedOperations);
   }
 
-  //saveCallback(batchOperation: IBatchOperation, eventType: EventType) { BatchOperation
+  // saveCallback(batchOperation: IBatchOperation, eventType: EventType) { BatchOperation
   saveCallback(batchOperation: IBatchOperation, eventType: EventType) {
-    let request: IRequestBatchData = {
+    const request: IRequestBatchData = {
       batchOperations: [batchOperation],
       requestType: batchOperation.type,
-      eventType: eventType
-    }
+      eventType
+    };
     return this.processBatchUiAction.emit(request);
   }
 

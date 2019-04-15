@@ -21,7 +21,9 @@ export class EdiscoveryLandingComponent implements OnInit {
     private loadingService: LoadingService,
     public appConfigService: AppConfigService
   ) {
-    this.route.params.subscribe(params => { this.token = params.token; });
+    this.route.params.subscribe(params => {
+      this.token = params.token;
+    });
   }
 
   ngOnInit() {
@@ -36,27 +38,31 @@ export class EdiscoveryLandingComponent implements OnInit {
     this.isSaving = true;
     formValues.token = this.token;
     this.authService.ediscoveryAuthenticateUser(formValues).subscribe(
-      (resp) => {
+      resp => {
         if (resp.response.isAuthenticated) {
           this.appConfigService.setAPIConfiguration();
-          this.router.navigate(['/manager/', resp.response.folderIdentifier.organizationKey, resp.response.folderIdentifier.folderKey, 'eDiscovery']);
+          this.router.navigate([
+            '/manager/',
+            resp.response.folderIdentifier.organizationKey,
+            resp.response.folderIdentifier.folderKey,
+            'eDiscovery'
+          ]);
         } else {
           this.authenticateInvalid = true;
           this.authenticateUserForm.reset();
         }
       },
-      (error) => {
+      error => {
         console.error(error);
       },
       () => {
         this.isSaving = false;
       }
-
     );
   }
 
   cancel() {
-    //Reset form 
+    // Reset form
     this.authenticateUserForm.reset();
     this.authenticateInvalid = false;
   }

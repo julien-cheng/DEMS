@@ -8,9 +8,8 @@ describe('BooleanControlComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BooleanControlComponent ]
-    })
-    .compileComponents();
+      declarations: [BooleanControlComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

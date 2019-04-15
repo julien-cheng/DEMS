@@ -22,20 +22,20 @@ export class BooleanControlComponent implements OnInit {
 
   get isInvalid() {
     // Return: the state of the ng form control and basecontrol validator
-    let isInvalid = !this.formControlValidator.isValid || this.ngFormControl.invalid,
-      ngformstatus = (this.ngFormControl.dirty || this.ngFormControl.touched || this.ngFormControl.value)
+    const isInvalid = !this.formControlValidator.isValid || this.ngFormControl.invalid,
+      ngformstatus = this.ngFormControl.dirty || this.ngFormControl.touched || this.ngFormControl.value;
     return isInvalid && ngformstatus;
   }
   get ngFormControl() {
     return this.form.controls[this.formControlObj.key];
   }
 
-  constructor() { }
+  constructor() {}
 
   // Control Description: The default boolean editor is a select box with options "true" and "false".
   // To use a checkbox instead, set the format to checkbox.
   ngOnInit() {
-    this.schema = <IBooleanSchema>this.formControlObj.schema;
+    this.schema = this.formControlObj.schema as IBooleanSchema;
     this.value = this.formControlObj.value; // this.getDefaultValue(this.schema, this.initialValue);
     this._setBooleanControlType();
   }
@@ -44,8 +44,12 @@ export class BooleanControlComponent implements OnInit {
   //  If optional is set to true, format will be ignored.
   // checkbox, radiolist,  or select
   private _setBooleanControlType() {
-    return this.booleanControlType = (this.schema.format === 'radio') ? 'radio' :
-      (this.schema.optional !== undefined || this.schema.format === 'select') ? 'select' : 'checkbox';
+    return (this.booleanControlType =
+      this.schema.format === 'radio'
+        ? 'radio'
+        : this.schema.optional !== undefined || this.schema.format === 'select'
+        ? 'select'
+        : 'checkbox');
   }
 
   // Description: Trigger change events for validation and other...
@@ -54,7 +58,6 @@ export class BooleanControlComponent implements OnInit {
     // console.log('this.value: ', this.value);
     this.updateValue.emit({ value: this.value });
   }
-
 
   // Description: is control readonly and disabled
   get isReadOnly() {

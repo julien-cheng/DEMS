@@ -8,9 +8,8 @@ describe('NullControlComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NullControlComponent ]
-    })
-    .compileComponents();
+      declarations: [NullControlComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

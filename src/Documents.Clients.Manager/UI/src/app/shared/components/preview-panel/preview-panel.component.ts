@@ -8,15 +8,14 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class PreviewPanelComponent implements OnInit {
   @Input() previewVisible: boolean;
   @Input() panelTabText: string;
-  @Input() panelBottom: boolean = false;
+  @Input() panelBottom = false;
   @Output() togglePreviewPanel = new EventEmitter();
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   closePreviewPanel() {
-        this.previewVisible = !this.previewVisible;
-        this.togglePreviewPanel.emit();
-    }
+    this.previewVisible = !this.previewVisible;
+    this.togglePreviewPanel.emit();
+  }
 }

@@ -8,9 +8,8 @@ describe('TranscriptionReviewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TranscriptionReviewComponent ]
-    })
-    .compileComponents();
+      declarations: [TranscriptionReviewComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

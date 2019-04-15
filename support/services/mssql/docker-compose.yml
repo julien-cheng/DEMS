@@ -2,9 +2,9 @@ version: '3'
 
 services:
   mssql-server-linux:
-    image: microsoft/mssql-server-linux:latest
-    volumes:
-      - ../data/mssql:/var/opt/mssql/data
+    image: mcr.microsoft.com/mssql/server:latest
+    # volumes:
+    #   - ../data/mssql:/var/opt/mssql/data
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=wwFRtn9aCa3kAv9J

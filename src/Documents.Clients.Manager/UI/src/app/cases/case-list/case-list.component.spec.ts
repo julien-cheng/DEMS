@@ -8,9 +8,8 @@ describe('CaseListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CaseListComponent ]
-    })
-    .compileComponents();
+      declarations: [CaseListComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

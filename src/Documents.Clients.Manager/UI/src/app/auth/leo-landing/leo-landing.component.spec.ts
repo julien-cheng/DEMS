@@ -8,9 +8,8 @@ describe('LeoLandingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LeoLandingComponent ]
-    })
-    .compileComponents();
+      declarations: [LeoLandingComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

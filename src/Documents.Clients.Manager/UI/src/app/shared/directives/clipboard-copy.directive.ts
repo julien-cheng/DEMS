@@ -6,8 +6,8 @@ import { IframeResizerService } from '../index';
 })
 export class ClipboardCopyDirective implements OnInit {
   private el: HTMLElement;
-  private isIE11: boolean = false;
-  @Input('appClipboardCopy') containerId: string
+  private isIE11 = false;
+  @Input('appClipboardCopy') containerId: string;
 
   constructor(ref: ElementRef, private iframeResizerService: IframeResizerService) {
     this.el = ref.nativeElement;
@@ -16,7 +16,7 @@ export class ClipboardCopyDirective implements OnInit {
   ngOnInit() {
     this.isIE11 = this.iframeResizerService.isIframeIE11;
     this.el.addEventListener('click', e => {
-      let target = document.getElementById(this.containerId);
+      const target = document.getElementById(this.containerId);
       if (!!target) {
         this.copyStringToClipboard(target.innerText);
       } else {
@@ -27,8 +27,9 @@ export class ClipboardCopyDirective implements OnInit {
   }
 
   copyStringToClipboard(string) {
-    if (this.isIE11) { // works for IE11
-      (<any>window).clipboardData.setData('Text', string);
+    if (this.isIE11) {
+      // works for IE11
+      (window as any).clipboardData.setData('Text', string);
     } else {
       document.addEventListener('copy', handler, true);
       document.execCommand('copy');

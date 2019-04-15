@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angu
 import { Location } from '@angular/common';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastsManager, Toast, ToastOptions } from 'ng2-toastr';
+import { ToastrService, Toast, ToastrConfig } from 'ngx-toastr';
 import { IFolderIdentifier, IPathIdentifier, ISearchRequest } from '../../index';
 import { AppConfigService } from '../../services/app-config.service';
 
@@ -18,31 +18,35 @@ export class SearchFormComponent implements OnInit {
   @Input() searchRequest: ISearchRequest;
   // @Input() isSearchPage: boolean=false;
   @ViewChild('searchForm') searchForm: NgForm;
-  public searchTerm: string='';
+  public searchTerm = '';
   public disableReturn: boolean;
- 
+
   constructor(
     public appConfigService: AppConfigService,
     private router: Router,
-    private toastr: ToastsManager,
+    private toastr: ToastrService,
     private location: Location
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     // Preset the keyword to the search box if in result page
-    (!!this.searchRequest) && (this.searchTerm = this.searchRequest.keyword);
+    !!this.searchRequest && (this.searchTerm = this.searchRequest.keyword);
   }
 
   onSearch(searchTerm: string) {
     if (!!this.identifier) {
-      if(!!this.searchRequest && this.searchRequest.keyword === searchTerm){
+      if (!!this.searchRequest && this.searchRequest.keyword === searchTerm) {
         this.refreshResults.emit(searchTerm);
-      }else{
-        let arr = ['/search/', this.identifier.organizationKey];
+      } else {
+        const arr = ['/search/', this.identifier.organizationKey];
         !!this.identifier.folderKey && arr.push(this.identifier.folderKey);
-        !!(<IPathIdentifier>this.identifier).pathKey && arr.push((<IPathIdentifier>this.identifier).pathKey);
-        this.router.navigate(arr, {queryParams: {keyword: searchTerm, disableReturn: (!!this.searchRequest ? this.searchRequest.disableReturn : false)}}); //Redirect to search results - with searchterm
+        !!(this.identifier as IPathIdentifier).pathKey && arr.push((this.identifier as IPathIdentifier).pathKey);
+        this.router.navigate(arr, {
+          queryParams: {
+            keyword: searchTerm,
+            disableReturn: !!this.searchRequest ? this.searchRequest.disableReturn : false
+          }
+        }); // Redirect to search results - with searchterm
       }
     } else {
       this.toastr.warning('Please, enter the a search term. If this message persists, contact the site administrators.');

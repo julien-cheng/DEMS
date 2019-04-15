@@ -8,9 +8,8 @@ describe('PdfComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PdfComponent ]
-    })
-    .compileComponents();
+      declarations: [PdfComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

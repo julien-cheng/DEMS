@@ -1,10 +1,38 @@
-import { Component, OnInit, SimpleChanges, Input, Output, EventEmitter, ViewChild, HostListener, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  SimpleChanges,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  HostListener,
+  ElementRef,
+  OnChanges,
+  AfterViewInit
+} from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, NgForm, NgModel } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { IMediaSegment, IMediaSet, MediaClipActionType, TimeFormatter, TooltipTimeFormatter, LoadingService, IVideoProperties, IFileIdentifier, IAllowedOperation, FormatTimePipe } from '../index';
+import {
+  IMediaSegment,
+  IMediaSet,
+  MediaClipActionType,
+  TimeFormatter,
+  TooltipTimeFormatter,
+  LoadingService,
+  IVideoProperties,
+  IFileIdentifier,
+  IAllowedOperation,
+  FormatTimePipe
+} from '../index';
 import { MediaToolsService } from '../services/media-tools.service';
-import { ToastsManager } from 'ng2-toastr';
-import { PerfectScrollbarModule, PerfectScrollbarConfigInterface, PerfectScrollbarComponent, PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
+import { ToastrService } from 'ngx-toastr';
+import {
+  PerfectScrollbarModule,
+  PerfectScrollbarConfigInterface,
+  PerfectScrollbarComponent,
+  PerfectScrollbarDirective
+} from 'ngx-perfect-scrollbar';
 import { NouisliderComponent } from 'ng2-nouislider';
 import * as moment from 'moment';
 import * as _ from 'lodash';
@@ -16,7 +44,15 @@ const { isEqual } = _;
   templateUrl: './media-timeline.component.html',
   styleUrls: ['./media-timeline.component.scss']
 })
-export class MediaTimelineComponent implements OnInit {
+export class MediaTimelineComponent implements OnInit, OnChanges, AfterViewInit {
+  constructor(
+    private sanitizer: DomSanitizer,
+    private formBuilder: FormBuilder,
+    private mediaToolsService: MediaToolsService,
+    private formatTime: FormatTimePipe,
+    public loadingService: LoadingService,
+    public toastr: ToastrService
+  ) {}
   @Output() onActiveSegmentChange = new EventEmitter();
   @Output() onSegmentSave = new EventEmitter<IMediaSet>();
   @Output() processBatchUiAction = new EventEmitter();
@@ -29,26 +65,26 @@ export class MediaTimelineComponent implements OnInit {
   @ViewChild('muteslider') muteslider: NouisliderComponent;
   @ViewChild('mainSlider') mainSlider: NouisliderComponent;
 
-  public isSaving: boolean = false;
+  public isSaving = false;
   public clipForm: FormGroup;
   public muteForm: FormGroup;
   public eMediaClipActionType = MediaClipActionType;
   public activeAction: MediaClipActionType = MediaClipActionType.new; // TEMP -> change to new ***** WATCH *****
-  public muteIsEditMode: boolean = false;
+  public muteIsEditMode = false;
   public activeSegmentRange: IMediaSegment;
   public activeMuteSegmentRange: IMediaSegment;
   public videoIsLoaded = false;
   private _defaultNewModeTimes: IMediaSegment = { startTime: 0, endTime: 0 };
-  public tempSegmentForCancel: { segment: IMediaSegment, index: number };
-  public tempMuteSegmentForCancel: { segment: IMediaSegment, index: number };
+  public tempSegmentForCancel: { segment: IMediaSegment; index: number };
+  public tempMuteSegmentForCancel: { segment: IMediaSegment; index: number };
   // Sliders config settings:
   private _sliderMinRangeValue = 1000; // in ms - This holds the min segment value for both sliders
   private _sliderMax: number = this.videoDuration; // This should come from video duration ***** TBD ***** ; // in ms - This holds the min segment value for both sliders
 
   // Main Slider:
-  public pipValues = [0, 0];// ADD INITIAL VALUES and number of pips
+  public pipValues = [0, 0]; // ADD INITIAL VALUES and number of pips
   public timelineConfig: any = {};
-  public mainSliderDisabled: boolean = false; // set the main slider inactive on mute segments 
+  public mainSliderDisabled = false; // set the main slider inactive on mute segments
 
   // Muting segments Slider:
   public mutePipValues = [0, 0];
@@ -62,7 +98,7 @@ export class MediaTimelineComponent implements OnInit {
   // Dynamic attributes to slider and timeline depending on video duration
   public timelineWidth;
   private pipValuesArr: number[] | number;
-  private pipDensity: number = 1;
+  private pipDensity = 1;
   private pipMode: 'count' | 'values';
 
   // Perfect Scrollbar
@@ -71,17 +107,18 @@ export class MediaTimelineComponent implements OnInit {
     useBothWheelAxes: true
     // scrollXMarginOffset:380
   };
-  @ViewChild(PerfectScrollbarDirective) directiveRef?: PerfectScrollbarDirective;
-  public isScrollable: boolean = false;
+  @ViewChild(PerfectScrollbarDirective)
+  directiveRef?: PerfectScrollbarDirective;
+  public isScrollable = false;
 
-  constructor(
-    private sanitizer: DomSanitizer,
-    private formBuilder: FormBuilder,
-    private mediaToolsService: MediaToolsService,
-    private formatTime: FormatTimePipe,
-    public loadingService: LoadingService,
-    public toastr: ToastsManager
-  ) { }
+  // Description: Initialize Scrollable
+  // ----------------------------------------------
+  @ViewChild('noUIContainer') elementView: ElementRef;
+  @ViewChild('timelineContainer', { read: ElementRef })
+  private timelineContainer: ElementRef;
+  // timelineContainer
+  // private mouse: MouseEvent;
+  private defaultScrollableOffset = 0;
 
   ngOnInit() {
     this._calculatetimelineWidth();
@@ -90,14 +127,15 @@ export class MediaTimelineComponent implements OnInit {
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (!!simpleChanges.videoDuration) {// Set up _defaultNewModeTimes based on video duration
+    if (!!simpleChanges.videoDuration) {
+      // Set up _defaultNewModeTimes based on video duration
       this._defaultNewModeTimes = {
         startTime: 0,
         endTime: this.videoDuration,
         startTimeFormatted: this.formatTime.transform(0),
         endTimeFormatted: this.formatTime.transform(this.videoDuration),
         mutes: []
-      }
+      };
     }
 
     if (!!simpleChanges.activeSegment) {
@@ -108,12 +146,14 @@ export class MediaTimelineComponent implements OnInit {
 
   ngAfterViewInit() {
     // Set up scrollable
-    setTimeout(() => { this.setupScrollable(); });
+    setTimeout(() => {
+      this.setupScrollable();
+    });
   }
 
   // Dsecription: Adjust timeline width for longer videos - This number needs to take into account the view port width
   private _calculatetimelineWidth() {
-    const mainContainer = window.innerWidth - 380, //left nav (300) + gutters (30) + buttons col (50)
+    const mainContainer = window.innerWidth - 380, // left nav (300) + gutters (30) + buttons col (50)
       videoDurationSec = this.videoDuration / 1000,
       pixelsPerSec = 5.3,
       minWidthNeeded = videoDurationSec * pixelsPerSec; // 300 for left nav + gutters
@@ -126,23 +166,23 @@ export class MediaTimelineComponent implements OnInit {
   private _setPipObject() {
     this.pipValuesArr = [];
     if (!isNaN(this.videoDuration)) {
-      this.pipMode = 'values'
-      for (var i = 0; i <= this.videoDuration; i++) {
-        (i % 20000 === 0) && this.pipValuesArr.push(i);
+      this.pipMode = 'values';
+      for (let i = 0; i <= this.videoDuration; i++) {
+        if (i % 20000 === 0) {
+          this.pipValuesArr.push(i);
+        }
       }
 
       // (this.videoDuration - this.pipValuesArr[this.pipValuesArr.length-1] < 10000) && this.pipValuesArr.splice(-1,1); //remove last one if diff less than 10000 (10sec)
       this.pipValuesArr.push(this.videoDuration);
-      this.pipDensity = Math.round((200000 / this.videoDuration) * 100) / 100
-
-    } else { // default to these:
+      this.pipDensity = Math.round((200000 / this.videoDuration) * 100) / 100;
+    } else {
+      // default to these:
       // mode: 'count',        // values: 10,
-      this.pipMode = 'count'
+      this.pipMode = 'count';
       this.pipValuesArr = 10;
       this.pipDensity = 1;
     }
-
-
   }
 
   // Dsecription: set up the  slider configuration objects
@@ -155,8 +195,8 @@ export class MediaTimelineComponent implements OnInit {
       keyboard: true,
       margin: this._sliderMinRangeValue,
       range: {
-        'min': [0],
-        'max': [this._sliderMax] // ms to get correct resolution
+        min: [0],
+        max: [this._sliderMax] // ms to get correct resolution
       },
       tooltips: [new TooltipTimeFormatter(), new TooltipTimeFormatter()],
       pips: {
@@ -170,12 +210,11 @@ export class MediaTimelineComponent implements OnInit {
     this.videoConfig = {
       connect: [true, false],
       range: {
-        'min': [0],
-        'max': [this._sliderMax] // ms to get correct resolution
+        min: [0],
+        max: [this._sliderMax] // ms to get correct resolution
       },
       tooltips: new TooltipTimeFormatter()
-    }
-
+    };
 
     this.muteConfig = {
       behaviour: 'tap-drag',
@@ -184,23 +223,29 @@ export class MediaTimelineComponent implements OnInit {
       keyboard: true,
       margin: this._sliderMinRangeValue,
       range: {
-        'min': [0],
-        'max': [this._sliderMax]
+        min: [0],
+        max: [this._sliderMax]
       },
       tooltips: [new TooltipTimeFormatter(), new TooltipTimeFormatter()],
       padding: [0, 1000]
-    }
+    };
     this.videoIsLoaded = true;
   }
 
   // Description: Disable ExportClipRequest
   private _adjustAllowedOperations(segment: IMediaSegment) {
-    this.allowedOperations.forEach((ao: IAllowedOperation) => { (ao.batchOperation.type === 'ExportClipRequest') && (ao.isDisabled = !(!!segment)); });
+    this.allowedOperations.forEach((ao: IAllowedOperation) => {
+      if (ao.batchOperation.type === 'ExportClipRequest') {
+        ao.isDisabled = !!!segment;
+      }
+    });
   }
 
   // Description: Sets the active pips range on active segment change
   private _setPipValues(activeSegment: IMediaSegment) {
-    this.pipValues = (!!activeSegment) ? [(activeSegment.startTime || 0), (activeSegment.endTime || 0)] : [this._defaultNewModeTimes.startTime, this._defaultNewModeTimes.endTime];
+    this.pipValues = !!activeSegment
+      ? [activeSegment.startTime || 0, activeSegment.endTime || 0]
+      : [this._defaultNewModeTimes.startTime, this._defaultNewModeTimes.endTime];
   }
 
   // Description: Set activeSegmentRange
@@ -236,17 +281,20 @@ export class MediaTimelineComponent implements OnInit {
       // Prepare the temp segment
       this.tempSegmentForCancel = {
         segment: Object.assign({}, this.activeSegment, { isActive: false }),
-        index: (!!activeSegment ? this.mediaToolsService.getSegmentIndex(this.segments, this.activeSegment) : -1)
+        index: !!activeSegment ? this.mediaToolsService.getSegmentIndex(this.segments, this.activeSegment) : -1
       };
 
       // need this to update paddings on muted segments:
-      setTimeout(() => { this._setupMuteComponent(); });
+      setTimeout(() => {
+        this._setupMuteComponent();
+      });
     }
-
 
     // Reset to edit to work on active segments
     // (!!this.activeSegment && (this.activeAction === this.eMediaClipActionType.new)) && (this.activeAction = this.eMediaClipActionType.edit);
-    (!!this.activeSegment && (this.activeAction === this.eMediaClipActionType.new)) && this.selectActiveAction(this.eMediaClipActionType.edit);
+    if (!!this.activeSegment && this.activeAction === this.eMediaClipActionType.new) {
+      this.selectActiveAction(this.eMediaClipActionType.edit);
+    }
   }
 
   // Description: change the startTime and endTime model
@@ -256,7 +304,9 @@ export class MediaTimelineComponent implements OnInit {
     if (control.valid && !isNaN(ms)) {
       if (isMute) {
         this.activeMuteSegmentRange[name] = ms;
-        (!!this.activeMuteSegmentRange) && (this.mutePipValues = [this.activeMuteSegmentRange.startTime, this.activeMuteSegmentRange.endTime]);
+        if (!!this.activeMuteSegmentRange) {
+          this.mutePipValues = [this.activeMuteSegmentRange.startTime, this.activeMuteSegmentRange.endTime];
+        }
       } else {
         this.activeSegmentRange[name] = ms;
         this._setPipValues(this.activeSegmentRange);
@@ -264,36 +314,49 @@ export class MediaTimelineComponent implements OnInit {
     }
   }
 
-  // Description: Set startTime or EndTime to Current Video time 
+  // Description: Set startTime or EndTime to Current Video time
   public setToCurrentTime(event: Event, model: NgModel, name: string, isMute: boolean = false) {
     let control = model.control,
       setTimeTo = this.videopipValue,
       limit = this._sliderMinRangeValue;
 
     if (name === 'startTime') {
-      limit = isMute ? (this.activeMuteSegmentRange.endTime - limit) : (this.activeSegmentRange.endTime - limit);
-      (setTimeTo > limit) && (setTimeTo = limit)
+      limit = isMute ? this.activeMuteSegmentRange.endTime - limit : this.activeSegmentRange.endTime - limit;
+      if (setTimeTo > limit) {
+        setTimeTo = limit;
+      }
     } else if (name === 'endTime') {
-      limit = isMute ? (this.activeMuteSegmentRange.startTime + limit) : (this.activeSegmentRange.startTime + limit);
-      (setTimeTo < limit) && (setTimeTo = limit)
+      limit = isMute ? this.activeMuteSegmentRange.startTime + limit : this.activeSegmentRange.startTime + limit;
+      if (setTimeTo < limit) {
+        setTimeTo = limit;
+      }
     }
 
     control.patchValue(this.formatTime.transform(setTimeTo));
     this.updateTime(event, control, name, isMute);
   }
 
-
-  // Description: Is set time button disabled 
+  // Description: Is set time button disabled
   public isAppendBtnDisabled(name: 'startTime' | 'endTime', isMute: boolean = false): boolean {
     let isDisabled = false;
     if (isMute) {
-      isDisabled = (this.videopipValue < this.activeSegmentRange.startTime || this.videopipValue > this.activeSegmentRange.endTime) ? true :
-        (name === 'startTime') ? (this.videopipValue > this.activeMuteSegmentRange.endTime) : (name === 'endTime') ? (this.videopipValue < this.activeMuteSegmentRange.startTime) : false;
+      isDisabled =
+        this.videopipValue < this.activeSegmentRange.startTime || this.videopipValue > this.activeSegmentRange.endTime
+          ? true
+          : name === 'startTime'
+          ? this.videopipValue > this.activeMuteSegmentRange.endTime
+          : name === 'endTime'
+          ? this.videopipValue < this.activeMuteSegmentRange.startTime
+          : false;
     } else {
-      isDisabled = (name === 'startTime') ? (this.videopipValue > this.activeSegmentRange.endTime) :
-        (name === 'endTime') ? (this.videopipValue < this.activeSegmentRange.startTime) : false;
+      isDisabled =
+        name === 'startTime'
+          ? this.videopipValue > this.activeSegmentRange.endTime
+          : name === 'endTime'
+          ? this.videopipValue < this.activeSegmentRange.startTime
+          : false;
     }
-    return isDisabled
+    return isDisabled;
   }
 
   // Description: Set currently focused handle to the pip target of click
@@ -321,33 +384,41 @@ export class MediaTimelineComponent implements OnInit {
   // }
 
   // Clipping actions: clip, edit and mute
-  //----------------------------------------------
+  // ----------------------------------------------
   // Description: select active action.
   public selectActiveAction(actionType: MediaClipActionType) {
     // If action is new => Reset current active segment to undefined for new segment creation
     if (actionType === this.eMediaClipActionType.new) {
-      !!this.segmentForm && this.segmentForm.reset();
+      if (!!this.segmentForm) {
+        this.segmentForm.reset();
+      }
       this.onActiveSegmentChange.emit();
     }
 
     // If action is mute => set up mute component before change
-    (this.activeAction === this.eMediaClipActionType.mute) && this._resetMuteComponent();
+    if (this.activeAction === this.eMediaClipActionType.mute) {
+      this._resetMuteComponent();
+    }
 
     // Set activeAction type flag - change
-    this.activeAction = (this.activeAction === this.eMediaClipActionType.mute && actionType === this.activeAction) ? this.eMediaClipActionType.edit : actionType;
-    (this.activeAction === this.eMediaClipActionType.mute) && setTimeout(() => {
-      this._setupMuteComponent();
-    });
+    this.activeAction =
+      this.activeAction === this.eMediaClipActionType.mute && actionType === this.activeAction
+        ? this.eMediaClipActionType.edit
+        : actionType;
+    if (this.activeAction === this.eMediaClipActionType.mute) {
+      setTimeout(() => {
+        this._setupMuteComponent();
+      });
+    }
   }
 
   // Description: Form submit for new segment
   public onSubmitSaveSegment(segmentForm: NgForm) {
-    let segment = segmentForm.value;
+    const segment = segmentForm.value;
     if (this.activeAction === this.eMediaClipActionType.new) {
       segment.isActive = true;
-      this.mediaToolsService.addNewSegmentByStartTime(this.segments, segment);// this.segments.push(segment);
+      this.mediaToolsService.addNewSegmentByStartTime(this.segments, segment); // this.segments.push(segment);
     }
-
 
     this.tempSegmentForCancel.segment = Object.assign({}, segment); // Save current working segment as temp
     this._saveSegments(segment);
@@ -357,38 +428,46 @@ export class MediaTimelineComponent implements OnInit {
   private _saveSegments(segment?: IMediaSegment) {
     this.isSaving = true;
     this.loadingService.setLoading(true);
-    this.mediaToolsService.saveMediaClipSets({
-      rootFileIdentifier: this.fileIdentifier,
-      segments: this.segments
-    }).subscribe(
-      (response) => {
-        this.onSegmentSave.emit(response.response);
-        // If new segment mode
-        (this.activeAction === this.eMediaClipActionType.new) && this.onActiveSegmentChange.emit(segment);  // Set new segment active
-        this.toastr.success('The segment was saved successfully');
-      },
-      (error) => {
-        this.toastr.error('There was a problem with your request');
-        this.selectActiveAction(this.eMediaClipActionType.new);
-        console.error(error);
-      },
-      () => {  //Complete
-        this.isSaving = false;
-        this.loadingService.setLoading(false);
-      }
-    );
+    this.mediaToolsService
+      .saveMediaClipSets({
+        rootFileIdentifier: this.fileIdentifier,
+        segments: this.segments
+      })
+      .subscribe(
+        response => {
+          this.onSegmentSave.emit(response.response);
+          // If new segment mode
+          if (this.activeAction === this.eMediaClipActionType.new) {
+            this.onActiveSegmentChange.emit(segment);
+          } // Set new segment active
+          this.toastr.success('The segment was saved successfully');
+        },
+        error => {
+          this.toastr.error('There was a problem with your request');
+          this.selectActiveAction(this.eMediaClipActionType.new);
+          console.error(error);
+        },
+        () => {
+          // Complete
+          this.isSaving = false;
+          this.loadingService.setLoading(false);
+        }
+      );
   }
 
   // Description: Reset Segment Form - cancel button
   public resetForm(segmentForm: NgForm) {
-    (this.activeAction !== this.eMediaClipActionType.new) ? this.selectActiveAction(this.eMediaClipActionType.new) : this.setActiveSegment(null);
+    this.activeAction !== this.eMediaClipActionType.new
+      ? this.selectActiveAction(this.eMediaClipActionType.new)
+      : this.setActiveSegment(null);
   }
 
   // Description: Reset segments to before changes - Update the segments object with the this.tempSegmentForCancel values
   private _resetCurrentSegment() {
     // (!!this.tempSegmentForCancel && this.tempSegmentForCancel.index >= 0) && console.log(' ***** CHANGED BY TEMP  ***** ');
-    (!!this.tempSegmentForCancel && this.tempSegmentForCancel.index >= 0) &&
-      (this.segments[this.tempSegmentForCancel.index] = this.tempSegmentForCancel.segment);
+    if (!!this.tempSegmentForCancel && this.tempSegmentForCancel.index >= 0) {
+      this.segments[this.tempSegmentForCancel.index] = this.tempSegmentForCancel.segment;
+    }
   }
 
   // Description: delete segment from model
@@ -404,25 +483,33 @@ export class MediaTimelineComponent implements OnInit {
   // Description: set up mute component and slider
   private _setupMuteComponent() {
     // console.log('_setupMuteComponent', this.activeSegmentRange, this._sliderMax);
-    if (!!this.activeSegmentRange && !!this.muteslider) { //!!this.activeSegmentRange.startTime
+    if (!!this.activeSegmentRange && !!this.muteslider) {
+      // !!this.activeSegmentRange.startTime
       this.mainSliderDisabled = true;
-      let start = this.activeSegmentRange.startTime, // Limits the bottom value/handle based on the parent activeSegmentRange
+      const start = this.activeSegmentRange.startTime, // Limits the bottom value/handle based on the parent activeSegmentRange
         topPadding = Number(this._sliderMax - this.activeSegmentRange.endTime); // Limits the top value of top handle based on the parent activeSegmentRange
       this._defaultMuteComponentRange();
-      this.muteslider.slider.updateOptions({
-        padding: [start, topPadding]
-      }, false);
-    };
+      this.muteslider.slider.updateOptions(
+        {
+          padding: [start, topPadding]
+        },
+        false
+      );
+    }
   }
 
   // Description: sets the muted slider to default
   private _defaultMuteComponentRange() {
     //  console.log('_defaultMuteComponentRange', this.activeSegmentRange,  this.activeMuteSegmentRange);
-    !!this.activeSegmentRange.mutes && this.mediaToolsService.resetActiveSegment(this.activeSegmentRange.mutes);
+    if (!!this.activeSegmentRange.mutes) {
+      this.mediaToolsService.resetActiveSegment(this.activeSegmentRange.mutes);
+    }
     let start = this.activeSegmentRange.startTime, // Limits the bottom value/handle based on the parent activeSegmentRange
-      end = (start + this._sliderMinRangeValue + 3000);
+      end = start + this._sliderMinRangeValue + 3000;
     this.setActiveMuteSegmentTime(start, end);
-    (end > this.activeSegmentRange.endTime) && (end = this.activeSegmentRange.endTime);
+    if (end > this.activeSegmentRange.endTime) {
+      end = this.activeSegmentRange.endTime;
+    }
     this.mutePipValues = [start, end];
     this.muteIsEditMode = false;
     this.segmentDuration = this.activeSegmentRange.endTime;
@@ -435,7 +522,7 @@ export class MediaTimelineComponent implements OnInit {
 
   // Description: Activate a saved muted segment
   public setActivateMuteSegment(segment: IMediaSegment) {
-    // console.log('|***** setActivateMuteSegment: ', segment);  console.log('tempMuteSegmentForCancel: ', this.tempMuteSegmentForCancel); 
+    // console.log('|***** setActivateMuteSegment: ', segment);  console.log('tempMuteSegmentForCancel: ', this.tempMuteSegmentForCancel);
     if (!!segment) {
       this._resetCurrentMuteSegment();
       this.muteIsEditMode = true;
@@ -454,28 +541,31 @@ export class MediaTimelineComponent implements OnInit {
   // Description: Reset segments to before changes - Update the segments object with the this.tempMuteSegmentForCancel values
   private _resetCurrentMuteSegment() {
     if (!!this.activeSegmentRange) {
-      !Array.isArray(this.activeSegmentRange.mutes) && (this.activeSegmentRange.mutes = []); //for nulls 
-      (!!this.tempMuteSegmentForCancel && this.tempMuteSegmentForCancel.index >= 0) &&
-        (this.activeSegmentRange.mutes[this.tempMuteSegmentForCancel.index] = this.tempMuteSegmentForCancel.segment);
+      if (!Array.isArray(this.activeSegmentRange.mutes)) {
+        this.activeSegmentRange.mutes = [];
+      } // for nulls
+      if (!!this.tempMuteSegmentForCancel && this.tempMuteSegmentForCancel.index >= 0) {
+        this.activeSegmentRange.mutes[this.tempMuteSegmentForCancel.index] = this.tempMuteSegmentForCancel.segment;
+      }
     }
   }
 
-  // Description: builds the activeMuteSegmentRange  
+  // Description: builds the activeMuteSegmentRange
   private setActiveMuteSegmentTime(startTime: number, endTime: number) {
     // console.log('|***** setActiveMuteSegmentTime: ', startTime, endTime);
     this.activeMuteSegmentRange = {
-      startTime: startTime,
-      endTime: endTime,
+      startTime,
+      endTime,
       startTimeFormatted: this.formatTime.transform(startTime) || '00:00:00',
       endTimeFormatted: this.formatTime.transform(endTime) || '00:00:00'
-    }
+    };
   }
 
   // Description: validates the range of the mute segments
   public mutedSegmentInvalid(segment: IMediaSegment): boolean {
     const isStartTimeInvalid = segment.startTime < this.activeSegmentRange.startTime,
       isEndTimeInvalid = segment.endTime > this.activeSegmentRange.endTime;
-    return (isStartTimeInvalid || isEndTimeInvalid);
+    return isStartTimeInvalid || isEndTimeInvalid;
   }
 
   // Description: reset active mute range and default all settings
@@ -497,18 +587,25 @@ export class MediaTimelineComponent implements OnInit {
   // Description: Delete a muted segment
   public deleteMutedSegment(event: Event, segment: IMediaSegment) {
     const segmentIndex = this.mediaToolsService.getSegmentIndex(this.activeSegmentRange.mutes, segment);
-    (!isNaN(segmentIndex) && segmentIndex >= 0) && this.activeSegmentRange.mutes.splice(segmentIndex, 1);
+    if (!isNaN(segmentIndex) && segmentIndex >= 0) {
+      this.activeSegmentRange.mutes.splice(segmentIndex, 1);
+    }
     this._saveSegments();
-    segment.isActive && this._defaultMuteComponentRange(); // Reset slider if deleting active segment
-    event.stopImmediatePropagation();   // Needed to prevent trigger of activateMuteSegment
+    if (segment.isActive) {
+      this._defaultMuteComponentRange();
+    } // Reset slider if deleting active segment
+    event.stopImmediatePropagation(); // Needed to prevent trigger of activateMuteSegment
     return false;
   }
 
   // Description: Form submit for new mute segment
   public onSubmitSaveMuteSegment(muteForm: NgForm) {
-    let newSegment: IMediaSegment = muteForm.value;
-    if (!this.muteIsEditMode) { // New mode
-      !Array.isArray(this.activeSegment.mutes) && (this.activeSegment.mutes = []); // For cases where mutes =null
+    const newSegment: IMediaSegment = muteForm.value;
+    if (!this.muteIsEditMode) {
+      // New mode
+      if (!Array.isArray(this.activeSegment.mutes)) {
+        this.activeSegment.mutes = [];
+      } // For cases where mutes =null
       this.mediaToolsService.addNewSegmentByStartTime(this.activeSegment.mutes, newSegment);
       this.setActivateMuteSegment(newSegment);
     }
@@ -517,7 +614,7 @@ export class MediaTimelineComponent implements OnInit {
     this._saveSegments();
   }
 
-  // Description: Reset Mute Form 
+  // Description: Reset Mute Form
   public resetMuteForm(muteForm: NgForm) {
     this._resetCurrentMuteSegment();
     this.muteIsEditMode = false;
@@ -539,17 +636,9 @@ export class MediaTimelineComponent implements OnInit {
   // Description: find the active range on the main slider and bring it into view if not there
   public onSliderChange(value) {
     const startTime = Math.round(value[0]),
-      endTime = Math.round(value[1]);   //console.log(value, eventType, startTime, endTime); 
+      endTime = Math.round(value[1]); // console.log(value, eventType, startTime, endTime);
     this.updateActiveSegmentRangeTime(startTime, endTime);
   }
-
-  // Description: Initialize Scrollable 
-  //----------------------------------------------
-  @ViewChild('noUIContainer') elementView: ElementRef;
-  @ViewChild('timelineContainer', {read: ElementRef}) private timelineContainer: ElementRef;
-  //timelineContainer
-  // private mouse: MouseEvent;
-  private defaultScrollableOffset: number = 0;
 
   // Description: set up scrollable defaults
   private setupScrollable() {
@@ -558,14 +647,14 @@ export class MediaTimelineComponent implements OnInit {
   }
 
   scrollContainerToLeft(offset?: number) {
-    let width = this.timelineContainer.nativeElement.getBoundingClientRect().width - 50,
-     newOffset = !!offset ? offset : this.elementView.nativeElement.scrollLeft + width*0.8; //((window.innerWidth - 410) * 0.8);
+    const width = this.timelineContainer.nativeElement.getBoundingClientRect().width - 50,
+      newOffset = !!offset ? offset : this.elementView.nativeElement.scrollLeft + width * 0.8; // ((window.innerWidth - 410) * 0.8);
     this.directiveRef.scrollToLeft(newOffset, 100);
   }
 
   scrollContainerToRight(offset?: number) {
-    let width = this.timelineContainer.nativeElement.getBoundingClientRect().width - 50,
-     newOffset = !!offset ? offset : this.elementView.nativeElement.scrollLeft - width*0.8; //- ((window.innerWidth - 410) * 0.8);
+    const width = this.timelineContainer.nativeElement.getBoundingClientRect().width - 50,
+      newOffset = !!offset ? offset : this.elementView.nativeElement.scrollLeft - width * 0.8; // - ((window.innerWidth - 410) * 0.8);
     this.directiveRef.scrollToLeft(newOffset, 100);
   }
 
@@ -581,4 +670,3 @@ export class MediaTimelineComponent implements OnInit {
     return scrollGeom.w > offsetGeom.w;
   }
 }
-

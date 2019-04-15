@@ -16,16 +16,15 @@ export interface IParentIframe {
 
 @Injectable()
 export class IframeResizerService {
-
   isIframe: boolean;
-  isIframeIE11: boolean = false;
+  isIframeIE11 = false;
   constructor() {
-    this.isIframe = (window.self !== window.top); // this.isContentLoadedIframe();
+    this.isIframe = window.self !== window.top; // this.isContentLoadedIframe();
   }
 
   adjustParentIframeHeight(height: number) {
     if ('parentIFrame' in window) {
-      const parentIframe = (<any>window).parentIFrame;
+      const parentIframe = (window as any).parentIFrame;
       parentIframe.size(height);
     }
   }
@@ -33,10 +32,8 @@ export class IframeResizerService {
   // Send message to Iframe
   sendParentMessage(msg: string) {
     if ('parentIFrame' in window) {
-      const parentIframe = (<any>window).parentIFrame;
+      const parentIframe = (window as any).parentIFrame;
       parentIframe.sendMessage(msg);
     }
   }
-
-
 }

@@ -10,6 +10,7 @@ export interface IAppConfiguration extends IFileUploadOptions {
   isTopNavigationVisible?: boolean;
   isSearchEnabled?: boolean;
   userTimeZone?: string;
+  caseCreate?: string;
 }
 
 @Injectable()
@@ -17,25 +18,26 @@ export class AppConfigService {
   public configuration: IAppConfiguration = {
     type: '',
     isTopNavigationVisible: false,
-    isSearchEnabled: true
+    isSearchEnabled: true,
+    caseCreate: ''
   };
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) {}
 
   public setAPIConfiguration() {
-    let url = '/api/configuration';
-    return this.http.get<IBatchResponse>(url).subscribe((response) => {
-        this.configuration = <IAppConfiguration>response.response;
+    const url = '/api/configuration';
+    return this.http.get<IBatchResponse>(url).subscribe(
+      response => {
+        this.configuration = response.response as IAppConfiguration;
       },
-      (error) => {
+      error => {
         this.router.navigate(['/error']);
-      }, () => { }
+      },
+      () => {}
     );
-
   }
 
   public setTopNavVisible(isVisible: boolean) {
     this.configuration.isTopNavigationVisible = isVisible;
   }
-
 }

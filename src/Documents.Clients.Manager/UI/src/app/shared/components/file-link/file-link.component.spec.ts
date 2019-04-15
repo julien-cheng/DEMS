@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FileLinkComponent } from './file-links.component';
+import { FileLinkComponent } from './file-link.component';
 
 describe('FileLinkComponent', () => {
   let component: FileLinkComponent;
@@ -8,9 +8,8 @@ describe('FileLinkComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FileLinkComponent ]
-    })
-    .compileComponents();
+      declarations: [FileLinkComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

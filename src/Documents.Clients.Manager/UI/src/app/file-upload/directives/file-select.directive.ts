@@ -23,13 +23,12 @@ export class FileSelectDirective {
     this.fileUpload._initAutoUpload();
 
     // console.log('Clear value after upload to queue');
-    (this.isEmptyAfterSelection()) && (this.element.nativeElement.value = '');
-
+    if (this.isEmptyAfterSelection()) {
+      this.element.nativeElement.value = '';
+    }
   }
 
   public isEmptyAfterSelection(): boolean {
-    return (!!this.element.nativeElement.attributes.multiple || !!this.element.nativeElement.attributes.directory);
+    return !!this.element.nativeElement.attributes.multiple || !!this.element.nativeElement.attributes.directory;
   }
-
-
 }

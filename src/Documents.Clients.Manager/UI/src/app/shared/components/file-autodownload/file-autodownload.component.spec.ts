@@ -8,9 +8,8 @@ describe('FileAutodownloadComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FileAutodownloadComponent ]
-    })
-    .compileComponents();
+      declarations: [FileAutodownloadComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,8 +1,8 @@
-import { IManager, ItemQueryType   } from '../index';
+import { IManager, ItemQueryType } from '../index';
 
 export interface IBreadcrumb {
-    folderKey: string;
-    pathKey: string;
-    isActivePath: boolean;
-    name: string;
+  folderKey: string;
+  pathKey: string;
+  isActivePath: boolean;
+  name: string;
 }

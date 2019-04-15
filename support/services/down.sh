@@ -15,3 +15,6 @@ pushd unoconv
 docker-compose down
 popd
 
+pushd redis
+docker-compose down
+popd

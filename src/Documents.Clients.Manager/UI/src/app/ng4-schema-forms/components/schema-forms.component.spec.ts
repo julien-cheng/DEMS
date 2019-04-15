@@ -8,9 +8,8 @@ describe('SchemaFormsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SchemaFormsComponent ]
-    })
-    .compileComponents();
+      declarations: [SchemaFormsComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

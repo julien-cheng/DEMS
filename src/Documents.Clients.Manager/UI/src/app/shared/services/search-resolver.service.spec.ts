@@ -1,15 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { SearchResolverService } from './search-resolver.service';
+import { SearchResolver } from './search-resolver.service';
 
 describe('SearchResolverService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SearchResolverService]
+      providers: [SearchResolver]
     });
   });
 
-  it('should be created', inject([SearchResolverService], (service: SearchResolverService) => {
+  it('should be created', inject([SearchResolver], (service: SearchResolver) => {
     expect(service).toBeTruthy();
   }));
 });

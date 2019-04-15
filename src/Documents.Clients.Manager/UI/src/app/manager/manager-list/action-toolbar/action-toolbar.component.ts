@@ -1,15 +1,22 @@
-﻿import { Component, SimpleChanges, Input, Output, EventEmitter, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, SimpleChanges, Input, Output, EventEmitter, Inject, ViewChild, ElementRef, OnChanges } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidatorFn } from '@angular/forms';
 import { JQ_TOKEN, ListService, AuthService, ExplorerService, PathService, IManager, ViewMode } from '../../index';
-import { IPathIdentifier, IAllowedOperation, IPath, IBatchResponse, IGridView, batchOperationsDefaults, IRequestBatchData } from '../../index';
-
+import {
+  IPathIdentifier,
+  IAllowedOperation,
+  IPath,
+  IBatchResponse,
+  IGridView,
+  batchOperationsDefaults,
+  IRequestBatchData
+} from '../../index';
 
 @Component({
   selector: 'app-action-toolbar',
   templateUrl: './action-toolbar.component.html',
   styleUrls: ['./action-toolbar.component.scss']
 })
-export class ActionToolbarComponent {
+export class ActionToolbarComponent implements OnChanges {
   @Input() pathIdentifier: IPathIdentifier;
   @Input() manager: IManager;
   @Output() updateView = new EventEmitter();
@@ -18,7 +25,7 @@ export class ActionToolbarComponent {
   public pathAllowedOperations: IAllowedOperation[];
   public icons: any = batchOperationsDefaults.icons;
   public eViewMode = ViewMode; // Description: Double-bind and Emit the change of viewmode
-  public isSearchAOEnabled: boolean = false;
+  public isSearchAOEnabled = false;
   @Output() viewModePropChange = new EventEmitter();
   viewMode: ViewMode;
   @Input()
@@ -36,18 +43,22 @@ export class ActionToolbarComponent {
     public listService: ListService,
     private pathService: PathService,
     private explorerService: ExplorerService,
-    @Inject(JQ_TOKEN) private $: any) {
-  }
+    @Inject(JQ_TOKEN) private $: any
+  ) {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.manager) {
-      this.pathAllowedOperations = !!this.manager.allowedOperations ? this.manager.allowedOperations.filter((ao) => {
-        (ao.batchOperation.type === 'SearchRequest') && ( this.isSearchAOEnabled = true);
-        return ao.batchOperation.type !== 'MoveIntoRequest';
-      }) : [];
+      this.pathAllowedOperations = !!this.manager.allowedOperations
+        ? this.manager.allowedOperations.filter(ao => {
+            if (ao.batchOperation.type === 'SearchRequest') {
+              this.isSearchAOEnabled = true;
+            }
+            return ao.batchOperation.type !== 'MoveIntoRequest';
+          })
+        : [];
     }
   }
-  
+
   // Description: Trigger update of the list view
   refreshView() {
     this.updateView.emit();
@@ -62,15 +73,16 @@ export class ActionToolbarComponent {
 
     // This might need to be readjusted
     if (isGlobal) {
-      rows = [{
-        pathIdentifier: this.pathIdentifier,
-        type: 'ManagerPathModel',
-        name: this.manager.pathName,
-        allowedOperations: this.manager.allowedOperations
-      }];
+      rows = [
+        {
+          pathIdentifier: this.pathIdentifier,
+          type: 'ManagerPathModel',
+          name: this.manager.pathName,
+          allowedOperations: this.manager.allowedOperations
+        }
+      ];
     }
 
-    return this.processBatchUiAction.emit(Object.assign(requestBatchData, { rows: rows }));
+    return this.processBatchUiAction.emit(Object.assign(requestBatchData, { rows }));
   }
-
 }

@@ -1,12 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-
-import {
-  LoginComponent,
-  EdiscoveryLandingComponent,
-  LeoLandingComponent
-} from './index';
+import { LoginComponent, EdiscoveryLandingComponent, LeoLandingComponent } from './index';
 
 const routes: Routes = [
   {
@@ -15,12 +10,12 @@ const routes: Routes = [
   },
   {
     path: 'ediscoverylanding/:token',
-    component: EdiscoveryLandingComponent,
+    component: EdiscoveryLandingComponent
   },
   {
     path: 'leouploadlanding/:token',
-    component: LeoLandingComponent,
-  },
+    component: LeoLandingComponent
+  }
 ];
 
 @NgModule({
@@ -28,4 +23,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: []
 })
-export class AuthRoutingModule { }
+export class AuthRoutingModule {}

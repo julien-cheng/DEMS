@@ -8,9 +8,8 @@ describe('StringControlComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StringControlComponent ]
-    })
-    .compileComponents();
+      declarations: [StringControlComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

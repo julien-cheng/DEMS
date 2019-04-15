@@ -15,19 +15,15 @@ import {
   ObjectControlComponent,
   NullControlComponent,
   TemplatesComponent,
-  Dynamic1ColumnComponent, 
+  Dynamic1ColumnComponent,
   Dynamic2ColumnComponent,
   Dynamic3ColumnComponent,
   Dynamic4ColumnComponent,
   FocusDirective
- } from './index';
-
+} from './index';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule, ReactiveFormsModule],
   declarations: [
     SchemaFormsComponent,
     SchemaFormControlComponent,
@@ -40,21 +36,14 @@ import {
     DescriptionComponent,
     MessagingComponent,
     TemplatesComponent,
-    Dynamic1ColumnComponent, 
+    Dynamic1ColumnComponent,
     Dynamic2ColumnComponent,
     Dynamic3ColumnComponent,
     Dynamic4ColumnComponent,
     FocusDirective
   ],
-  entryComponents: [
-    Dynamic1ColumnComponent, 
-    Dynamic2ColumnComponent,
-    Dynamic3ColumnComponent,
-    Dynamic4ColumnComponent
-  ],
-  exports: [
-    SchemaFormsComponent
-  ],
-  providers: [SchemaForm, Validation ]
+  entryComponents: [Dynamic1ColumnComponent, Dynamic2ColumnComponent, Dynamic3ColumnComponent, Dynamic4ColumnComponent],
+  exports: [SchemaFormsComponent],
+  providers: [SchemaForm, Validation]
 })
-export class Ng4SchemaFormsModule { }
+export class Ng4SchemaFormsModule {}

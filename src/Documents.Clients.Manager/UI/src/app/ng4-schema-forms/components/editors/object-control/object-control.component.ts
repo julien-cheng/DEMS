@@ -26,48 +26,48 @@ export class ObjectControlComponent implements OnInit {
   // errorMessage: string;
   get isInvalid() {
     // Return: the state of the ng form control and basecontrol validator
-    let isInvalid = !this.formControlValidator.isValid || this.ngFormControl.invalid,
-        ngformstatus =(this.ngFormControl.dirty || this.ngFormControl.touched || this.ngFormControl.value)
+    const isInvalid = !this.formControlValidator.isValid || this.ngFormControl.invalid,
+      ngformstatus = this.ngFormControl.dirty || this.ngFormControl.touched || this.ngFormControl.value;
     return isInvalid && ngformstatus;
   }
-  get ngFormControl(){
+  get ngFormControl() {
     return this.form.controls[this.formControlObj.key];
   }
-  collapsed?: boolean = false;
+  collapsed = false;
   private control: AbstractControl;
   // private initialValue?: ValueType;
   // private properties: { key: string; value: Schema }[] = [];
 
-  constructor(public schemaForm: SchemaForm) { }
+  constructor(public schemaForm: SchemaForm) {}
 
   ngOnInit() {
     this.nestedForm = new FormGroup({});
-    this.schema = <IObjectSchema>this.formControlObj.schema;
+    this.schema = this.formControlObj.schema as IObjectSchema;
     this.control = this.form.get(this.formControlObj.key);
-    this.value =  !!this.control.value ?  this.control.value: this.getDefaultValue(this.schema);
+    this.value = !!this.control.value ? this.control.value : this.getDefaultValue(this.schema);
     this.title = this.schema.title || '';
-    this.collapsed = (typeof (this.schema.collapsed) === 'boolean') ? this.schema.collapsed : false;
+    this.collapsed = typeof this.schema.collapsed === 'boolean' ? this.schema.collapsed : false;
     this.mainFormControl = this.schemaForm.getFormBaseControlProperties(this._buildProperties(), this.value);
     this.nestedForm = this.schemaForm.toFormGroup(this.mainFormControl);
     this.formControlObj.setControlsValue(this.value);
   }
 
   private _buildProperties() {
-    let newSchema = Object.assign({}, this.schema),
+    const newSchema = Object.assign({}, this.schema),
       props = Object.assign({}, this.schema.properties);
     // Add default to schema props
     if (isObject(this.value) && !_.isEmpty(this.value)) {
-      for (let key in <any>this.value) {
+      for (const key in this.value as any) {
         if (this.value.hasOwnProperty(key)) {
-          let newVal = this.value[key],
+          const newVal = this.value[key],
             property = Object.assign({}, props[key]);
           if (property.default === undefined) {
-            property['default'] = newVal;
+            property.default = newVal;
             props[key] = Object.assign({}, property);
           }
         }
       }
-      newSchema['properties'] = props;
+      newSchema.properties = props;
     }
     return newSchema;
   }
@@ -79,8 +79,11 @@ export class ObjectControlComponent implements OnInit {
       return initialValue;
     } else if (schema.default) {
       // Defaults can be passed as arrays OR Obj - i.e. {prop1: value1, prop2: value2... } OR [{prop1: value1, prop2: value2... }]
-      return (Array.isArray(schema.default) && isObject(schema.default[0])) ? Object.assign({}, schema.default[0]) :
-        isObject(schema.default) ? Object.assign({}, schema.default) : {};
+      return Array.isArray(schema.default) && isObject(schema.default[0])
+        ? Object.assign({}, schema.default[0])
+        : isObject(schema.default)
+        ? Object.assign({}, schema.default)
+        : {};
     } else {
       return !!this.nestedForm.value ? this.nestedForm.value : {};
     }
@@ -91,7 +94,7 @@ export class ObjectControlComponent implements OnInit {
     // console.log('3 ***** updateFormValue in Object Control: ', this.value);
     const key = baseControl.key;
     this.value[key] = baseControl.value;
-   // console.log('baseControl', baseControl, baseControl.key, baseControl.value);
+    // console.log('baseControl', baseControl, baseControl.key, baseControl.value);
     // Propagate up to form
     this.updateValue.emit({ value: this.value });
   }

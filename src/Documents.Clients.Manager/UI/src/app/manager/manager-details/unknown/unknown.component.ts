@@ -9,9 +9,7 @@ import { IFile, IFileIdentifier, FileSetTypes, IMessaging } from '../../index';
 export class UnknownComponent implements OnInit {
   @Input() fileSet: FileSetTypes;
   @Input() viewerType: string;
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

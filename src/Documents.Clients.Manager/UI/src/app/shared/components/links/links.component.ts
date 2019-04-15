@@ -10,12 +10,12 @@ export class LinkComponent implements OnInit {
   @Output() triggerCallback = new EventEmitter();
   @Input() row: ItemQueryType;
   @Input() pathName: string;
-  @Input() imageLink: boolean = false;
-  @Input() hideIcon: boolean = false;
+  @Input() imageLink = false;
+  @Input() hideIcon = false;
   @Input() linkType: string;
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
-    (this.linkType === undefined && !!this.row) && (this.linkType = LinkType[this.row.type]);
+    this.linkType === undefined && !!this.row && (this.linkType = LinkType[this.row.type]);
   }
 }

@@ -8,9 +8,8 @@ describe('MediaTimelineComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MediaTimelineComponent ]
-    })
-    .compileComponents();
+      declarations: [MediaTimelineComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

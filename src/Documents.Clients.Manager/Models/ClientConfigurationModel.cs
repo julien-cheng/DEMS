@@ -22,6 +22,26 @@
         public string DataType { get; set; } = "json";
         public string Method { get; set; } = "POST";
 
+        public string CaseCreate { get; set; } = @"{
+          ""type"": ""object"",
+          ""title"": ""GUI:"",
+          ""description"": ""Add New Case"",
+          ""properties"": {
+            ""folderKey"": {
+              ""type"": ""string"",
+              ""title"": ""Case Identifier"",
+              ""description"": ""Unique case identifier"",
+              ""placeholder"": ""Case Identifier"",
+              ""validators"": [
+                {
+                  ""type"": ""required"",
+                  ""value"": null,
+                  ""errorMessage"": ""The field Case Identifier is required""
+                }
+              ]
+            }
+          }
+        }";
         // filters?: Array<FilterFunction>; 
         // allowedMimeType?: Array<string>;
         // allowedFileType?: Array<string>;

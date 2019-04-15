@@ -8,9 +8,8 @@ describe('MediaSubtitlesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MediaSubtitlesComponent ]
-    })
-    .compileComponents();
+      declarations: [MediaSubtitlesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

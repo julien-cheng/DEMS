@@ -11,77 +11,58 @@ import { MediaModule } from '../media/media.module';
 import { VideoBasicComponent } from '../media/video-basic/video-basic.component';
 // Manager Components
 import {
-    // ManagerComponent,
+  // ManagerComponent,
+  ManagerDetailsComponent,
+  PdfComponent,
+  ImageComponent,
+  AudioComponent,
+  UnknownComponent,
+  FileviewsMenuComponent,
+  ManagerViewComponent,
+  GridViewComponent,
+  ObjectViewComponent,
+  ListViewComponent,
+  IconsViewComponent,
+  DetailsViewComponent,
+  FileResolver,
+  OfflineComponent,
+  ActionToolbarComponent,
+  DefaultComponent,
+  UploadComponent,
+  JsonFormsComponent,
+  CellViewComponent,
+  SearchComponent,
+  SearchResultComponent,
+  ImageGalleryComponent,
+  ImageGalleryThumbnailComponent
+} from './index';
+
+@NgModule({
+  imports: [CommonModule, SharedModule, ManagerRoutingModule, FormsModule, ReactiveFormsModule, MediaModule],
+  declarations: [
     ManagerDetailsComponent,
+    ListViewComponent,
+    IconsViewComponent,
+    DetailsViewComponent,
+    CellViewComponent,
     PdfComponent,
     ImageComponent,
     OfflineComponent,
     AudioComponent,
     UnknownComponent,
-    FileviewsMenuComponent,
-    ManagerViewComponent,
-    GridViewComponent,
-    ObjectViewComponent,
-    ListViewComponent,
-    IconsViewComponent,
-    DetailsViewComponent,
-    FileResolver,
     ActionToolbarComponent,
     DefaultComponent,
     UploadComponent,
     JsonFormsComponent,
-    CellViewComponent,
+    ManagerViewComponent,
+    GridViewComponent,
+    ObjectViewComponent,
     SearchComponent,
     SearchResultComponent,
+    FileviewsMenuComponent,
     ImageGalleryComponent,
     ImageGalleryThumbnailComponent
-    
-} from './index';;
-
-
-
-@NgModule({
-    imports: [
-        CommonModule,
-        SharedModule,
-        ManagerRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MediaModule
-    ],
-    declarations: [
-        ManagerDetailsComponent,
-        ListViewComponent,
-        IconsViewComponent,
-        DetailsViewComponent,
-        CellViewComponent,
-        PdfComponent,
-        ImageComponent,
-        OfflineComponent,
-        AudioComponent,
-        UnknownComponent,
-        ActionToolbarComponent,
-        DefaultComponent,
-        UploadComponent,
-        JsonFormsComponent,
-        ManagerViewComponent,
-        GridViewComponent,
-        ObjectViewComponent,
-        SearchComponent,
-        SearchResultComponent,
-        FileviewsMenuComponent,
-        ImageGalleryComponent,
-        ImageGalleryThumbnailComponent
-        
-    ],
-    entryComponents: [
-        DefaultComponent,
-        VideoBasicComponent, 
-        PdfComponent,
-        ImageComponent,
-        AudioComponent,
-        OfflineComponent,
-        UnknownComponent,
-    ]
+  ],
+  entryComponents: [DefaultComponent, VideoBasicComponent, PdfComponent, ImageComponent, AudioComponent, OfflineComponent, UnknownComponent]
 })
-export class ManagerModule { }
+export class ManagerModule {}

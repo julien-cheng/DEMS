@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { MediaResolverService } from './video-resolver.service';
+import { MediaResolverService } from './media-resolver.service';
 
 describe('MediaResolverService', () => {
   beforeEach(() => {

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup }  from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Schema, INumberSchema, ValueType, Validation } from '../../../index';
 import { BaseControl } from '../../../models/base-control.model';
 
@@ -20,17 +20,17 @@ export class NumberControlComponent implements OnInit {
   // errorMessage: string;
   get isInvalid() {
     // Return: the state of the ng form control and basecontrol validator
-    let isInvalid = !this.formControlValidator.isValid || this.ngFormControl.invalid,
-        ngformstatus =(this.ngFormControl.dirty || this.ngFormControl.touched || this.ngFormControl.value);
+    const isInvalid = !this.formControlValidator.isValid || this.ngFormControl.invalid,
+      ngformstatus = this.ngFormControl.dirty || this.ngFormControl.touched || this.ngFormControl.value;
     return isInvalid && ngformstatus;
   }
-  get ngFormControl(){
+  get ngFormControl() {
     return this.form.controls[this.formControlObj.key];
   }
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
-    this.schema = <INumberSchema>this.formControlObj.schema;
+    this.schema = this.formControlObj.schema as INumberSchema;
     this.value = this.formControlObj.value; // this.value = this.getDefaultValue(this.schema);
     this._setNumberControlType();
   }
@@ -38,7 +38,8 @@ export class NumberControlComponent implements OnInit {
   // Description: gets the number control type: input, select, others...
   // FormControlType:  select or input
   private _setNumberControlType() {
-    return this.numberControlType = (this.schema.format === 'select' || (this.schema.enum !== undefined && !this.isReadOnly)) ? 'select' : 'input';
+    return (this.numberControlType =
+      this.schema.format === 'select' || (this.schema.enum !== undefined && !this.isReadOnly) ? 'select' : 'input');
   }
 
   // Description: is control readonly and disabled

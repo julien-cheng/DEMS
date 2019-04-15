@@ -1,4 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, SimpleChanges, ViewContainerRef, HostListener } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  SimpleChanges,
+  ViewContainerRef,
+  HostListener,
+  AfterViewInit
+} from '@angular/core';
 import { IMediaSet, IMediaSource, IMediaSubtitles, IMediaSegment, IVideoProperties, EventType } from '../index';
 import { MediaToolsService } from '../services/media-tools.service';
 import * as _ from 'lodash';
@@ -9,14 +21,15 @@ const { isEqual } = _;
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.scss']
 })
-export class VideoComponent implements OnInit {
+export class VideoComponent implements OnInit, AfterViewInit {
   @Output() onActiveSegmentChange = new EventEmitter<IMediaSegment>();
   @ViewChild('player') player: ElementRef;
-  @ViewChild('playerContainer', { read: ViewContainerRef }) playerContainer: ViewContainerRef;
+  @ViewChild('playerContainer', { read: ViewContainerRef })
+  playerContainer: ViewContainerRef;
   @Input() mediaSet: IMediaSet;
   @Input() activeSegment: IMediaSegment;
   @Input() isEditMode: boolean;
-  public loopVideoSegment: boolean = false;
+  public loopVideoSegment = false;
   public segments: IMediaSegment[];
 
   private _activeSegment: IMediaSegment;
@@ -39,49 +52,60 @@ export class VideoComponent implements OnInit {
     duration: 0
   };
 
-
-  constructor(private mediaToolsService: MediaToolsService) { }
+  constructor(private mediaToolsService: MediaToolsService) {}
 
   ngOnInit() {
-    !!this.mediaSet.poster && (this.poster = this.mediaToolsService.getFileContentURL(this.mediaSet.poster));
+    if (!!this.mediaSet.poster) {
+      this.poster = this.mediaToolsService.getFileContentURL(this.mediaSet.poster);
+    }
     this.preload = this.mediaSet.preload ? 'auto' : 'none';
     this.segments = this.mediaSet.segments;
     this.processSegmentObject(this.segments);
     this.sources = this.mediaToolsService.buildMediaSources(this.mediaSet.sources);
-    this.mediaSet.subtitles && (this.subtitles = this.mediaToolsService.buildMediaSubtitles(this.mediaSet.subtitles));
+    if (this.mediaSet.subtitles) {
+      this.subtitles = this.mediaToolsService.buildMediaSubtitles(this.mediaSet.subtitles);
+    }
     this._activeSegment = this.activeSegment; // || this.mediaSet.segments[0];
   }
 
   ngAfterViewInit() {
-    let _self = this;
+    const self = this;
     this.video = this.player.nativeElement;
     // Bind Video Events
-    this.video.addEventListener("loadedmetadata", () => { //console.log( 'loadedmetadata');
+    this.video.addEventListener('loadedmetadata', () => {
+      // console.log( 'loadedmetadata');
       this.setVideoProperties();
-      (!!_self._activeSegment && _self._activeSegment.startTime > 0) && (_self.video.currentTime = _self._activeSegment.startTime / 1000);
+      if (!!self._activeSegment && self._activeSegment.startTime > 0) {
+        self.video.currentTime = self._activeSegment.startTime / 1000;
+      }
     });
 
-    this.video.addEventListener("timeupdate", (e) => {
-      let currentTime = this.video.currentTime * 1000;
-      (!!this._activeSegmentEndTime && (currentTime > this._activeSegmentEndTime)) && this._endOfSegmentCallback(currentTime);
-      (this._nextSegmentKey >= 0 && (this._nextSegmentKey === null || currentTime >= this._nextSegmentKey)) && this.findActiveSegment(this.video.currentTime * 1000);
+    this.video.addEventListener('timeupdate', e => {
+      const currentTime = this.video.currentTime * 1000;
+      if (!!this._activeSegmentEndTime && currentTime > this._activeSegmentEndTime) {
+        this._endOfSegmentCallback(currentTime);
+      }
+      if (this._nextSegmentKey >= 0 && (this._nextSegmentKey === null || currentTime >= this._nextSegmentKey)) {
+        this.findActiveSegment(this.video.currentTime * 1000);
+      }
     });
 
-    this.video.addEventListener("seeked", (e) => { //this._activeSegment, this.activeSegment,
+    this.video.addEventListener('seeked', e => {
+      // this._activeSegment, this.activeSegment,
       this._nextSegmentKey = null;
       this._activeSegmentEndTime = null;
     });
 
-    this.video.addEventListener('play', (e) => {
+    this.video.addEventListener('play', e => {
       this.videoProperties.isPlaying = true;
       this.videoProperties.isEnded = false;
     });
 
-    this.video.addEventListener('pause', (e) => {
+    this.video.addEventListener('pause', e => {
       this.videoProperties.isPlaying = false;
     });
 
-    this.video.addEventListener('ended', (e) => {
+    this.video.addEventListener('ended', e => {
       this.videoProperties.isPlaying = false;
       this.videoProperties.isEnded = true;
     });
@@ -89,17 +113,18 @@ export class VideoComponent implements OnInit {
 
   setVideoProperties() {
     this.videoProperties.textTrackMode = this.video.textTracks[0].mode;
-    this.videoProperties.isClosedCaptionsOn = (this.videoProperties.textTrackMode === "showing");
+    this.videoProperties.isClosedCaptionsOn = this.videoProperties.textTrackMode === 'showing';
     this.videoProperties.isMuted = this.video.muted;
     this.videoProperties.duration = this.video.duration;
     // console.log(this.video.duration, this.videoProperties.duration);
   }
 
-
   // Description: Set Base Segments Object and Array
   processSegmentObject(segments: IMediaSegment[]) {
     this.segments.forEach(segment => {
-      !!segment.startTime && (this._segmentMap[segment.startTime.toString()] = segment);
+      if (!!segment.startTime) {
+        this._segmentMap[segment.startTime.toString()] = segment;
+      }
     });
     this._segmentKeys = Object.keys(this._segmentMap).map(Number);
   }
@@ -107,21 +132,29 @@ export class VideoComponent implements OnInit {
   // Finds the active Segment
   findActiveSegment(currentTime: number) {
     // console.log(' | ----------------- findActiveSegment ------------------------ | ', this._nextSegmentKey);
-    let _activeSegment = null, foundSegmentBigger, foundSegmentSmaller;
-    const foundIndex = this._segmentKeys.findIndex((el) => { return el > currentTime; });
+    let _activeSegment = null,
+      foundSegmentBigger,
+      foundSegmentSmaller;
+    const foundIndex = this._segmentKeys.findIndex(el => el > currentTime);
 
-    if (foundIndex < 0) { //This is the last segment
+    if (foundIndex < 0) {
+      // This is the last segment
       foundSegmentSmaller = this._segmentKeys[this._segmentKeys.length - 1];
       this._nextSegmentKey = -1;
     } else {
       foundSegmentBigger = this._segmentKeys[foundIndex];
-      foundSegmentSmaller = this._segmentKeys[foundIndex - 1];  //
-      this._nextSegmentKey = foundSegmentBigger;  // Set next segment, end of active segment and global active segment eventemitters
+      foundSegmentSmaller = this._segmentKeys[foundIndex - 1]; //
+      this._nextSegmentKey = foundSegmentBigger; // Set next segment, end of active segment and global active segment eventemitters
     }
 
     // Set Segments actives when starttime is less than current time
-    (!!foundSegmentSmaller && this._segmentMap[foundSegmentSmaller].startTime <= currentTime && this._segmentMap[foundSegmentSmaller].endTime >= currentTime) &&
-      (_activeSegment = this._segmentMap[foundSegmentSmaller]);
+    if (
+      !!foundSegmentSmaller &&
+      this._segmentMap[foundSegmentSmaller].startTime <= currentTime &&
+      this._segmentMap[foundSegmentSmaller].endTime >= currentTime
+    ) {
+      _activeSegment = this._segmentMap[foundSegmentSmaller];
+    }
 
     this._setActiveSegment(_activeSegment);
   }
@@ -135,8 +168,9 @@ export class VideoComponent implements OnInit {
 
   // Description: Run end of segment checks and loop if needed
   private _endOfSegmentCallback(currentTime: number) {
-    (this.isEditMode && this.loopVideoSegment && !!this._activeSegment) ?
-      (this.video.currentTime = this._activeSegment.startTime / 1000) : this._setActiveSegment(null);
+    this.isEditMode && this.loopVideoSegment && !!this._activeSegment
+      ? (this.video.currentTime = this._activeSegment.startTime / 1000)
+      : this._setActiveSegment(null);
   }
 
   // Description: returns true for video playing false for ended/pause
@@ -148,5 +182,4 @@ export class VideoComponent implements OnInit {
   public setActiveSegment(segment) {
     this.video.currentTime = segment.startTime / 1000;
   }
- 
 }

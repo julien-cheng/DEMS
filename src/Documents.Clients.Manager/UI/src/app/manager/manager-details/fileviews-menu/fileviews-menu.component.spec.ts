@@ -8,9 +8,8 @@ describe('FileviewsMenuComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FileviewsMenuComponent ]
-    })
-    .compileComponents();
+      declarations: [FileviewsMenuComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,7 +8,7 @@ const { includes, pick } = _;
 @Component({
   selector: 'app-fileUpload',
   template: `
-      <ng-content select="[fileUpload-content]" ></ng-content>
+    <ng-content select="[fileUpload-content]"></ng-content>
   `
 })
 export class FileUploadComponent implements OnInit {
@@ -17,35 +17,31 @@ export class FileUploadComponent implements OnInit {
   @Input() fileUpload: FileUpload;
 
   // Possible event handlers:
-  @Output() initialized= new EventEmitter();
-  @Output() updateData= new EventEmitter();
-  @Output() event= new EventEmitter();
-  @Output() changeFilter= new EventEmitter();
-  @Output() stateChange= new EventEmitter();
-  @Output() complete= new EventEmitter();
-  @Output() success= new EventEmitter();
-  @Output() error= new EventEmitter();
-  @Output() cancel= new EventEmitter();
+  @Output() initialized = new EventEmitter();
+  @Output() updateData = new EventEmitter();
+  @Output() event = new EventEmitter();
+  @Output() changeFilter = new EventEmitter();
+  @Output() stateChange = new EventEmitter();
+  @Output() complete = new EventEmitter();
+  @Output() success = new EventEmitter();
+  @Output() error = new EventEmitter();
+  @Output() cancel = new EventEmitter();
 
-  constructor(
-  ) {
-   // console.log(this.fileUpload);
+  constructor() {
+    // console.log(this.fileUpload);
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngAfterViewInit() {
-   this.initialized.emit(this.fileUpload);
+    this.initialized.emit(this.fileUpload);
   }
-  
+
   ngOnChanges(simpleChanges: SimpleChanges) {
     // console.log(simpleChanges);
     this.fileUpload.setFileUploadData({
       options: simpleChanges.options && simpleChanges.options.currentValue,
       events: pick(this, this.fileUpload.eventNames)
     });
-
   }
-
 }

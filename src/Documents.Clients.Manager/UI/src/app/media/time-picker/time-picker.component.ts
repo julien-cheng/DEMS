@@ -9,7 +9,6 @@ import { FormControl, Validators } from '@angular/forms';
   styleUrls: ['./time-picker.component.scss']
 })
 export class TimePickerComponent {
-
   public hours: number;
   public minutes: number;
   public seconds: number;
@@ -24,7 +23,6 @@ export class TimePickerComponent {
   public minMinutes: number;
   public minSeconds: number;
   public minMillisecondsValidator: number;
-  
 
   private _maxMilliseconds: number;
   private _minMilliseconds: number;
@@ -36,9 +34,9 @@ export class TimePickerComponent {
 
   @Output() onTimeChanged = new EventEmitter<number>();
 
-  @Input() 
-  set maxMilliseconds(value: number){
-    let durationStart = moment.duration(value, 'milliseconds');
+  @Input()
+  set maxMilliseconds(value: number) {
+    const durationStart = moment.duration(value, 'milliseconds');
 
     this.maxHours = durationStart.hours();
     this.maxMinutes = durationStart.minutes();
@@ -47,29 +45,28 @@ export class TimePickerComponent {
 
     this._maxMilliseconds = value;
   }
-  get maxMilliseconds() : number{
+  get maxMilliseconds(): number {
     return this._maxMilliseconds;
   }
 
-  @Input() 
-  set minMilliseconds(value: number){
-    let durationStart = moment.duration(value, 'milliseconds');
+  @Input()
+  set minMilliseconds(value: number) {
+    const durationStart = moment.duration(value, 'milliseconds');
 
     this.minHours = durationStart.hours();
     this.minMinutes = durationStart.minutes();
     this.minSeconds = durationStart.seconds();
     this.minMillisecondsValidator = durationStart.milliseconds();
-    
 
     this._minMilliseconds = value;
   }
-  get minMilliseconds() : number{
+  get minMilliseconds(): number {
     return this._minMilliseconds;
   }
 
-  @Input() 
+  @Input()
   set inputTimeNumber(value: number) {
-    let durationStart = moment.duration(value, 'milliseconds')
+    const durationStart = moment.duration(value, 'milliseconds');
 
     this.hours = durationStart.hours();
     this.minutes = durationStart.minutes();
@@ -77,26 +74,32 @@ export class TimePickerComponent {
     this.milliseconds = durationStart.milliseconds();
   }
   get inputTimeNumber(): number {
-    let durationStart = moment.duration(+this.seconds, 'seconds');
-    durationStart.add(+this.minutes,'minutes');
-    durationStart.add(+this.hours,'hours');
+    const durationStart = moment.duration(+this.seconds, 'seconds');
+    durationStart.add(+this.minutes, 'minutes');
+    durationStart.add(+this.hours, 'hours');
     durationStart.add(+this.milliseconds, 'milliseconds');
     return durationStart.asMilliseconds();
   }
 
-  constructor() { }
+  constructor() {}
 
-  emitTimeChanged(){
-    if(this.isTimeControlValid()){
+  emitTimeChanged() {
+    if (this.isTimeControlValid()) {
       this.onTimeChanged.emit(this.inputTimeNumber);
     }
   }
 
-  isTimeControlValid(){
-    return this.hoursControl.valid && this.secondsControl.valid && this.minutesControl.valid && this.millisecondsControl.valid  && this.isTimeWithinBounds();
+  isTimeControlValid() {
+    return (
+      this.hoursControl.valid &&
+      this.secondsControl.valid &&
+      this.minutesControl.valid &&
+      this.millisecondsControl.valid &&
+      this.isTimeWithinBounds()
+    );
   }
 
-  isTimeWithinBounds(){
+  isTimeWithinBounds() {
     return this.inputTimeNumber >= this.minMilliseconds && this.inputTimeNumber <= this.maxMilliseconds;
   }
 }

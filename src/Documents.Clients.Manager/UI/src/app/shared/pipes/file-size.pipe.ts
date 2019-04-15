@@ -27,7 +27,7 @@ export class FileSizePipe implements PipeTransform {
       i = 0,
       prefix,
       suffix;
-    const unitsConfig = binary ? this.config.unitsBinary: this.config.units;
+    const unitsConfig = binary ? this.config.unitsBinary : this.config.units;
     while (unit) {
       unit = unitsConfig[i];
       prefix = unit.prefix || '';
@@ -39,5 +39,4 @@ export class FileSizePipe implements PipeTransform {
     }
     return null;
   }
-
 }

@@ -1,8 +1,42 @@
-import { Component, OnInit, Inject,ElementRef, ViewChild, ViewContainerRef, ComponentFactoryResolver, ComponentFactory, OnDestroy, ComponentRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Inject,
+  ElementRef,
+  ViewChild,
+  ViewContainerRef,
+  ComponentFactoryResolver,
+  ComponentFactory,
+  OnDestroy,
+  ComponentRef,
+  AfterContentChecked,
+  AfterViewInit
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ToastsManager } from 'ng2-toastr/ng2-toastr';
-import { LoadingService, BatchOperationService, FileService, ExplorerService, PathService, BatchResponse, BatchOperationsComponent } from '../index';
-import { JQ_TOKEN, IPathIdentifier, IFileIdentifier, IManager, IFile, ItemQueryType, IRequestBatchData, IAllowedOperation, IBatchResponse, FileSetTypes, IFileViewer,IMessaging } from '../index';
+import { ToastrService } from 'ngx-toastr';
+import {
+  LoadingService,
+  BatchOperationService,
+  FileService,
+  ExplorerService,
+  PathService,
+  BatchResponse,
+  BatchOperationsComponent
+} from '../index';
+import {
+  JQ_TOKEN,
+  IPathIdentifier,
+  IFileIdentifier,
+  IManager,
+  IFile,
+  ItemQueryType,
+  IRequestBatchData,
+  IAllowedOperation,
+  IBatchResponse,
+  FileSetTypes,
+  IFileViewer,
+  IMessaging
+} from '../index';
 import { PdfComponent } from './pdf/pdf.component';
 import { VideoBasicComponent } from '../../media/video-basic/video-basic.component';
 import { ImageComponent } from './image/image.component';
@@ -16,10 +50,13 @@ import { UnknownComponent } from './unknown/unknown.component';
   templateUrl: './manager-details.component.html',
   styleUrls: ['./manager-details.component.scss']
 })
-export class ManagerDetailsComponent implements OnInit, OnDestroy {
-  @ViewChild(BatchOperationsComponent) BatchOperationsComponent: BatchOperationsComponent;
-  @ViewChild('detailView', { read: ViewContainerRef }) detailViewParentContainer: ViewContainerRef;
-  @ViewChild('fullscreenContainer', { read: ViewContainerRef }) fullscreenContainer: ViewContainerRef;
+export class ManagerDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild(BatchOperationsComponent)
+  BatchOperationsComponent: BatchOperationsComponent;
+  @ViewChild('detailView', { read: ViewContainerRef })
+  detailViewParentContainer: ViewContainerRef;
+  @ViewChild('fullscreenContainer', { read: ViewContainerRef })
+  fullscreenContainer: ViewContainerRef;
   private detailViewComponentRef;
   public file: IFile;
   public rootFileIdentifier: IFileIdentifier; // Parent file uploaded
@@ -31,12 +68,12 @@ export class ManagerDetailsComponent implements OnInit, OnDestroy {
   public allowedOperations: IAllowedOperation[];
   public fileViews: IFileViewer[];
   public manager: IManager;
-  public previewVisible: boolean = false;
+  public previewVisible = false;
   // This is a helper method that will give me back keys for an object.  Attributes come back as a keyed object.
   public objectKeys = Object.keys;
   public message: IMessaging;
   constructor(
-    private toastr: ToastsManager,
+    private toastr: ToastrService,
     private router: Router,
     private route: ActivatedRoute,
     private fileService: FileService,
@@ -47,20 +84,19 @@ export class ManagerDetailsComponent implements OnInit, OnDestroy {
     public batchOperationService: BatchOperationService,
     public loadingService: LoadingService,
     @Inject(JQ_TOKEN) private $: any
-  ) { }
+  ) {}
 
   // TO DO: Need to get FolderKey and Parent PathKey on the file object... onload doesnt provide the pathKey properly
   ngOnInit() {
-    this.route.data.forEach((data) => {
-      let identifiers = this.route.snapshot.data['identifiers'];
+    this.route.data.forEach(data => {
+      const identifiers = this.route.snapshot.data.identifiers;
       this.fileIdentifier = identifiers.fileIdentifier;
       this.pathIdentifier = identifiers.pathIdentifier;
       this.viewerType = identifiers.viewerType;
       this.setFileObject();
-      
     });
   }
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     window.scroll(0, 0);
   }
 
@@ -70,71 +106,65 @@ export class ManagerDetailsComponent implements OnInit, OnDestroy {
       // Call the proper set and pass it to the detailviewType
       this.fileService.getFileMediaSet(this.fileIdentifier, this.viewerType).subscribe(
         (response: IBatchResponse) => {
-          this.fileSet = <FileSetTypes>response.response;
+          this.fileSet = response.response as FileSetTypes;
           this.allowedOperations = this.fileSet.allowedOperations;
           this.rootFileIdentifier = this.fileSet.rootFileIdentifier;
           this.fileViews = this.fileSet.views;
           this.message = this.fileSet.message;
-          
+
           // Call the Explorer on every page load - breadcrumbs won't have the information otherwise (proper view is not there in some cases - coming from search)
           this.getExplorer();
-
           if (this.rootFileIdentifier == null)
             this.viewerType = "offline";
 
-          !!this.viewerType && this.loadComponent(this.viewerType);
-        },
-        (error) => {
-          console.error(error);
+          if (!!this.viewerType) {
+            this.loadComponent(this.viewerType);
+          }
         },
         () => {
           this.loadingService.setLoading(false);
         }
-      )
+      );
     }
   }
 
   IsGPSCoordinate(value) {
-    if (value != null && value as string == "GPS Coordinates") {
+    if (value != null && (value as string) === 'GPS Coordinates') {
       return true;
-    }      
+    }
 
-    return false
+    return false;
   }
 
   setFileName() {
     this.file = this.fileService.getFileFromViews(this.manager.views, this.rootFileIdentifier);
-    this.fileName = !!this.fileSet.name ? this.fileSet.name :
-      !!this.file ? this.file.name : '';
+    this.fileName = !!this.fileSet.name ? this.fileSet.name : !!this.file ? this.file.name : '';
   }
 
   // Description: updates explorer and main page
   getExplorer(): void {
-    const _self = this;
+    const self = this;
     if (!!this.pathIdentifier) {
       this.pathService.getPathPage(this.pathIdentifier).subscribe(
-        (response) => {
-          _self.manager = <IManager>response.response;
-          (_self.manager !== undefined) &&
-            (_self.explorerService.setCurrentExplorer(_self.manager, _self.pathIdentifier));
-          _self.setFileName();
+        response => {
+          self.manager = response.response as IManager;
+          if (self.manager !== undefined) {
+            self.explorerService.setCurrentExplorer(self.manager, self.pathIdentifier);
+          }
+          self.setFileName();
         },
-        (error) => {
+        error => {
           throw new Error('Manager is undefined - redirect to error');
-        });
+        }
+      );
     } else {
-      console.error('Manager\'s required Keys are undefined - redirect to error');
+      console.error("Manager's required Keys are undefined - redirect to error");
     }
   }
 
   toggleFullscreen() {
-    let doc = document as any;
-    if (
-      doc.fullscreenElement ||
-      doc.webkitFullscreenElement ||
-      doc.mozFullScreenElement ||
-      doc.msFullscreenElement
-    ) {
+    const doc = document as any;
+    if (doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement) {
       if (doc.exitFullscreen) {
         doc.exitFullscreen();
       } else if (doc.mozCancelFullScreen) {
@@ -145,7 +175,7 @@ export class ManagerDetailsComponent implements OnInit, OnDestroy {
         doc.msExitFullscreen();
       }
     } else {
-      let element = this.fullscreenContainer.element.nativeElement as any;
+      const element = this.fullscreenContainer.element.nativeElement as any;
       if (element.requestFullscreen) {
         element.requestFullscreen();
       } else if (element.mozRequestFullScreen) {
@@ -165,7 +195,9 @@ export class ManagerDetailsComponent implements OnInit, OnDestroy {
   loadComponent(viewerType: string) {
     // console.log('loadComponent: ' + detailViewType);
     // Clear template for new rendering if full - temporary for development
-    (this.detailViewParentContainer && this.detailViewParentContainer.length > 0) && this.detailViewParentContainer.clear();
+    if (this.detailViewParentContainer && this.detailViewParentContainer.length > 0) {
+      this.detailViewParentContainer.clear();
+    }
     // Render the correct Component dynamically ***** Working on this - more types and defaults
     // Here is where I need to call the /api/views/documentset ..
     let factory;
@@ -197,14 +229,15 @@ export class ManagerDetailsComponent implements OnInit, OnDestroy {
         break;
     }
 
-    // This will create an instance of the component inside the parent container.  We're saving 
-    // a reference to this child component so we can change properties on it, destroy it when needed, and call change detection. 
+    // This will create an instance of the component inside the parent container.  We're saving
+    // a reference to this child component so we can change properties on it, destroy it when needed, and call change detection.
     this.detailViewComponentRef = this.detailViewParentContainer.createComponent(factory);
 
     // Pass the child component the file
     if (!!this.detailViewComponentRef) {
-      (viewerType === 'video') ? (this.detailViewComponentRef.instance.mediaSet = this.fileSet) :
-        (this.detailViewComponentRef.instance.fileSet = this.fileSet);
+      viewerType === 'video'
+        ? (this.detailViewComponentRef.instance.mediaSet = this.fileSet)
+        : (this.detailViewComponentRef.instance.fileSet = this.fileSet);
       this.detailViewComponentRef.instance.viewerType = this.viewerType;
       // You have to run a change detection cycle after creating the component, and then changing values on it.  Specifically the file url property. Otherwise you will get a Error: ExpressionChangedAfterItHasBeenCheckedError:
       this.detailViewComponentRef.changeDetectorRef.detectChanges();
@@ -219,7 +252,6 @@ export class ManagerDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-
   // ----------------------------------------------------------------
   // Batch Operations component:
   // ----------------------------------------------------------------
@@ -227,12 +259,15 @@ export class ManagerDetailsComponent implements OnInit, OnDestroy {
     return this.BatchOperationsComponent.processBatchUiAction($event);
   }
 
-  // updateView Output call: 
+  // updateView Output call:
   public updateView(arg?: any) {
     this.loadingService.setLoading(false);
-    const successMessage = (!!arg && !!arg.hasOwnProperty('successMessage')) ? arg.successMessage : null;
-    !!successMessage && this.BatchOperationsComponent.postMessage(successMessage, 'success');
-    (this.batchOperationService.batchRequest.requestType === 'DeleteRequest') &&
+    const successMessage = !!arg && !!arg.hasOwnProperty('successMessage') ? arg.successMessage : null;
+    if (!!successMessage) {
+      this.BatchOperationsComponent.postMessage(successMessage, 'success');
+    }
+    if (this.batchOperationService.batchRequest.requestType === 'DeleteRequest') {
       this.router.navigate(['/manager', this.pathIdentifier.organizationKey, this.pathIdentifier.folderKey, this.pathIdentifier.pathKey]);
+    }
   }
 }

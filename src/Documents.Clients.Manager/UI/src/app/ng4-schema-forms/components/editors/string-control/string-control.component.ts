@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { FormGroup }  from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Schema, IStringSchema, ValueType, Validation } from '../../../index';
 import { BaseControl } from '../../../models/base-control.model';
 // import { FocusDirective } from '../../../directives/focus.directive';
@@ -18,27 +18,26 @@ export class StringControlComponent implements OnInit {
   public stringControlType: string;
   public schema: IStringSchema;
   value?: ValueType;
-  
+
   get isInvalid() {
     // Return: the state of the ng form control and basecontrol validator
-    let isInvalid = !this.formControlValidator.isValid || this.ngFormControl.invalid,
-        ngformstatus =(this.ngFormControl.dirty || this.ngFormControl.touched || this.ngFormControl.value)
+    const isInvalid = !this.formControlValidator.isValid || this.ngFormControl.invalid,
+      ngformstatus = this.ngFormControl.dirty || this.ngFormControl.touched || this.ngFormControl.value;
     return isInvalid && ngformstatus;
   }
-  get ngFormControl(){
+  get ngFormControl() {
     return this.form.controls[this.formControlObj.key];
   }
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
-    this.schema = <IStringSchema>this.formControlObj.schema;
+    this.schema = this.formControlObj.schema as IStringSchema;
     this.value = this.formControlObj.value; // this.value = this.getDefaultValue(this.schema);
     this._setStringControlType();
   }
 
-  isDisabled(){
+  isDisabled() {
     return this.isReadOnly;
   }
 
@@ -47,8 +46,8 @@ export class StringControlComponent implements OnInit {
   // FormControlType: textarea, select or input
   // HTML5 Types (html5Format):  color, date,  datetime, datetime-local, email, month, number, range, tel, text, textarea, time, url, week
   private _setStringControlType(): string {
-    return this.stringControlType = (this.schema.format === 'textarea') ? 'textarea' :
-      (this.schema.enum !== undefined && !this.isReadOnly) ? 'select' : 'input';
+    return (this.stringControlType =
+      this.schema.format === 'textarea' ? 'textarea' : this.schema.enum !== undefined && !this.isReadOnly ? 'select' : 'input');
   }
 
   // Description: is control readonly and disabled
@@ -59,9 +58,8 @@ export class StringControlComponent implements OnInit {
   // Description: Trigger change events for validation and other...
   onChange(e: { target: { value: string } }) {
     this.value = e.target.value;
-   //  console.log( '4. ##### String onChange',  this.value );
-   // console.log(this.isValid);
+    //  console.log( '4. ##### String onChange',  this.value );
+    // console.log(this.isValid);
     this.updateValue.emit({ value: this.value });
   }
-
 }

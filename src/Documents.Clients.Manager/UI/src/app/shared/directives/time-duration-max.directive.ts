@@ -3,7 +3,13 @@ import { AbstractControl, FormControl, Validators, Validator, ValidatorFn, Valid
 
 @Directive({
   selector: '[durationMax][ngModel]',
-  providers: [{ provide: NG_VALIDATORS, useExisting: TimeDurationMaxDirective, multi: true }]
+  providers: [
+    {
+      provide: NG_VALIDATORS,
+      useExisting: TimeDurationMaxDirective,
+      multi: true
+    }
+  ]
 })
 export class TimeDurationMaxDirective {
   @Input('durationMax') max: number;
@@ -16,12 +22,11 @@ export class TimeDurationMaxDirective {
   }
 
   timeDurationMaxValidator(): ValidatorFn {
- 
     // Need proper test for validation in the MM:SS format
     return (c: FormControl) => {
-      let max = this.max;
-      let isValid = (!!max && !isNaN(max) && !isNaN(c.value)) && (c.value <= this.max);
-     // console.log(isValid,max, c.value);
+      const max = this.max;
+      const isValid = !!max && !isNaN(max) && !isNaN(c.value) && c.value <= this.max;
+      // console.log(isValid,max, c.value);
       if (isValid) {
         return null;
       } else {
@@ -31,6 +36,6 @@ export class TimeDurationMaxDirective {
           }
         };
       }
-    }
+    };
   }
 }

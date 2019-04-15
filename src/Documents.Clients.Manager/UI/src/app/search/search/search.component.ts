@@ -1,6 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IOrganizationIdentifier, IFolderIdentifier, IPathIdentifier, SearchService, IPagination, LoadingService, SearchFormComponent, ISearch, IFacetGroup, IFacet, ISearchRequest, ISearchPagination, ISearchFilter } from '../index';
+import {
+  IOrganizationIdentifier,
+  IFolderIdentifier,
+  IPathIdentifier,
+  SearchService,
+  IPagination,
+  LoadingService,
+  SearchFormComponent,
+  ISearch,
+  IFacetGroup,
+  IFacet,
+  ISearchRequest,
+  ISearchPagination,
+  ISearchFilter
+} from '../index';
 import * as _ from 'lodash';
 const { isEqual } = _;
 
@@ -14,7 +28,7 @@ export class SearchComponent implements OnInit {
   public folderIdentifier: IFolderIdentifier;
   public pathIdentifier: IPathIdentifier;
   public keyword: string;
-  public isReturnLinkDisabled: boolean = false;
+  public isReturnLinkDisabled = false;
   public searchResult: ISearch;
   public facetGroups: IFacetGroup[];
   public filters: Array<any> = [];
@@ -40,28 +54,27 @@ export class SearchComponent implements OnInit {
     private route: ActivatedRoute,
     private searchService: SearchService,
     public loadingService: LoadingService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.loadingService.setLoading(false);
-    this.route.data.forEach((data) => {
-      this.setIdentifiers(this.route.snapshot.data['searchData']);
-      //this.keyword = this.route.snapshot.data['searchData'].keyword;
+    this.route.data.forEach(data => {
+      this.setIdentifiers(this.route.snapshot.data.searchData);
+      // this.keyword = this.route.snapshot.data['searchData'].keyword;
       this.pageFilterSubs = this.route.queryParams.subscribe(params => {
         this.pageFiltersParams = params;
         !!this.pageFiltersParams.disableReturn ? this.setReturnLink(this.pageFiltersParams.disableReturn) : this.setReturnLink(false);
-        this.buildSearchRequest(this.route.snapshot.data['searchData'], this.pageFiltersParams);
+        this.buildSearchRequest(this.route.snapshot.data.searchData, this.pageFiltersParams);
         return this.getSearchResults();
       });
     });
-
   }
 
   private setIdentifiers(searchData) {
     this.pathIdentifier = {
       organizationKey: searchData.organizationKey,
       folderKey: searchData.folderKey,
-      pathKey: searchData.pathKey,
+      pathKey: searchData.pathKey
     };
 
     this.folderIdentifier = {
@@ -72,13 +85,13 @@ export class SearchComponent implements OnInit {
     this.baseURL = '/search/' + searchData.organizationKey;
     !!searchData.folderKey && (this.baseURL += '/' + searchData.folderKey);
     !!searchData.pathKey && (this.baseURL += '/' + searchData.pathKey);
-    //!!searchData.keyword && (this.baseURL += '/' + searchData.keyword);
+    // !!searchData.keyword && (this.baseURL += '/' + searchData.keyword);
   }
 
   // Description: set Return Link - disable if disableReturn = true
   private setReturnLink(isReturnLinkDisabled: any) {
-    this.isReturnLinkDisabled = JSON.parse(isReturnLinkDisabled) || false; // Cast QS string to bool using  JSON.parse or default to false 
-    if(!this.isReturnLinkDisabled){
+    this.isReturnLinkDisabled = JSON.parse(isReturnLinkDisabled) || false; // Cast QS string to bool using  JSON.parse or default to false
+    if (!this.isReturnLinkDisabled) {
       if (!!this.pathIdentifier.folderKey) {
         this.returnLink = ['/manager/'];
         !!this.pathIdentifier.organizationKey && this.returnLink.push(this.pathIdentifier.organizationKey);
@@ -100,9 +113,9 @@ export class SearchComponent implements OnInit {
     };
     this.keyword = queryParams.keyword;
 
-    //Fix pagination
+    // Fix pagination
     this.pagination.pageIndex = !!queryParams.pageIndex ? queryParams.pageIndex : 0;
-    this.pagination.pageSize = !!queryParams.pageSize ? this.pagination.pageSize = queryParams.pageSize : 10;
+    this.pagination.pageSize = !!queryParams.pageSize ? (this.pagination.pageSize = queryParams.pageSize) : 10;
 
     if (!!filterObject.organizationKey) {
       this.searchRequest = {
@@ -112,25 +125,24 @@ export class SearchComponent implements OnInit {
         disableReturn: this.isReturnLinkDisabled
       };
       this.activeFilters = this.searchRequest.filters;
-    }
-    else {
+    } else {
       console.error('Cant get organizationKey');
       this.router.navigate(['/Error']);
     }
   }
 
-
   // Description: get search results
   private getSearchResults(): void {
-    const _self = this;
+    const self = this;
     this.loadingService.setLoading(true);
     this.searchService.getSearchResults(this.searchRequest).subscribe(
-      (response) => {  // get the result object
+      response => {
+        // get the result object
         this.searchResult = response.response;
         this.facetGroups = this.searchResult.facets;
         this.pageSize = this.searchResult.rows.length;
       },
-      (error) => {
+      error => {
         console.error(error);
       },
       () => {
@@ -139,22 +151,29 @@ export class SearchComponent implements OnInit {
     );
   }
 
-
   public removeActiveFilter(filter: ISearchFilter) {
     if (filter.name === 'pathKey') {
-      this.router.navigate(['/search', this.folderIdentifier.organizationKey, this.folderIdentifier.folderKey], {queryParams:{keyword: this.keyword, disableReturn: this.searchRequest.disableReturn}});
-    } else {
-      let filters = this.searchRequest.filters.slice();
-      filters.forEach((f, i) => {
-        _.isEqual(filter, f) && (filters.splice(i, 1))
+      this.router.navigate(['/search', this.folderIdentifier.organizationKey, this.folderIdentifier.folderKey], {
+        queryParams: {
+          keyword: this.keyword,
+          disableReturn: this.searchRequest.disableReturn
+        }
       });
-      let newQS = Object.assign({}, this.searchService.encodeAdditionalFilterObject(filters).additionalFilters,{keyword: this.keyword, disableReturn: this.searchRequest.disableReturn});
+    } else {
+      const filters = this.searchRequest.filters.slice();
+      filters.forEach((f, i) => {
+        _.isEqual(filter, f) && filters.splice(i, 1);
+      });
+      const newQS = Object.assign({}, this.searchService.encodeAdditionalFilterObject(filters).additionalFilters, {
+        keyword: this.keyword,
+        disableReturn: this.searchRequest.disableReturn
+      });
       this.router.navigate([this.baseURL], { queryParams: newQS });
     }
   }
 
   // Description: refresh result set with same keyword
   public refreshResults(event: any) {
-    this.getSearchResults();  // Right now is only refreshing the current page including the filters
+    this.getSearchResults(); // Right now is only refreshing the current page including the filters
   }
 }

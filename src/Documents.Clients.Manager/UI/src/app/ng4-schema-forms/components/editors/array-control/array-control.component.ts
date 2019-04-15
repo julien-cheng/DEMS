@@ -20,43 +20,43 @@ export class ArrayControlComponent implements OnInit {
   public mainFormControl: BaseControl[];
   value?: ValueType;
   errorMessage: string;
-  collapsed?: boolean = false;
+  collapsed = false;
   get isInvalid() {
     // Return: the state of the ng form control and basecontrol validator
     // let isInvalid = !this.formControlValidator.status.isValid || this.ngFormControl.invalid,
-    let isInvalid = !this.formControlValidator.isValid || this.ngFormControl.invalid,
-        ngformstatus =(this.ngFormControl.dirty || this.ngFormControl.touched || this.ngFormControl.value);
+    const isInvalid = !this.formControlValidator.isValid || this.ngFormControl.invalid,
+      ngformstatus = this.ngFormControl.dirty || this.ngFormControl.touched || this.ngFormControl.value;
     return isInvalid && ngformstatus;
   }
-  get ngFormControl(){
+  get ngFormControl() {
     return this.form.controls[this.formControlObj.key];
   }
 
-  constructor(public schemaForm: SchemaForm) { }
+  constructor(public schemaForm: SchemaForm) {}
 
   // The controlTemplate comes this.schema.items - namely the type of editor that will be repeated per default value
   // default: ['default item 1', 'default item 2'] - the initial values for the editor controls and how many are needed on init
   ngOnInit() {
     this.nestedForm = new FormGroup({});
-    this.schema = <IArraySchema>this.formControlObj.schema;
+    this.schema = this.formControlObj.schema as IArraySchema;
     this.value = this.formControlObj.value; // this.getDefaultValue(this.schema);// this.schema.default; - NEEDS TO FIX THIS TO PASS [{'key':val}] to build the rest of the editor
-    this.collapsed = (typeof (this.schema.collapsed) === 'boolean') ? this.schema.collapsed : false;
+    this.collapsed = typeof this.schema.collapsed === 'boolean' ? this.schema.collapsed : false;
     this.mainFormControl = this.schemaForm.getFormBaseControlProperties(this._buildProperties());
     this.nestedForm = this.schemaForm.toFormGroup(this.mainFormControl);
   }
 
   // Description: build control array from value
   private _buildProperties() {
-    const _self = this;
-    let props = Object.assign({}, this.schema);
-    props['properties'] = {};
+    const self = this;
+    const props = Object.assign({}, this.schema);
+    props.properties = {};
     let i = 0;
     if (Array.isArray(this.value)) {
-      this.value.forEach((defaultVal) => {
-        props.properties[this.formControlObj.key + '_' + i] = _self.setNestedFormInformation(defaultVal, i);
+      this.value.forEach(defaultVal => {
+        props.properties[this.formControlObj.key + '_' + i] = self.setNestedFormInformation(defaultVal, i);
         i++;
       });
-    };
+    }
     // console.log(props);
     return props;
   }
@@ -64,9 +64,11 @@ export class ArrayControlComponent implements OnInit {
   // Description: build individual control schema - array from schema.items (template)
   private setNestedFormInformation(defaultVal: any, index: number): Schema {
     // console.log(defaultVal);
-    let property = Object.assign({}, this.schema.items);
-    property['default'] = defaultVal;
-    (!this.schema.items.title) && (property['title'] = '');       // can be empty or add the main schema title
+    const property = Object.assign({}, this.schema.items);
+    property.default = defaultVal;
+    if (!this.schema.items.title) {
+      property.title = '';
+    } // can be empty or add the main schema title
     // console.log(property);
     return property;
   }
@@ -74,7 +76,7 @@ export class ArrayControlComponent implements OnInit {
   // Description: Add Editor Row
   onAddRow($event: any) {
     // console.log('|-----> Before: ', this.value, this.mainFormControl);
-    let newIndex = this.mainFormControl.length,
+    const newIndex = this.mainFormControl.length,
       newKey = this.formControlObj.key + '_' + newIndex,
       newVal = this.formControlObj.createNewEmptyValuebyDataType(this.schema.items.type),
       prop = this.setNestedFormInformation(newVal, newIndex), // prop = { index: newIndex, key: this.schema.title, value: Object.assign({}, this.schema.items) };
@@ -90,7 +92,7 @@ export class ArrayControlComponent implements OnInit {
   // Description: Delete Editor Row
   onDelete(index: number) {
     // console.log('Before: ', index, this.mainFormControl);
-    (Array.isArray(this.value) && this.value.length) && this.value.splice(index, 1);
+    Array.isArray(this.value) && this.value.length && this.value.splice(index, 1);
     this.mainFormControl.splice(index, 1);
     // console.log('After: ', this.value, this.controlsArray);
     // Recalculate index !!!!!

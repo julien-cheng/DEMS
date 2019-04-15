@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { IframeResizerService } from '../../services/iframe-resizer.service';
 
 @Component({
@@ -6,21 +6,26 @@ import { IframeResizerService } from '../../services/iframe-resizer.service';
   // templateUrl: './loading.component.html',
   template: `
     <div class="global-progress progress" *ngIf="loading">
-      <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="75" aria-valuemin="0"
-        aria-valuemax="100" style="width: 100%"></div>
+      <div
+        class="progress-bar progress-bar-striped progress-bar-animated bg-info"
+        role="progressbar"
+        aria-valuenow="75"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        style="width: 100%"
+      ></div>
     </div>
   `,
   styleUrls: ['./loading.component.scss']
 })
-export class LoadingComponent implements OnInit {
+export class LoadingComponent implements OnInit, OnChanges {
   @Input() loading: boolean;
-  constructor(private iframeResizerService: IframeResizerService) { }
+  constructor(private iframeResizerService: IframeResizerService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnChanges() {
-     let msg = this.loading ? 'isLoading' : 'loadingCompleted';
-     this.iframeResizerService.sendParentMessage(msg);
+    const msg = this.loading ? 'isLoading' : 'loadingCompleted';
+    this.iframeResizerService.sendParentMessage(msg);
   }
 }

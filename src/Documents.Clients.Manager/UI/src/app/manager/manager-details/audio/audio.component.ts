@@ -15,25 +15,23 @@ export class AudioComponent implements OnInit {
   public saferesourceURL: SafeResourceUrl;
   public containerInnerHeight: number;
   public sources: Array<any> = [];
-  
-  
-  constructor(
-    private fileService: FileService,
-    private sanitizer: DomSanitizer
-  ) { }
+
+  constructor(private fileService: FileService, private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
-    if(!!this.fileSet.sources && this.fileSet.sources.length>0){
+    if (!!this.fileSet.sources && this.fileSet.sources.length > 0) {
       this.buildVideoSources(this.fileSet.sources);
-    }else{
-      console.error("there was a problem with the file response sources");
+    } else {
+      console.error('there was a problem with the file response sources');
     }
   }
 
   // Description: Build the video sources array
   buildVideoSources(sources: IMediaSource[]) {
-    sources.forEach((source) => {
-      let fileUrl = `/api/file/contents?fileidentifier.organizationKey=${source.fileIdentifier.organizationKey}&fileidentifier.folderKey=${source.fileIdentifier.folderKey}&fileidentifier.fileKey=${source.fileIdentifier.fileKey}&open=true`,
+    sources.forEach(source => {
+      const fileUrl = `/api/file/contents?fileidentifier.organizationKey=${
+          source.fileIdentifier.organizationKey
+        }&fileidentifier.folderKey=${source.fileIdentifier.folderKey}&fileidentifier.fileKey=${source.fileIdentifier.fileKey}&open=true`,
         obj = Object.assign(source, {
           fileUrl: this.saferesourceURL = this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl)
         });
@@ -41,14 +39,12 @@ export class AudioComponent implements OnInit {
     });
   }
 
-
   // initPlayer() {
   //   let player = (<any>$('#player')).mediaelementplayer({
   //     pluginPath: 'mediaelement/build/',// Do not forget to put a final slash (/)
   //     shimScriptAccess: 'always',
   //     // stretching: 'responsive',
   //     success: function (mediaElement, originalNode, instance) { }
-  //   }); 
+  //   });
   // }
-  
 }

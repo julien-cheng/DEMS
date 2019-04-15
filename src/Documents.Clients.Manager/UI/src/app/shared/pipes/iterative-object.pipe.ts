@@ -4,17 +4,14 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'iterativeObject'
 })
 export class IterativeObjectPipe implements PipeTransform {
-
   transform(value): any {
-    let keys = [];
+    const keys = [];
 
-      // tslint:disable-next-line:forin
-      for (let key in value) {
-        keys.push({key: key, value: value[key]});
-      }
-
+    // tslint:disable-next-line:forin
+    for (const key in value) {
+      keys.push({ key, value: value[key] });
+    }
 
     return keys;
   }
-
 }

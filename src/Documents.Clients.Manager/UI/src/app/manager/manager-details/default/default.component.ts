@@ -14,12 +14,16 @@ export class DefaultComponent implements OnInit {
   public fileUrl: string;
   public saferesourceURL: SafeResourceUrl;
 
-  constructor(private sanitizer: DomSanitizer) {
-  }
+  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
-    this.fileIdentifier = (!!(<ITextSet>this.fileSet).fileIdentifier && this.viewerType === 'text') ? (<ITextSet>this.fileSet).fileIdentifier : this.fileSet.rootFileIdentifier;
-    this.fileUrl = `/api/file/contents?fileidentifier.organizationKey=${this.fileIdentifier.organizationKey}&fileidentifier.folderKey=${this.fileIdentifier.folderKey}&fileidentifier.fileKey=${this.fileIdentifier.fileKey}&open=true`;
+    this.fileIdentifier =
+      !!(this.fileSet as ITextSet).fileIdentifier && this.viewerType === 'text'
+        ? (this.fileSet as ITextSet).fileIdentifier
+        : this.fileSet.rootFileIdentifier;
+    this.fileUrl = `/api/file/contents?fileidentifier.organizationKey=${this.fileIdentifier.organizationKey}&fileidentifier.folderKey=${
+      this.fileIdentifier.folderKey
+    }&fileidentifier.fileKey=${this.fileIdentifier.fileKey}&open=true`;
     this.saferesourceURL = this.sanitizer.bypassSecurityTrustResourceUrl(this.fileUrl);
   }
 }

@@ -5,7 +5,7 @@ import { AbstractControl, FormControl, Validators, Validator, ValidatorFn, NG_VA
   providers: [{ provide: NG_VALIDATORS, useExisting: TimeRangeMinDirective, multi: true }]
 })
 export class TimeRangeMinDirective {
-  @Input('TimeRangeMinimum') rangeMin: number = 1000;
+  @Input('TimeRangeMinimum') rangeMin = 1000;
   validator: ValidatorFn;
   constructor() {
     this.validator = this.timeRangeMinvalidator();
@@ -15,15 +15,16 @@ export class TimeRangeMinDirective {
   }
   // Description: Validate for minimum range value of 1000 ms ***** can be converted to pass dynamically in rangeMin [TimeRangeMinimumRange]="number"
   timeRangeMinvalidator(): ValidatorFn {
-    let rangeMin = this.rangeMin;
-    return (group) => {
-     // console.log(group.value);
-     let isValid = (!isNaN(group.value.startTime) && !isNaN(group.value.endTime)) && ((group.value.endTime - group.value.startTime) >= rangeMin);
-     let isStartSmaller=  (!isNaN(group.value.startTime) && !isNaN(group.value.endTime)) && (group.value.endTime >= group.value.startTime);
+    const rangeMin = this.rangeMin;
+    return group => {
+      // console.log(group.value);
+      const isValid =
+        !isNaN(group.value.startTime) && !isNaN(group.value.endTime) && group.value.endTime - group.value.startTime >= rangeMin;
+      const isStartSmaller = !isNaN(group.value.startTime) && !isNaN(group.value.endTime) && group.value.endTime >= group.value.startTime;
       if (isValid) {
         return null;
       } else {
-        let obj= {
+        const obj = {
           timeRangeMinvalidator: {
             valid: false
           },
@@ -31,9 +32,9 @@ export class TimeRangeMinDirective {
             valid: isStartSmaller
           }
         };
-        
+
         return obj;
       }
-    }
+    };
   }
 }

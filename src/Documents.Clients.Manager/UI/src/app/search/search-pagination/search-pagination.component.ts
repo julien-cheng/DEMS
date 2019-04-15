@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { ISearchPagination, IPageLink, IPathIdentifier, ISearchRequest, SearchService } from '..';
 
 @Component({
@@ -6,7 +6,7 @@ import { ISearchPagination, IPageLink, IPathIdentifier, ISearchRequest, SearchSe
   templateUrl: './search-pagination.component.html',
   styleUrls: ['./search-pagination.component.scss']
 })
-export class SearchPaginationComponent implements OnInit {
+export class SearchPaginationComponent implements OnInit, OnChanges {
   // @Input() pagination: ISearchPagination;
   @Input() searchRequest: ISearchRequest;
   @Input() totalRecords: number;
@@ -17,25 +17,24 @@ export class SearchPaginationComponent implements OnInit {
   public nextParams: {};
 
   // Hold pagination information:
-  public pagerSize: number = 5;
+  public pagerSize = 5;
   public pageIndex: number;
   public pageNumber: number; // pagination.pageIndex
   public pageSize: number; // pagination.pageSize
   public totalPages: number; // pagination.pageCount
   public pagerObj: IPageLink[];
-  constructor(public searchService: SearchService) { }
+  constructor(public searchService: SearchService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-      this.presetParams =this.searchService.encodeAdditionalFilterObject(this.searchRequest.filters);
-      this.pagination = this.searchRequest.paging;
-      this.pageNumber = Number(this.pagination.pageIndex) + 1;
-      this.pageSize = Number(this.pagination.pageSize);
-      this.pageIndex = this.pagination.pageIndex;
-      this.totalPages = this._getTotalPages();//this.pagination.pageCount;
-      this.pagerObj = this.buildPagerObj();
+    this.presetParams = this.searchService.encodeAdditionalFilterObject(this.searchRequest.filters);
+    this.pagination = this.searchRequest.paging;
+    this.pageNumber = Number(this.pagination.pageIndex) + 1;
+    this.pageSize = Number(this.pagination.pageSize);
+    this.pageIndex = this.pagination.pageIndex;
+    this.totalPages = this._getTotalPages(); // this.pagination.pageCount;
+    this.pagerObj = this.buildPagerObj();
   }
 
   private _getTotalPages() {
@@ -44,34 +43,45 @@ export class SearchPaginationComponent implements OnInit {
 
   // Description: Build the pager array to loop through
   buildPagerObj(): IPageLink[] {
-    // console.log(this.searchRequest, this.pagination, this.presetParams.additionalFilters);  
-    let newQS =Object.assign({}, this.presetParams.additionalFilters, {keyword: this.searchRequest.keyword, disableReturn: this.searchRequest.disableReturn}),
-        pageLinkArr: IPageLink[] = [];
-    const d = (this.pageNumber % 5),
+    // console.log(this.searchRequest, this.pagination, this.presetParams.additionalFilters);
+    const newQS = Object.assign({}, this.presetParams.additionalFilters, {
+        keyword: this.searchRequest.keyword,
+        disableReturn: this.searchRequest.disableReturn
+      }),
+      pageLinkArr: IPageLink[] = [];
+    const d = this.pageNumber % 5,
       diff = d > 0 ? 5 - d : 0;
     let max = this.pageNumber + diff;
-    let min = max - 4;
-    (max > this.totalPages) && (max = this.totalPages);
+    const min = max - 4;
+    max > this.totalPages && (max = this.totalPages);
 
     for (let i = min; i <= max; i++) {
       const pagelink: IPageLink = {
         pageNumber: i,
         pagerUrl: this.baseURL,
-        params: Object.assign({}, newQS, { pageSize: this.pageSize, pageIndex: (i - 1) }),
-        linkClass: (i === this.pageNumber ? 'active' : '')
+        params: Object.assign({}, newQS, {
+          pageSize: this.pageSize,
+          pageIndex: i - 1
+        }),
+        linkClass: i === this.pageNumber ? 'active' : ''
       };
       pageLinkArr.push(pagelink);
     }
 
-    this.prevParams = Object.assign({}, newQS, { pageSize: this.pageSize, pageIndex: (this.pageIndex - 1) });//{ pageSize: this.pageSize, pageIndex: (this.pageIndex - 1) };
-    this.nextParams = Object.assign({}, newQS, { pageSize: this.pageSize, pageIndex: this.pageNumber }); //{ pageSize: this.pageSize, pageIndex: this.pageNumber };
+    this.prevParams = Object.assign({}, newQS, {
+      pageSize: this.pageSize,
+      pageIndex: this.pageIndex - 1
+    }); // { pageSize: this.pageSize, pageIndex: (this.pageIndex - 1) };
+    this.nextParams = Object.assign({}, newQS, {
+      pageSize: this.pageSize,
+      pageIndex: this.pageNumber
+    }); // { pageSize: this.pageSize, pageIndex: this.pageNumber };
     return pageLinkArr;
   }
 
   // Description: Display pagination? check if pagination is not undefined
   isPaginationVisible() {
-    return (this.pagination && this.totalPages > 1); // change to 1 (do not show pager when there is only 1 page)
+    return this.pagination && this.totalPages > 1; // change to 1 (do not show pager when there is only 1 page)
     // return true;
   }
-
 }

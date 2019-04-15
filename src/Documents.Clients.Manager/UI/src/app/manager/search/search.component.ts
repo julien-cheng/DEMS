@@ -1,13 +1,24 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IFolderIdentifier, IPathIdentifier, IManager, ExplorerService, SearchService, PathService, IPagination, LoadingService, SearchFormComponent, ISearch } from '../index';
+import {
+  IFolderIdentifier,
+  IPathIdentifier,
+  IManager,
+  ExplorerService,
+  SearchService,
+  PathService,
+  IPagination,
+  LoadingService,
+  SearchFormComponent,
+  ISearch
+} from '../index';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   @ViewChild(SearchFormComponent)
   private searchFormComponent: SearchFormComponent;
   private manager: IManager;
@@ -28,31 +39,33 @@ export class SearchComponent implements OnInit {
     private searchService: SearchService,
     public explorerService: ExplorerService,
     public loadingService: LoadingService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
-    this.route.data.forEach((data) => {
-      this.pathIdentifier = this.route.snapshot.data['pathIdentifier'];
+    this.route.data.forEach(data => {
+      this.pathIdentifier = this.route.snapshot.data.pathIdentifier;
       this.folderIdentifier = {
         organizationKey: this.pathIdentifier.organizationKey,
         folderKey: this.pathIdentifier.folderKey
       };
-      this.searchQuery = this.route.snapshot.params['query'];
+      this.searchQuery = this.route.snapshot.params.query;
 
-      (!this.explorerService.fileExplorer.currentExplorer) && this.getExplorer();
+      if (!this.explorerService.fileExplorer.currentExplorer) {
+        this.getExplorer();
+      }
 
-      (!!this.searchQuery) && (this.pageFilterSubs = this.route.queryParams.subscribe(params => {
-        this.pageFiltersParams = params;
-        return this.getSearchResults();
-      }));
+      if (!!this.searchQuery) {
+        this.pageFilterSubs = this.route.queryParams.subscribe(params => {
+          this.pageFiltersParams = params;
+          return this.getSearchResults();
+        });
+      }
     });
   }
-  
+
   // Description: get search results
   private getSearchResults(): void {
-
-    const _self = this;
+    const self = this;
     // this.searchService.getSearchResults(this.searchQuery, this.folderIdentifier, this.pageFiltersParams).subscribe(
     //   (response) => {  // get the result object
     //     this.searchResult = response.response;
@@ -68,30 +81,29 @@ export class SearchComponent implements OnInit {
     // );
   }
 
-
   // Description: updates explorer and main page
   getExplorer(): void {
-    const _self = this;
+    const self = this;
     if (!!this.pathIdentifier) {
-
       // Needs to be reworked with new Identifiers
       this.pathService.getPathPage(this.pathIdentifier).subscribe(
-        (response) => {
-          _self.manager = <IManager>response.response;
-          (_self.manager !== undefined) &&
-            (this.explorerService.setCurrentExplorer(this.manager, this.pathIdentifier));
+        response => {
+          self.manager = response.response as IManager;
+          if (self.manager !== undefined) {
+            this.explorerService.setCurrentExplorer(this.manager, this.pathIdentifier);
+          }
         },
-        (error) => {
+        error => {
           throw new Error('Manager is undefined - redirect to error');
-        });
+        }
+      );
     } else {
-      console.error('Manager\'s required Keys are undefined - redirect to error');
+      console.error("Manager's required Keys are undefined - redirect to error");
     }
   }
 
   // Description: destroy
   ngOnDestroy() {
-    //this.pageFilterSubs.unsubscribe();
+    // this.pageFilterSubs.unsubscribe();
   }
-
 }

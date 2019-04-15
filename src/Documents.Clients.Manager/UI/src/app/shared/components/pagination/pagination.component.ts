@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { IPagination, IPageLink, IPathIdentifier } from '../../index';
 import { PathService } from '../../services/path.service';
 @Component({
@@ -6,7 +6,7 @@ import { PathService } from '../../services/path.service';
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss']
 })
-export class PaginationComponent {
+export class PaginationComponent implements OnChanges {
   @Input() pagination: IPagination;
   @Input() pathIdentifier: IPathIdentifier;
   @Input() pageFiltersParams: any;
@@ -14,7 +14,7 @@ export class PaginationComponent {
   public pageArr: number[];
   public prevParams: {};
   public nextParams: {};
-  
+
   // Hold pagination information:
   public pageIndex: number;
   public pageNumber: number; // pagination.pageIndex
@@ -23,10 +23,7 @@ export class PaginationComponent {
   public totalPages: number; // pagination.pageCount
   public pagerObj: IPageLink[];
 
-  constructor(
-    private pathService: PathService) {
-  }
-
+  constructor(private pathService: PathService) {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.pathIdentifier) {
@@ -41,41 +38,42 @@ export class PaginationComponent {
       this.pagerObj = this.buildPagerObj();
     }
 
-    if(simpleChanges.pageFiltersParams){
+    if (simpleChanges.pageFiltersParams) {
       Object.assign(this, this.pageFiltersParams);
     }
   }
 
-
   // Description: Build the pager array to loop through
   buildPagerObj(): IPageLink[] {
-    let pageLinkArr: IPageLink[] = [];
+    const pageLinkArr: IPageLink[] = [];
     // const baseUrl = '/manager/Folder:Defendant:17965176/';
-    const d = (this.pageNumber % 5),
+    const d = this.pageNumber % 5,
       diff = d > 0 ? 5 - d : 0;
     let max = this.pageNumber + diff;
-    let min = max - 4;
-    (max > this.totalPages) && (max = this.totalPages);
-    for (let i = min; i <= max; i++) { // for (let i = 1; i <= this.totalPages; i++) {
+    const min = max - 4;
+    max > this.totalPages && (max = this.totalPages);
+    for (let i = min; i <= max; i++) {
+      // for (let i = 1; i <= this.totalPages; i++) {
       const pagelink: IPageLink = {
         pageNumber: i,
         pagerUrl: this.baseUrl,
-        params: { pageSize: this.pageSize, pageIndex: (i - 1) },   // this.baseUrl +'?pageSize=' + this.pageSize +'&pageIndex=' + (i - 1),
-        linkClass: (i === this.pageNumber ? 'active' : '')
+        params: { pageSize: this.pageSize, pageIndex: i - 1 }, // this.baseUrl +'?pageSize=' + this.pageSize +'&pageIndex=' + (i - 1),
+        linkClass: i === this.pageNumber ? 'active' : ''
       };
       pageLinkArr.push(pagelink);
-
     }
 
-    this.prevParams =  { pageSize: this.pageSize, pageIndex: (this.pageIndex- 1) };
-    this.nextParams =  { pageSize: this.pageSize, pageIndex: this.pageNumber };
+    this.prevParams = {
+      pageSize: this.pageSize,
+      pageIndex: this.pageIndex - 1
+    };
+    this.nextParams = { pageSize: this.pageSize, pageIndex: this.pageNumber };
     //  console.log(this.pagerObj);
     return pageLinkArr;
   }
 
   // Description: Display pagination? check if pagination is not undefined
   isPaginationVisible() {
-    return (this.pagination && this.totalPages > 1); // change to 1 (do not show pager when there is only 1 page)
+    return this.pagination && this.totalPages > 1; // change to 1 (do not show pager when there is only 1 page)
   }
-
 }

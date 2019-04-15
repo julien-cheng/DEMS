@@ -10,7 +10,6 @@ export * from './components/messaging.component';
 export * from './components/templates/templates.component';
 export * from './components/editors/index';
 
-
 // Models and Classes
 export * from './models/schema-form.model';
 export * from './models/base-control.model';
@@ -20,4 +19,3 @@ export * from './models/validation.model';
 export * from './directives/focus.directive';
 
 // Services
-

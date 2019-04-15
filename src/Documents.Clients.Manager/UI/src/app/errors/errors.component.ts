@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
   templateUrl: './errors.component.html',
   styleUrls: ['./errors.component.scss']
 })
-export class ErrorsComponent implements OnInit {
+export class ErrorsComponent implements OnInit, OnDestroy {
   // error: HttpError;
   private subscriptions: Subscription;
 
@@ -22,10 +22,10 @@ export class ErrorsComponent implements OnInit {
     // this.subscriptions.add(errorSubscription);
   }
   ngOnDestroy(): void {
-     // this.subscriptions.unsubscribe();
+    // this.subscriptions.unsubscribe();
   }
 
   clearError(): void {
-   //  this.userService.clearError();
+    //  this.userService.clearError();
   }
 }

@@ -37,7 +37,7 @@ export * from './components/search-form/search-form.component';
 export * from './components/search-bar/search-bar.component';
 export * from './components/batch-operations/batch-operations.component';
 export * from './components/links/links.component';
-export * from './components/links/file-link.component';
+export * from './components/file-link/file-link.component';
 export * from './components/links/return-link.component';
 export * from './components/pagination/pagination.component';
 export * from './components/messaging/messaging.component';
@@ -61,11 +61,9 @@ export * from './services/search.service';
 export * from './services/loading.service';
 export * from './services/date.service';
 
-
 // Third Party Tokens
 export * from './services/jQuery.service';
 export * from './services/toastr.service';
-
 
 // Pipes
 export * from './pipes/icon.pipe';
@@ -78,7 +76,6 @@ export * from './pipes/format-time.pipe';
 
 // Custom Validators
 export * from './validators/exclude-pattern.validator';
-
 
 // Directives
 export * from './directives/modal-trigger.directive';

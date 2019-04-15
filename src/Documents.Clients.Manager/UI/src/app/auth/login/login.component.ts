@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule,FormGroup, FormBuilder } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, LoadingService } from '../../shared/index';
 
@@ -16,8 +16,8 @@ export class LoginComponent implements OnInit {
     private loadingService: LoadingService,
     private authService: AuthService,
     private router: Router,
-    private formBuilder: FormBuilder) {
-  }
+    private formBuilder: FormBuilder
+  ) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -28,17 +28,16 @@ export class LoginComponent implements OnInit {
   }
 
   login(formValues) {
-        this.authService.loginUser(formValues.userName, formValues.password).subscribe(resp => {
-            if (!resp) {
-                this.loginInvalid = true;
-            } else {
-                this.router.navigate(['/manager']);
-            }
-        });
-    }
-
-    cancel() {
+    this.authService.loginUser(formValues.userName, formValues.password).subscribe(resp => {
+      if (!resp) {
+        this.loginInvalid = true;
+      } else {
         this.router.navigate(['/manager']);
-    }
+      }
+    });
+  }
 
+  cancel() {
+    this.router.navigate(['/manager']);
+  }
 }

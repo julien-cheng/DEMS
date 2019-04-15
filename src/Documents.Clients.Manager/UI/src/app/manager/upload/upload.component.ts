@@ -17,19 +17,18 @@ export class UploadComponent implements OnInit {
     public iframeResizerService: IframeResizerService,
     private router: Router
   ) {
-   //  this.iframeResizerService.setTopNavVisible(true);
+    //  this.iframeResizerService.setTopNavVisible(true);
   }
 
   ngOnInit() {
     this.explorerService.fileExplorer.isCollapsed = true;
     this.pathIdentifier = this.explorerService.fileExplorer.pathIdentifier;
     this.folderKey = this.explorerService.fileExplorer.pathIdentifier.folderKey; // To be transfered to identifier
-    this.pathKey = this.route.snapshot.params['pathKey'];
+    this.pathKey = this.route.snapshot.params.pathKey;
 
     // Redirect out if read only is set to true
     if (this.auth.readOnly) {
       this.router.navigate(['/']);
     }
   }
-
 }

@@ -2,8 +2,19 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { LoadingService, AppConfigService, FileService, BatchOperationsComponent} from '../index';
-import { IFolderIdentifier, IPathIdentifier, IFileIdentifier, IFile, IMediaSet, IMediaSource, IBatchResponse, IMediaSegment, IMediaSubtitles, IAllowedOperation } from '../index';
+import { LoadingService, AppConfigService, FileService, BatchOperationsComponent } from '../index';
+import {
+  IFolderIdentifier,
+  IPathIdentifier,
+  IFileIdentifier,
+  IFile,
+  IMediaSet,
+  IMediaSource,
+  IBatchResponse,
+  IMediaSegment,
+  IMediaSubtitles,
+  IAllowedOperation
+} from '../index';
 import { MediaToolsService } from '../services/media-tools.service';
 import { VideoComponent } from '../video/video.component';
 
@@ -13,7 +24,8 @@ import { VideoComponent } from '../video/video.component';
   styleUrls: ['./media-tools.component.scss']
 })
 export class MediaToolsComponent implements OnInit {
-  @ViewChild(BatchOperationsComponent) BatchOperationsComponent: BatchOperationsComponent;
+  @ViewChild(BatchOperationsComponent)
+  BatchOperationsComponent: BatchOperationsComponent;
   @ViewChild(VideoComponent) VideoComponent: VideoComponent;
   public folderIdentifier: IFolderIdentifier;
   public pathIdentifier: IPathIdentifier;
@@ -23,7 +35,7 @@ export class MediaToolsComponent implements OnInit {
   public segments: IMediaSegment[];
   // public subtitles: IMediaSubtitles[];
   public activeSegment: IMediaSegment; // Active segment playing or selected manually
-  public videoContainerClass: string = 'col-sm-8'// 'col-sm-4 order-last'; // TEMP => set to 'col-sm-8'
+  public videoContainerClass = 'col-sm-8'; // 'col-sm-4 order-last'; // TEMP => set to 'col-sm-8'
   public isEditMode = false; // TEMP => set to false
   // public isVideoPlaying = false;
   constructor(
@@ -33,22 +45,21 @@ export class MediaToolsComponent implements OnInit {
     public mediaToolsService: MediaToolsService,
     public appConfigService: AppConfigService,
     public loadingService: LoadingService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.loadingService.setLoading(false);
-    this.route.data.forEach((data) => {
-      this.folderIdentifier = this.route.snapshot.data['identifiers'].folderIdentifier;
-      this.pathIdentifier = this.route.snapshot.data['identifiers'].pathIdentifier;
-      this.fileIdentifier = this.route.snapshot.data['identifiers'].fileIdentifier;
+    this.route.data.forEach(data => {
+      this.folderIdentifier = this.route.snapshot.data.identifiers.folderIdentifier;
+      this.pathIdentifier = this.route.snapshot.data.identifiers.pathIdentifier;
+      this.fileIdentifier = this.route.snapshot.data.identifiers.fileIdentifier;
 
       this.route.queryParams.subscribe(params => {
-        let startTime: number = <number>(params.startTime);
+        const startTime: number = params.startTime as number;
         this.setFileObject(startTime);
       });
     });
   }
-
 
   // Description Set file Object and View data
   setFileObject(startTime?: number) {
@@ -56,28 +67,28 @@ export class MediaToolsComponent implements OnInit {
       // Call the proper set and pass it to the detailviewType
       this.fileService.getFileMediaSet(this.fileIdentifier, 'transcript').subscribe(
         (response: IBatchResponse) => {
-          this.setMediaProperties(<IMediaSet>response.response);
+          this.setMediaProperties(response.response as IMediaSet);
           if (!!startTime) {
-            let index = this.mediaToolsService.getSegmentIndexByStartTime(this.segments, <number>startTime, true);
+            const index = this.mediaToolsService.getSegmentIndexByStartTime(this.segments, startTime as number, true);
             this.activeSegment = this.segments[index];
           }
           this.segments = this.mediaToolsService.setActiveSegment(this.segments, this.activeSegment);
         },
-        (error) => {
+        error => {
           console.error(error);
         },
         () => {
           this.loadingService.setLoading(false);
         }
-      )
+      );
     }
   }
 
   private setMediaProperties(mediaSet: IMediaSet) {
     this.mediaSet = mediaSet;
     this.allowedOperations = this.mediaSet.allowedOperations;
-    //this.segments = this.mediaSet.segments;
-    this.segments = !!this.mediaSet.segments? this.mediaSet.segments: [];
+    // this.segments = this.mediaSet.segments;
+    this.segments = !!this.mediaSet.segments ? this.mediaSet.segments : [];
   }
 
   // Description: sets the video col class for column rearrangement
@@ -99,7 +110,8 @@ export class MediaToolsComponent implements OnInit {
   }
 
   // Transcription Component
-  public segmentSaveHandler(mediaSet: IMediaSet) { //this.processDataResponse(mediaSet);
+  public segmentSaveHandler(mediaSet: IMediaSet) {
+    // this.processDataResponse(mediaSet);
     this.mediaSet = mediaSet;
     this.allowedOperations = this.mediaSet.allowedOperations;
     this.mediaToolsService.setActiveSegment(this.segments, this.activeSegment);
@@ -112,7 +124,6 @@ export class MediaToolsComponent implements OnInit {
   }
 
   public updateView() {
-    //console.log('updateView return call back from Batch Operations Component');
+    // console.log('updateView return call back from Batch Operations Component');
   }
-
 }

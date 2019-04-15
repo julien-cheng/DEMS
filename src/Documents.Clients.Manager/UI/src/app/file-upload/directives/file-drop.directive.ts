@@ -1,4 +1,4 @@
-import { Directive, EventEmitter, ElementRef, HostListener, Input, Output, NgZone } from '@angular/core';
+import { Directive, EventEmitter, ElementRef, HostListener, Input, Output, NgZone, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ISubscription } from 'rxjs/Subscription';
 import { FileUpload, IUploadedFile, FileObject } from '../index';
@@ -6,16 +6,15 @@ import { FileUpload, IUploadedFile, FileObject } from '../index';
 @Directive({
   selector: '[appFileDrop]'
 })
-export class FileDropDirective {
+export class FileDropDirective implements OnDestroy {
   @Input() public fileUpload: FileUpload;
   @Output() postMessage = new EventEmitter();
   protected element: ElementRef;
   private subscription: ISubscription;
 
-  public constructor(element: ElementRef, private zone: NgZone ) {
+  public constructor(element: ElementRef, private zone: NgZone) {
     this.element = element;
   }
-
 
   @HostListener('document:drop', ['$event'])
   public onDrop(event: any): void {
@@ -26,8 +25,7 @@ export class FileDropDirective {
     }
     //  console.log('FileDropDirective drop PASSED');
     // Drag and drop browser compliant
-    this.fileUpload.isIE11 ? this._subscribetoDataListforIE11(transfer):
-        this._subscribetoDataList(transfer);
+    this.fileUpload.isIE11 ? this._subscribetoDataListforIE11(transfer) : this._subscribetoDataList(transfer);
 
     this._preventAndStop(event);
   }
@@ -36,13 +34,12 @@ export class FileDropDirective {
   protected _subscribetoDataList(transfer: any) {
     // for directory upload
     // console.log('HANDLE modern browsers - not IE11');
-    const _self = this,
-          options = this.fileUpload.options,
-          items: DataTransferItemList = transfer.items,
-          newQueue: Observable<IUploadedFile[]> = this.fileUpload.prepareUploadQueueItems(items);
+    const options = this.fileUpload.options;
+    const items: DataTransferItemList = transfer.items;
+    const newQueue: Observable<IUploadedFile[]> = this.fileUpload.prepareUploadQueueItems(items);
 
     this.subscription = newQueue.subscribe(
-      (response) => {
+      response => {
         this.zone.run(() => {
           this.fileUpload.addToUploadQueue(response, options);
           this.fileUpload._initAutoUpload();
@@ -50,7 +47,10 @@ export class FileDropDirective {
       },
       error => {
         console.error('There was an error with the files or folders dragged into the browser');
-        this.postMessage.emit({msg: 'There was an error with the files or folders dragged into the browser', type:'error'});
+        this.postMessage.emit({
+          msg: 'There was an error with the files or folders dragged into the browser',
+          type: 'error'
+        });
       },
       () => {
         // console.log('Subscription Finished!');
@@ -59,20 +59,22 @@ export class FileDropDirective {
   }
 
   // Description: Drop call IE11
-  protected _subscribetoDataListforIE11(transfer:any){
+  protected _subscribetoDataListforIE11(transfer: any) {
     // console.log('HANDLE IE11 drag and drop', transfer);
     const files = transfer.files;
     // console.log(files);
-    if(files.length){
+    if (files.length) {
       const options = this.fileUpload.options;
       this.fileUpload.onBeforeItemsAddtoQueue(files, null);
       this.fileUpload.addToUploadQueue(files, options);
       this.fileUpload._initAutoUpload();
-    }else{
+    } else {
       console.error('Directories upload is not supported in IE11');
-      this.postMessage.emit({msg: 'Directory upload is not supported in IE11', type:'error'});
+      this.postMessage.emit({
+        msg: 'Directory upload is not supported in IE11',
+        type: 'error'
+      });
     }
-
   }
 
   @HostListener('document:dragover', ['$event'])
@@ -106,7 +108,7 @@ export class FileDropDirective {
 
   ngOnDestroy() {
     // console.log('destroy subscription');
-    if(!!this.subscription){
+    if (!!this.subscription) {
       this.subscription.unsubscribe();
     }
   }

@@ -8,9 +8,8 @@ describe('ActionToolbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ActionToolbarComponent ]
-    })
-    .compileComponents();
+      declarations: [ActionToolbarComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

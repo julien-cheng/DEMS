@@ -24,13 +24,7 @@ import {
 } from './index';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    SharedModule,
-    MediaRoutingModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule, SharedModule, MediaRoutingModule, FormsModule, ReactiveFormsModule],
   declarations: [
     VideoComponent,
     VideoBasicComponent,
@@ -43,10 +37,7 @@ import {
     MediaClipsComponent,
     MediaTimelineComponent
   ],
-  providers: [
-    MediaResolverService, 
-    MediaToolsService
-  ]
+  providers: [MediaResolverService, MediaToolsService]
   // entryComponents: []
 })
-export class MediaModule { }
+export class MediaModule {}

@@ -8,9 +8,8 @@ describe('BatchOperationsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BatchOperationsComponent ]
-    })
-    .compileComponents();
+      declarations: [BatchOperationsComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

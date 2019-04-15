@@ -10,14 +10,14 @@ export class FileviewsMenuComponent implements OnInit {
   @Input() fileIdentifier: IFileIdentifier;
   @Input() fileViews: IFileViewer[];
   @Input() viewerType: string;
-  //public fileViews: IFileViewer[];
+  // public fileViews: IFileViewer[];
   public fileKey: string;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.fileKey = this.fileIdentifier.fileKey;
     // this.fileViews = this.file.views;
-    //console.log(this.viewerType,  this.fileViews);
+    // console.log(this.viewerType,  this.fileViews);
   }
 }

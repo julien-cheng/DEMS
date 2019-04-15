@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterContentInit } from '@angular/core';
 import { FormGroup, NgForm, AbstractControl } from '@angular/forms';
 import { SchemaForm } from '../models/schema-form.model';
 import { ISchemaFormOptions, SCHEMAFORMS_EVENTS } from '../definitions/api';
@@ -13,22 +13,27 @@ const { includes, pick } = _;
   templateUrl: './schema-forms.component.html',
   styleUrls: ['./schema-forms.component.scss']
 })
-export class SchemaFormsComponent implements OnInit {
+export class SchemaFormsComponent implements OnInit, AfterContentInit {
+  constructor(public schemaFormModel: SchemaForm) {}
+
+  // Description: returns true/false for valid form
+  get isValid() {
+    return !!this.formGroup && this.formGroup.valid;
+  }
   @Input() options: ISchemaFormOptions | null;
-  @Input() columns: number = 1; //Defaults to 1
-  @Input() breakpoint: string = 'md'; // Will be stored in the server
-  @Input() displaySubmitButton: boolean = true;
+  @Input() columns = 1; // Defaults to 1
+  @Input() breakpoint = 'md'; // Will be stored in the server
+  @Input() displaySubmitButton = true;
   @Input() setFocusOnload: boolean;
-  @Input() submitButtonText: string = 'Save';
+  @Input() submitButtonText = 'Save';
   @Input() submitButtonIcon: string;
-  @Input() resetButtonText: string = 'Cancel';
+  @Input() resetButtonText = 'Cancel';
   @Input() resetButtonIcon: string;
   @ViewChild('form') form: NgForm;
   public formGroup: FormGroup;
   public objectKeys = Object.keys;
   public schemaFormValues: any;
   public mainFormControl: BaseControl[];
- 
 
   // Possible event handlers:
   @Output() initialized = new EventEmitter();
@@ -43,11 +48,7 @@ export class SchemaFormsComponent implements OnInit {
   @Output() cancel = new EventEmitter();
   @Output() schemaFormSubmit = new EventEmitter();
 
-  constructor(
-    public schemaFormModel: SchemaForm
-  ) {
-
-  }
+  public ngformControl: AbstractControl;
 
   // Some of this code may change to ngOnChanges(simpleChanges: SimpleChanges) {...}
   ngOnInit() {
@@ -67,11 +68,6 @@ export class SchemaFormsComponent implements OnInit {
     this.setFocusOnload && this.setFocus();
   }
 
-  // Description: returns true/false for valid form
-  get isValid() {
-    return !!this.formGroup && this.formGroup.valid;
-  }
-
   // Description: Triggered when any control value in the form is changed and validated - Working and TBD *****
   updateFormValue(baseControl: BaseControl) {
     //  console.log(baseControl);
@@ -81,13 +77,15 @@ export class SchemaFormsComponent implements OnInit {
     // 2. Update Validation status  ***** for data submit ready  ***** WORKING *****
   }
 
-
   // Description: Add any code for internal form submission in this block
   onSchemaFormSubmit($event: Event) {
     // console.log(this.form.value);
     if (this.isValid) {
       this.schemaFormValues = this.form.value; // JSON.stringify(this.form.value);
-      this.schemaFormModel.fireEvent({ eventName: SCHEMAFORMS_EVENTS.schemaFormSubmit, schemaFormValues: this.form.value });
+      this.schemaFormModel.fireEvent({
+        eventName: SCHEMAFORMS_EVENTS.schemaFormSubmit,
+        schemaFormValues: this.form.value
+      });
       return true;
     } else {
       return false;
@@ -95,13 +93,12 @@ export class SchemaFormsComponent implements OnInit {
   }
 
   // Description: Resets forms to original values
-  onSchemaFormReset($event: Event){
-    const initialValues =this.schemaFormModel.initialFormValue;
-    Object.keys(initialValues).forEach((control) => {
-       (!!this.formGroup.controls[control]) && this.formGroup.controls[control].patchValue(initialValues[control]);
+  onSchemaFormReset($event: Event) {
+    const initialValues = this.schemaFormModel.initialFormValue;
+    Object.keys(initialValues).forEach(control => {
+      !!this.formGroup.controls[control] && this.formGroup.controls[control].patchValue(initialValues[control]);
     });
   }
-
 
   // Description: Exposes the form submit to outside buttons
   // works with displaySubmitButton set to true
@@ -110,14 +107,12 @@ export class SchemaFormsComponent implements OnInit {
     return this.form.valid && this.form.ngSubmit.emit($event || new Event('submit'));
   }
 
-  public ngformControl: AbstractControl;
-
   // Description: Sets focus in a pre-specified control
   public setFocus(key?: string) {
     // console.log('setFocus: ', key);
-    (!key) && (key = this.mainFormControl[0].key);// find first key if key is undefined
+    !key && (key = this.mainFormControl[0].key); // find first key if key is undefined
     if (!!key) {
-      let control = this.mainFormControl.filter((basecontrol) => {
+      const control = this.mainFormControl.filter(basecontrol => {
         return basecontrol.key === key;
       });
       control.length && (control[0].isFocused = true);
@@ -125,7 +120,7 @@ export class SchemaFormsComponent implements OnInit {
   }
 
   private _validateForm() {
-    for (let control in this.formGroup.controls) {
+    for (const control in this.formGroup.controls) {
       if (this.formGroup.controls.hasOwnProperty(control)) {
         this.formGroup.controls[control].markAsTouched();
       }

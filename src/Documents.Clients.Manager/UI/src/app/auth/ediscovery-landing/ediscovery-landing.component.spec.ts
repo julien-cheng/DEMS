@@ -8,9 +8,8 @@ describe('EdiscoveryLandingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EdiscoveryLandingComponent ]
-    })
-    .compileComponents();
+      declarations: [EdiscoveryLandingComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

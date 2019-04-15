@@ -8,9 +8,8 @@ describe('SchemaFormControlComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SchemaFormControlComponent ]
-    })
-    .compileComponents();
+      declarations: [SchemaFormControlComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
