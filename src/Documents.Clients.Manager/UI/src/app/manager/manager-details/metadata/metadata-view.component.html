@@ -1,0 +1,14 @@
+<div class="panel-header row bg-light">
+  <div class="col-10"></div>
+  <div class="col-2 text-right">
+    <button class="btn btn-secondary btn-sm float-right {{!collapsed? '': 'collapsed'}}" type="button" data-toggle="collapse" [attr.data-target]="'#'+viewItemId"
+      aria-expanded="false" aria-controls="collapseExample">
+      <i class="fa" aria-hidden="true"></i>
+    </button>
+  </div>
+</div>
+<div id="{{viewItemId}}" class="collapse {{!collapsed? 'show': ''}} py-2">
+  <ng4-schema-forms [displaySubmitButton]="!!allowedOperations" [options]="schemaFormOptions" [submitButtonIcon]="saveFormAllowedOperation?.icons"
+    [columns]="columns" [breakpoint]="breakpoint" (schemaFormSubmit)="onSchemaFormSubmit($event)">
+  </ng4-schema-forms>
+</div>

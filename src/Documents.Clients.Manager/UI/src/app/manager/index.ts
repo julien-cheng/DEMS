@@ -9,6 +9,7 @@ export * from './manager-details/audio/audio.component';
 export * from './manager-details/fileviews-menu/fileviews-menu.component';
 export * from './manager-details/default/default.component';
 export * from './manager-details/unknown/unknown.component';
+export * from './manager-details/metadata/metadata-view.component';
 
 export * from './manager-list/manager-view.component';
 export * from './manager-list/view-types/grid-view.component';
