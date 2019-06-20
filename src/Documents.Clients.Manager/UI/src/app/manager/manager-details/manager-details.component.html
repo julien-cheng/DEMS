@@ -36,7 +36,9 @@
                 </div>
             </div>
             <div class="file-metadata">
-                <metadata-view [allowedOperations]="allowedOperations"></metadata-view>
+                    <ng-container *ngIf="!!file?.attributes">
+                <app-metadata [file]="file"></app-metadata>
+                    </ng-container>
             </div>
             <div class="file-view">
                 <div class="return-div text-right mb-2">

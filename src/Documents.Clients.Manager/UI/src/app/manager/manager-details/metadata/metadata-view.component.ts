@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { SchemaForm, ICustomValidator, ISchemaFormOptions, Schema, SchemaFormsComponent } from '../../../ng4-schema-forms';
 import { IObjectView, IAllowedOperation, batchOperationsDefaults, LoadingService, FolderService } from '../../index';
-import { FileService } from 'app/auth';
+import { FileService, IFile } from 'app/auth';
 
 const sampleSchema = {
   type: 'object',
@@ -26,13 +26,14 @@ const sampleSchema = {
 };
 
 @Component({
-  selector: 'metadata-view',
+  selector: 'app-metadata',
   templateUrl: './metadata-view.component.html',
   styleUrls: ['./metadata-view.component.scss']
 })
 export class MetadataViewComponent implements OnInit {
   @Input() allowedOperations: IAllowedOperation[];
   @Input() viewItem: IObjectView;
+  @Input() file: any;
   @Input() viewItemId = 'viewItemId';
   // Pass Schema Form Options:
   public metadataViewTitle = '';
@@ -50,7 +51,7 @@ export class MetadataViewComponent implements OnInit {
     // this.metadataViewTitle = this.viewItem.title;
     this.schema = sampleSchema; // || this.viewItem.dataSchema;
 
-    console.log(this.allowedOperations);
+    console.log(this.file);
     // Schema Options - set schema, initial values and ANY Custom validation
     this.schemaFormOptions = {
       schema: this.schema,
