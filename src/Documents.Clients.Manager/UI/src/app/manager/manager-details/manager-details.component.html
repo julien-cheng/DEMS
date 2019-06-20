@@ -37,7 +37,7 @@
             </div>
             <div class="file-metadata">
                 <ng-container *ngIf="!!file?.attributes">
-                    <app-metadata [file]="file"></app-metadata>
+                    <app-metadata [file]="file" [allowedOperations]="allowedOperations"></app-metadata>
                 </ng-container>
             </div>
             <div class="file-view">
@@ -64,8 +64,8 @@
             </ng-container>
             <ng-container *ngIf="!!file?.attributes">
                 <div class="row" *ngFor="let key of objectKeys(file.attributes)">
-                    <div class="col-5">{{key}}</div>
-                    <div class="col-7" style="word-wrap:break-word">
+                    <div *ngIf="key != 'Metadata'" class="col-5">{{key}}</div>
+                    <div *ngIf="key != 'Metadata'" class="col-7" style="word-wrap:break-word">
                       {{file.attributes[key]}}
                       <div *ngIf='IsGPSCoordinate([key])'>
                         <a href="https://www.google.com/maps/?q= + {{file.attributes[key]}}" target="_blank">View Map</a>

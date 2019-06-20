@@ -1,29 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { SchemaForm, ICustomValidator, ISchemaFormOptions, Schema, SchemaFormsComponent } from '../../../ng4-schema-forms';
-import { IObjectView, IAllowedOperation, batchOperationsDefaults, LoadingService, FolderService } from '../../index';
+import { ISchemaFormOptions, Schema } from '../../../ng4-schema-forms';
+import { IObjectView, IAllowedOperation, LoadingService } from '../../index';
 import { FileService, IFile } from 'app/auth';
-
-const sampleSchema = {
-  type: 'object',
-  title: 'GUI:',
-  description: 'Add New Case',
-  properties: {
-    folderKey: {
-      type: 'string',
-      title: 'Case Identifier',
-      description: 'Unique case identifier',
-      placeholder: 'Case Identifier',
-      validators: [
-        {
-          type: 'required',
-          value: null,
-          errorMessage: 'The field Case Identifier is required'
-        }
-      ]
-    }
-  }
-};
 
 @Component({
   selector: 'app-metadata',
@@ -32,15 +11,13 @@ const sampleSchema = {
 })
 export class MetadataViewComponent implements OnInit {
   @Input() allowedOperations: IAllowedOperation[];
-  @Input() viewItem: IObjectView;
-  @Input() file: any;
-  @Input() viewItemId = 'viewItemId';
+  @Input() file: IFile;
+  @Input() viewItemId = 'metadataView';
   // Pass Schema Form Options:
   public metadataViewTitle = '';
 
   public saveFormAllowedOperation: IAllowedOperation;
   public schemaFormOptions: ISchemaFormOptions;
-  public schema: any;
   public collapsed = false;
   public columns = 1;
   public breakpoint = 'md';
@@ -48,14 +25,36 @@ export class MetadataViewComponent implements OnInit {
   constructor(private toastr: ToastrService, private fileService: FileService, public loadingService: LoadingService) {}
 
   ngOnInit() {
-    // this.metadataViewTitle = this.viewItem.title;
-    this.schema = sampleSchema; // || this.viewItem.dataSchema;
+    const schemaThing: Schema = {
+      type: 'object',
+      title: 'METADATA:',
+      description: 'Edit file metadata',
+      properties: {}
+    };
+    for (const key of Object.keys(this.file.attributes.Metadata.file)) {
+      // Some simple detection of properties that we want
+      if (key.startsWith('attribute.')) {
+        schemaThing.properties[key] = {
+          type: typeof JSON.parse(this.file.attributes.Metadata.file[key]) as any,
+          title: key,
+          description: key,
+          placeholder: key
+        };
+      }
+    }
 
-    console.log(this.file);
+    // This parses the metadata string format
+    const hacky = Object.keys(this.file.attributes.Metadata.file).reduce((result, key) => {
+      if (key.startsWith('attribute.')) {
+        result[key] = JSON.parse(this.file.attributes.Metadata.file[key]);
+      }
+      return result;
+    }, {});
+
     // Schema Options - set schema, initial values and ANY Custom validation
     this.schemaFormOptions = {
-      schema: this.schema,
-      initialFormValue: null, // this.viewItem.dataModel,
+      schema: schemaThing,
+      initialFormValue: hacky, // this.file.attributes.Metadata.file,
       customValidators: null
     };
 
@@ -77,6 +76,15 @@ export class MetadataViewComponent implements OnInit {
   // Add form instance specific code if needed (public method exposed)
   onSchemaFormSubmit(event: any) {
     this.toastr.error('THIS IS NOT IMPLEMENTED YET');
+
+    // This reverts everything to a string format
+    const hacky = Object.keys(event.schemaFormValues).reduce((result, key) => {
+      if (key.startsWith('attribute.')) {
+        result[key] = JSON.stringify(event.schemaFormValues[key]);
+      }
+      return result;
+    }, {});
+    console.log();
     if (!!this.saveFormAllowedOperation) {
       const data = Object.assign({}, this.saveFormAllowedOperation.batchOperation, { data: event.schemaFormValues });
       this.loadingService.setLoading(true);
