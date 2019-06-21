@@ -35,9 +35,11 @@
 
         public static DocumentSet DocumentSetGet(FileIdentifier fileIdentifier, List<AlternativeView> alternativeViews, string extension, string mimeType)
         {
-            var allowedOperations = new List<AllowedOperation>();
-
-            allowedOperations.Add(AllowedOperation.GetAllowedOperationDownload(fileIdentifier, label: "Download"));
+            var allowedOperations = new List<AllowedOperation>
+            {
+                AllowedOperation.GetAllowedOperationDownload(fileIdentifier, label: "Download"),
+                AllowedOperation.GetAllowedOperationSave(fileIdentifier)
+            };
 
             var documentSet = new DocumentSet
             {

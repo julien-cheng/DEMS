@@ -139,7 +139,8 @@
 
             var allowedOperations = new List<AllowedOperation>
             {
-                AllowedOperation.GetAllowedOperationDownload(fileIdentifier, label: "Download")
+                AllowedOperation.GetAllowedOperationDownload(fileIdentifier, label: "Download"),
+                AllowedOperation.GetAllowedOperationSave(fileIdentifier)
             };
 
             if (mp4 != null)

@@ -48,6 +48,14 @@ export class FileService {
     }
   }
 
+  setFileMetadata(data: any): Observable<IBatchResponse> {
+    // Needs to be dynamic : mediaset for video/audio, imageset for images, textset, documentset for documents and pdf
+    const url = `/api/file/saveSchemaData`;
+    const headers = new HttpHeaders({ 'Content-type': 'application/json' });
+    const options = { headers };
+    return this.http.post<IBatchResponse>(url, JSON.stringify(data), options).pipe(catchError(this.handleError));
+  }
+
   getFileMediaSet(fileIdentifier: IFileIdentifier, viewertype: string): Observable<IBatchResponse> {
     const apiKey = this.getApiMediaKey(viewertype), // Needs to be dynamic : mediaset for video/audio, imageset for images, textset, documentset for documents and pdf
       url = `/api/views/${apiKey}?fileIdentifier.organizationKey=${fileIdentifier.organizationKey}&fileIdentifier.folderKey=${

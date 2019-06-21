@@ -68,7 +68,8 @@
 
             var allowedOperations = new List<AllowedOperation>
             {
-                AllowedOperation.GetAllowedOperationDownload(fileIdentifier, label: "Download")
+                AllowedOperation.GetAllowedOperationDownload(fileIdentifier, label: "Download"),
+                AllowedOperation.GetAllowedOperationSave(fileIdentifier)
             };
             
             unknownSet.AllowedOperations = allowedOperations;

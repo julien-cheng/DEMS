@@ -258,7 +258,13 @@
             managerFileModel.Attributes.Add("SHA1 Hash", ConvertFromBase64ToHex(fileModel.HashSHA1));
             managerFileModel.Attributes.Add("SHA256 Hash", ConvertFromBase64ToHex(fileModel.HashSHA256));
 
-            managerFileModel.Attributes.Add("Metadata", fileModel.FileMetadata);
+            managerFileModel.DataModel = fileModel.Read<Dictionary<string, object>>(MetadataKeyConstants.SCHEMA_DEFINITION);
+
+            foreach (var (key, value) in fileModel.FileMetadata["file"]) {
+                if (key != "attribute.alternativeviews") {
+                    managerFileModel.Attributes.Add(key, value);
+                }
+            }
 
             var defaultView = managerFileModel.Views.FirstOrDefault();
 
