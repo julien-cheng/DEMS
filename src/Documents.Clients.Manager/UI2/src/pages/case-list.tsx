@@ -48,27 +48,32 @@ export default class CaseListPage extends React.Component {
   };
 
   handleCreate = () => {
+    var me = this;
     const { form } = this.formRef.props;
     form.validateFields((err: any, values: any) => {
       if (err) {
         return;
       }
 
-      new FolderService().createNewCase({
-        type: 'ManagerFolderModel',
-        name: 'Defendant:' + values.caseid,
-        identifier: {
-          folderKey: 'Defendant:' + values.caseid,
-          organizationKey: this.props.match.params.id,
-        },
-        fields: {
-          docketNumber: null,
-          arrestNumber: null,
-          trialNumber: null,
-          icmsNumber: null,
-          indictmentNumber: null,
-        },
-      });
+      new FolderService()
+        .createNewCase({
+          type: 'ManagerFolderModel',
+          name: 'Defendant:' + values.caseid,
+          identifier: {
+            folderKey: 'Defendant:' + values.caseid,
+            organizationKey: this.props.match.params.id,
+          },
+          fields: {
+            docketNumber: null,
+            arrestNumber: null,
+            trialNumber: null,
+            icmsNumber: null,
+            indictmentNumber: null,
+          },
+        })
+        .finally(() => {
+          me.fetchCases();
+        });
       form.resetFields();
       this.setState({ createModalVisible: false });
     });
@@ -77,8 +82,7 @@ export default class CaseListPage extends React.Component {
   saveFormRef = (formRef: any) => {
     this.formRef = formRef;
   };
-
-  componentDidMount() {
+  fetchCases() {
     var me = this;
     new FolderService().getAllFolders().then(value => {
       me.setState({
@@ -89,6 +93,9 @@ export default class CaseListPage extends React.Component {
         ),
       });
     });
+  }
+  componentDidMount() {
+    this.fetchCases();
   }
 
   render() {
