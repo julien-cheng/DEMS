@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './login.css';
 import { Form, Input, Icon, Checkbox, Button } from 'antd';
+import Link from 'umi/link';
 
 export default class LoginForm extends React.Component {
   handleSubmit = (e: any) => {
@@ -20,7 +21,6 @@ export default class LoginForm extends React.Component {
             prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
             placeholder="Username"
           />
-          ,
         </Form.Item>
         <Form.Item>
           <Input
@@ -28,16 +28,17 @@ export default class LoginForm extends React.Component {
             type="password"
             placeholder="Password"
           />
-          ,
         </Form.Item>
         <Form.Item>
           <Checkbox>Remember me</Checkbox>
           <a className={styles.loginFormForgot} href="">
             Forgot password
           </a>
-          <Button type="primary" htmlType="submit" className={styles.loginFormButton}>
-            Log in
-          </Button>
+          <Link to="/JWTAuth/Backdoor">
+            <Button type="primary" htmlType="submit" className={styles.loginFormButton}>
+              Log in
+            </Button>
+          </Link>
           Or <a href="">register now!</a>
         </Form.Item>
       </Form>
