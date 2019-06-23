@@ -6,10 +6,14 @@ import { PathService } from '@/services/path.service';
 const { TreeNode, DirectoryTree } = Tree;
 import { Upload, Icon, message } from 'antd';
 import Link from 'umi/link';
+import Axios from 'axios';
+import httpAdapter from 'axios';
+import { RcFile } from 'antd/lib/upload';
+import { QuerystringPipe } from '@/pipes/querystring.pipe';
 
 const { Dragger } = Upload;
 
-const props = {
+var props = {
   name: 'file',
   multiple: true,
   action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
@@ -25,6 +29,21 @@ const props = {
     }
   },
 };
+function mapFileIconToAnt(icon: string): string {
+  if (icon == 'file') {
+    return 'file';
+  } else if (icon == 'video') {
+    return 'video-camera';
+  } else {
+    return 'file-unknown';
+  }
+}
+function urlFromFolderIdentifier(identifier: any) {
+  return (
+    `/manager/${identifier.organizationKey}/${identifier.folderKey}/` +
+    encodeURIComponent(identifier.pathKey)
+  );
+}
 export default class ManagerPage extends React.Component {
   constructor(props: any) {
     super(props);
@@ -42,24 +61,32 @@ export default class ManagerPage extends React.Component {
   };
   fetchDirectory() {
     var me = this;
-    new PathService()
-      .getPathPage({
-        organizationKey: this.props.match.params.organization,
-        folderKey: this.props.match.params.case,
-        pathKey: decodeURIComponent(this.props.match.params.path || ''),
-      })
-      .then(value => {
-        console.log(value.data.response);
-        console.log(value.data.response.views);
-        this.setState({ pathTree: value.data.response.pathTree, views: value.data.response.views });
-      });
+    if (this.props) {
+      new PathService()
+        .getPathPage({
+          organizationKey: this.props.match.params.organization,
+          folderKey: this.props.match.params.case,
+          pathKey: decodeURIComponent(this.props.match.params.path || ''),
+        })
+        .then(value => {
+          console.log(value.data.response);
+          console.log(value.data.response.views);
+          this.setState({
+            pathTree: value.data.response.pathTree,
+            views: value.data.response.views,
+          });
+        });
+    }
   }
   componentDidMount() {
     this.fetchDirectory();
   }
+  componentWillReceiveProps() {
+    this.fetchDirectory();
+  }
   mapTreeNodeToComponent(node: any, top: bool = false): any {
     var self = this;
-    console.log(node.name, node.fullPath);
+    // console.log(node.name, node.fullPath);
     return (
       <TreeNode
         title={
@@ -67,19 +94,25 @@ export default class ManagerPage extends React.Component {
             to={
               `/manager/${this.props.match.params.organization}/${this.props.match.params.case}/` +
               encodeURIComponent(node.fullPath)}
+            onClick={() => {
+              this.props.match.params.path = node.fullPath;
+              self.fetchDirectory();
+            }}
           >
             {top ? 'Case Files' : node.name}
           </Link>
         }
         key={node.fullPath}
       >
-        {node.paths.map((x: any) => {
-          return self.mapTreeNodeToComponent(x);
-        })}
+        {node.paths &&
+          node.paths.map((x: any) => {
+            return self.mapTreeNodeToComponent(x);
+          })}
       </TreeNode>
     );
   }
   fileGrid(view: any) {
+    var self = this;
     console.log(view.rows);
     var cms = [
       {
@@ -110,6 +143,27 @@ export default class ManagerPage extends React.Component {
           for (var q of cms) {
             (r as any)[q.dataIndex] = (x as any)[q.dataIndex];
           }
+          if ((x as any).type == 'ManagerPathModel') {
+            (r as any).name = (
+              <Link
+                to={urlFromFolderIdentifier(x.identifier)}
+                onClick={() => {
+                  this.props.match.params.path = x.identifier.pathKey;
+                  self.fetchDirectory();
+                }}
+              >
+                <Icon type="folder"></Icon> {(r as any).name}
+              </Link>
+            );
+          } else if ((x as any).type == 'ManagerFileModel') {
+            if ((x as any).icons) {
+              (r as any).name = (
+                <div>
+                  <Icon type={mapFileIconToAnt((x as any).icons[0])}></Icon> {(r as any).name}
+                </div>
+              );
+            }
+          }
           return r;
         })}
         columns={cms}
@@ -117,6 +171,7 @@ export default class ManagerPage extends React.Component {
     );
   }
   render() {
+    var self = this;
     var gridView = this.state.views.filter(x => x.type == 'Grid')[0];
     return (
       <div className={styles.normal}>
@@ -136,16 +191,44 @@ export default class ManagerPage extends React.Component {
               {gridView && this.fileGrid(gridView)}
             </div>
             <div style={{ padding: 16, paddingTop: 0 }}>
-              <Dragger {...props}>
-                <p className="ant-upload-drag-icon">
-                  <Icon type="inbox" />
-                </p>
-                <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                <p className="ant-upload-hint">
-                  Support for a single or bulk upload. Strictly prohibit from uploading company data
-                  or other band files
-                </p>
-              </Dragger>
+              {this.props.match && (
+                <Dragger
+                  {...props}
+                  action={(file: RcFile) => {
+                    var headers = {};
+                    (headers as any)['Content-Disposition'] =
+                      'attachment; filename="' + file.name + '"';
+                    (headers as any)['Content-Range'] =
+                      'bytes 0-' + (file.size - 1) + '/' + file.size;
+
+                    return Axios.post(
+                      '/api/upload?pathIdentifier.organizationKey=' +
+                        this.props.match.params.organization +
+                        '&pathIdentifier.folderKey=' +
+                        this.props.match.params.case +
+                        (this.props.match.params.path
+                          ? '&pathIdentifier.pathKey=' + this.props.match.params.path
+                          : '') +
+                        ['lastModified', 'lastModifiedDate', 'name', 'size', 'type']
+                          .map((k: string) => '&fileInformation.' + k + '=' + (file as any)[k])
+                          .join(''),
+                      file,
+                      { headers: headers },
+                    ).finally(() => {
+                      self.fetchDirectory();
+                    });
+                  }}
+                >
+                  <p className="ant-upload-drag-icon">
+                    <Icon type="inbox" />
+                  </p>
+                  <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                  <p className="ant-upload-hint">
+                    Support for a single or bulk upload. Strictly prohibit from uploading company
+                    data or other band files
+                  </p>
+                </Dragger>
+              )}
             </div>
           </Col>
         </Row>
