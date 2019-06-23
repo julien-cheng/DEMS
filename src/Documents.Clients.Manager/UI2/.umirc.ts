@@ -40,7 +40,8 @@ const config: IConfig = {
       path: '/manager',
       component: '../layouts/index',
       routes: [
-        { path: '/manager/:organization/:case', component: './manager' }
+        { path: '/manager/:organization/:case', component: './manager' },
+        { path: '/manager/:organization/:case/:path', component: './manager' }
       ],
     },
   ],
