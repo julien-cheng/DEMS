@@ -2,14 +2,14 @@ import React from 'react';
 
 import styles from './manager.css';
 import { Row, Col, Tree } from 'antd';
+import { PathService } from '@/services/path.service';
 const { TreeNode, DirectoryTree } = Tree;
 export default class ManagerPage extends React.Component {
   constructor(props: any) {
     super(props);
-    // this.state = {
-    //   cases: [],
-    //   createModalVisible: false,
-    // };
+    this.state = {
+      pathTree: null,
+    };
   }
   onSelect = (keys: any, event: any) => {
     console.log('Trigger Select', keys, event);
@@ -18,29 +18,49 @@ export default class ManagerPage extends React.Component {
   onExpand = () => {
     console.log('Trigger Expand');
   };
+  fetchDirectory() {
+    var me = this;
+    new PathService()
+      .getPathPage({
+        organizationKey: this.props.match.params.organization,
+        folderKey: this.props.match.params.case,
+        pathKey: this.props.match.params.path || '',
+      })
+      .then(value => {
+        console.log(value.data.response);
+        this.setState({ pathTree: value.data.response.pathTree });
+      });
+  }
+  componentDidMount() {
+    this.fetchDirectory();
+  }
+  mapTreeNodeToComponent(node: any): any {
+    var self = this;
+    console.log(node.name, node.fullPath);
+    return (
+      <TreeNode title={node.name} key={node.fullPath}>
+        {node.paths.map((x: any) => {
+          return self.mapTreeNodeToComponent(x);
+        })}
+      </TreeNode>
+    );
+  }
 
   render() {
     return (
       <div className={styles.normal}>
         <Row>
-          <Col span={6}>
+          <Col span={4}>
             <DirectoryTree
               multiple={true}
               defaultExpandAll={true}
               onSelect={this.onSelect}
               onExpand={this.onExpand}
             >
-              <TreeNode title="parent 0" key="0-0">
-                <TreeNode title="leaf 0-0" key="0-0-0" isLeaf={true} />
-                <TreeNode title="leaf 0-1" key="0-0-1" isLeaf={true} />
-              </TreeNode>
-              <TreeNode title="parent 1" key="0-1">
-                <TreeNode title="leaf 1-0" key="0-1-0" isLeaf={true} />
-                <TreeNode title="leaf 1-1" key="0-1-1" isLeaf={true} />
-              </TreeNode>
+              {this.state.pathTree && this.mapTreeNodeToComponent(this.state.pathTree)}
             </DirectoryTree>
           </Col>
-          <Col span={18}>col-18 col-push-6</Col>
+          <Col span={20}>col-18 col-push-6</Col>
         </Row>
       </div>
     );
