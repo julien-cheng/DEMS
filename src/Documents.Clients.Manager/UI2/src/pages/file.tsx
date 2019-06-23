@@ -1,7 +1,7 @@
 import React from 'react';
 
 import styles from './manager.css';
-import { Row, Col, Tree, Table, Card, Breadcrumb } from 'antd';
+import { Row, Col, Tree, Table, Card, Breadcrumb, Button, Popover } from 'antd';
 import { PathService } from '@/services/path.service';
 const { TreeNode, DirectoryTree } = Tree;
 import { Upload, Icon, message } from 'antd';
@@ -18,7 +18,8 @@ import { IFileIdentifier } from '@/interfaces/identifiers.model';
 import Utils from '@/services/utils';
 import { FileService } from '@/services/file.service';
 import { ExplorerService } from '@/services/explorer.service';
-import { IImageSet } from '@/interfaces/file-sets.model';
+import { IImageSet, IMediaSet } from '@/interfaces/file-sets.model';
+import { IAllowedOperation } from '@/interfaces/allowed-operation.model';
 
 const { Dragger } = Upload;
 function getFileContentURL(fileIdentifier: IFileIdentifier) {
@@ -105,19 +106,132 @@ export default class FilePage extends React.Component<
                       },
                       this.state.views[0].type,
                     )
-                    .then(value => {
-                      // console.log(value.data.response);
-                      if (value.data.response as IImageSet) {
-                        var imgs = value.data.response as IImageSet;
-                        var imgUrl = getFileContentURL(imgs.rootFileIdentifier);
-                        me.renderView = (
-                          <Card
-                            hoverable={true}
-                            style={{ width: '100%' }}
-                            cover={<img src={imgUrl}></img>}
-                          ></Card>
-                        );
-                        me.forceUpdate();
+                    .then(values => {
+                      console.log(values.data.response);
+                      if (values.data.response && values.data.response.views) {
+                        if (
+                          values.data.response.views[0] &&
+                          values.data.response.views[0].viewerType == 'Image'
+                        ) {
+                          var imgs = values.data.response as IImageSet;
+                          var imgUrl = getFileContentURL(imgs.rootFileIdentifier);
+                          if (imgs.allowedOperations) {
+                            console.log('allowedOPS:', imgs.allowedOperations);
+                          }
+                          me.renderView = (
+                            <Card
+                              hoverable={true}
+                              style={{
+                                maxWidth: '100%',
+                                display: 'inline-block',
+                                transform: 'translate(-50%,-0%)',
+                                position: 'absolute',
+                                left: '50%',
+                              }}
+                              cover={
+                                <img
+                                  src={imgUrl}
+                                  style={{ maxHeight: '50vh', maxWidth: '100%', width: 'auto' }}
+                                ></img>
+                              }
+                            >
+                              {imgs.allowedOperations &&
+                                imgs.allowedOperations.map((x: IAllowedOperation, i) => {
+                                  if (imgs.allowedOperations) {
+                                    if (
+                                      x.isSingleton &&
+                                      x.batchOperation &&
+                                      x.batchOperation.type == 'DownloadRequest'
+                                    ) {
+                                      return (
+                                        <Popover
+                                          trigger="click"
+                                          content={<span>not implemented</span>}
+                                          style={{ marginRight: 12 }}
+                                        >
+                                          <Button
+                                            type="primary"
+                                            style={{
+                                              marginRight:
+                                                i == imgs.allowedOperations.length - 1 ? 0 : 12,
+                                            }}
+                                          >
+                                            {x.displayName}
+                                          </Button>
+                                        </Popover>
+                                      );
+                                    }
+                                  }
+
+                                  return '';
+                                })}
+                              <br />
+                              {/* <p style={{maxWidth:"200px"}}>{JSON.stringify(imgs.allowedOperations)}</p> */}
+                            </Card>
+                          );
+                          me.forceUpdate();
+                        } else if (
+                          values.data.response.views[0] &&
+                          values.data.response.views[0].viewerType == 'Video'
+                        ) {
+                          var vds = values.data.response as IMediaSet;
+                          var imgUrl = getFileContentURL(vds.rootFileIdentifier);
+                          if (vds.allowedOperations) {
+                            console.log('allowedOPS:', vds.allowedOperations);
+                          }
+                          me.renderView = (
+                            <Card
+                              hoverable={true}
+                              style={{
+                                maxWidth: '100%',
+                                display: 'inline-block',
+                                transform: 'translate(-50%,-0%)',
+                                position: 'absolute',
+                                left: '50%',
+                              }}
+                              cover={
+                                <video
+                                  controls={true}
+                                  src={imgUrl}
+                                  style={{ maxHeight: '50vh', maxWidth: '100%', width: 'auto' }}
+                                ></video>
+                              }
+                            >
+                              {vds.allowedOperations &&
+                                vds.allowedOperations.map((x: IAllowedOperation, i) => {
+                                  if (vds.allowedOperations) {
+                                    if (
+                                      x.isSingleton &&
+                                      x.batchOperation &&
+                                      x.batchOperation.type == 'DownloadRequest'
+                                    ) {
+                                      return (
+                                        <Popover
+                                          trigger="click"
+                                          content={<span>not implemented</span>}
+                                          style={{ marginRight: 12 }}
+                                        >
+                                          <Button
+                                            type="primary"
+                                            style={{
+                                              marginRight:
+                                                i == vds.allowedOperations.length - 1 ? 0 : 12,
+                                            }}
+                                          >
+                                            {x.displayName}
+                                          </Button>
+                                        </Popover>
+                                      );
+                                    }
+                                  }
+                                  return '';
+                                })}
+                              <br />
+                              {/* <p style={{maxWidth:"200px"}}>{JSON.stringify(imgs.allowedOperations)}</p> */}
+                            </Card>
+                          );
+                          me.forceUpdate();
+                        }
                       }
                     });
                   // (this.pathTreeRef.current as CaseTree).forceUpdate();
@@ -250,55 +364,55 @@ export default class FilePage extends React.Component<
       pathList = [];
     }
     return (
-      <div className={styles.normal}>
-        <Row>
-          <Col span={4}>
-            <CaseTree manager={this} pathTree={() => this.state.pathTree}></CaseTree>
-          </Col>
-          <Col span={20}>
-            <div style={{ padding: 16, paddingBottom: 0 }}>
-              <Breadcrumb>
-                {/* <Breadcrumb.Item href="/case-list">
+      // <div className={styles.normal}>
+      <Row type="flex">
+        <Col span={4}>
+          <CaseTree manager={this} pathTree={() => this.state.pathTree}></CaseTree>
+        </Col>
+        <Col span={20}>
+          <div style={{ padding: 16, paddingBottom: 0 }}>
+            <Breadcrumb>
+              {/* <Breadcrumb.Item href="/case-list">
                 <Icon type="home" />
               </Breadcrumb.Item> */}
-                <Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <Link
+                  to={Utils.urlFromPathIdentifier({
+                    organizationKey: this.props.match.params.organization,
+                    pathKey: '',
+                    folderKey: this.props.match.params.case,
+                  })}
+                  onClick={() => {
+                    this.props.match.params.path = '';
+                  }}
+                >
+                  <Icon type="user" />
+                  <span> Case Root</span>
+                </Link>
+              </Breadcrumb.Item>
+              {pathList.map((x, i) => (
+                <Breadcrumb.Item key={i}>
                   <Link
                     to={Utils.urlFromPathIdentifier({
                       organizationKey: this.props.match.params.organization,
-                      pathKey: '',
+                      pathKey: pathList.slice(0, i + 1).join('/'),
                       folderKey: this.props.match.params.case,
                     })}
-                    onClick={() => {
-                      this.props.match.params.path = '';
-                    }}
                   >
-                    <Icon type="user" />
-                    <span> Case Root</span>
+                    {x}
                   </Link>
                 </Breadcrumb.Item>
-                {pathList.map((x, i) => (
-                  <Breadcrumb.Item key={i}>
-                    <Link
-                      to={Utils.urlFromPathIdentifier({
-                        organizationKey: this.props.match.params.organization,
-                        pathKey: pathList.slice(0, i + 1).join('/'),
-                        folderKey: this.props.match.params.case,
-                      })}
-                    >
-                      {x}
-                    </Link>
-                  </Breadcrumb.Item>
-                ))}
-                {this.state.file && (
-                  <Breadcrumb.Item key={'f'}>{this.state.file.name}</Breadcrumb.Item>
-                )}
-              </Breadcrumb>
+              ))}
+              {this.state.file && (
+                <Breadcrumb.Item key={'f'}>{this.state.file.name}</Breadcrumb.Item>
+              )}
+            </Breadcrumb>
 
-              <div style={{ paddingTop: 16 }}>{this.renderView}</div>
-            </div>
-          </Col>
-        </Row>
-      </div>
+            <div style={{ paddingTop: 16, height: '100%' }}>{this.renderView}</div>
+          </div>
+        </Col>
+      </Row>
+      // </div>
     );
   }
 }

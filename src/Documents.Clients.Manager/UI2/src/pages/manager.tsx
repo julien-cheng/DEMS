@@ -207,96 +207,96 @@ export default class ManagerPage extends React.Component<
       pathList = [];
     }
     return (
-      <div className={styles.normal}>
-        <Row>
-          <Col span={4}>
-            <CaseTree manager={this} pathTree={() => this.state.pathTree}></CaseTree>
-          </Col>
-          <Col span={20}>
-            <div style={{ padding: 16, paddingBottom: 0 }}>
-              <Breadcrumb>
-                {/* <Breadcrumb.Item href="">
+      // <div className={styles.normal}>
+      <Row type="flex">
+        <Col span={4}>
+          <CaseTree manager={this} pathTree={() => this.state.pathTree}></CaseTree>
+        </Col>
+        <Col span={20}>
+          <div style={{ padding: 16, paddingBottom: 0 }}>
+            <Breadcrumb>
+              {/* <Breadcrumb.Item href="">
                 <Icon type="home" />
               </Breadcrumb.Item> */}
-                <Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <Link
+                  to={Utils.urlFromPathIdentifier({
+                    organizationKey: this.props.match.params.organization,
+                    pathKey: '',
+                    folderKey: this.props.match.params.case,
+                  })}
+                  onClick={() => {
+                    this.props.match.params.path = '';
+                    self.fetchDirectory();
+                  }}
+                >
+                  <Icon type="user" />
+                  <span> Case Root</span>
+                </Link>
+              </Breadcrumb.Item>
+              {pathList.map((x, i) => (
+                <Breadcrumb.Item key={i}>
                   <Link
                     to={Utils.urlFromPathIdentifier({
                       organizationKey: this.props.match.params.organization,
-                      pathKey: '',
+                      pathKey: pathList.slice(0, i + 1).join('/'),
                       folderKey: this.props.match.params.case,
                     })}
                     onClick={() => {
-                      this.props.match.params.path = '';
+                      this.props.match.params.path = pathList.slice(0, i + 1).join('/');
                       self.fetchDirectory();
                     }}
                   >
-                    <Icon type="user" />
-                    <span> Case Root</span>
+                    {x}
                   </Link>
                 </Breadcrumb.Item>
-                {pathList.map((x, i) => (
-                  <Breadcrumb.Item key={i}>
-                    <Link
-                      to={Utils.urlFromPathIdentifier({
-                        organizationKey: this.props.match.params.organization,
-                        pathKey: pathList.slice(0, i + 1).join('/'),
-                        folderKey: this.props.match.params.case,
-                      })}
-                      onClick={() => {
-                        this.props.match.params.path = pathList.slice(0, i + 1).join('/');
-                        self.fetchDirectory();
-                      }}
-                    >
-                      {x}
-                    </Link>
-                  </Breadcrumb.Item>
-                ))}
-              </Breadcrumb>
+              ))}
+            </Breadcrumb>
 
-              <div style={{ paddingTop: 16 }}>{gridView && this.fileGrid(gridView)}</div>
-            </div>
-            <div style={{ padding: 16, paddingTop: 0 }}>
-              {this.props.match && (
-                <Dragger
-                  {...props2}
-                  action={(file: RcFile) => {
-                    var headers = {};
-                    (headers as any)['Content-Disposition'] =
-                      'attachment; filename="' + file.name + '"';
-                    (headers as any)['Content-Range'] =
-                      'bytes 0-' + (file.size - 1) + '/' + file.size;
+            <div style={{ paddingTop: 16 }}>{gridView && this.fileGrid(gridView)}</div>
+          </div>
+          <div style={{ padding: 16, paddingTop: 0 }}>
+            {this.props.match && (
+              <Dragger
+                {...props2}
+                action={(file: RcFile) => {
+                  var headers = {};
+                  (headers as any)['Content-Disposition'] =
+                    'attachment; filename="' + file.name + '"';
+                  (headers as any)['Content-Range'] =
+                    'bytes 0-' + (file.size - 1) + '/' + file.size;
 
-                    return Axios.post(
-                      '/api/upload?pathIdentifier.organizationKey=' +
-                        this.props.match.params.organization +
-                        '&pathIdentifier.folderKey=' +
-                        this.props.match.params.case +
-                        (this.props.match.params.path
-                          ? '&pathIdentifier.pathKey=' + this.props.match.params.path
-                          : '') +
-                        ['lastModified', 'lastModifiedDate', 'name', 'size', 'type']
-                          .map((k: string) => '&fileInformation.' + k + '=' + (file as any)[k])
-                          .join(''),
-                      file,
-                      { headers: headers },
-                    )
-                      .finally(() => {
-                        self.fetchDirectory();
-                      })
-                      .then(x => '' + x);
-                  }}
-                >
-                  <p className="ant-upload-drag-icon">
-                    <Icon type="inbox" />
-                  </p>
-                  <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                  <p className="ant-upload-hint">Support for a single or bulk upload.</p>
-                </Dragger>
-              )}
-            </div>
-          </Col>
-        </Row>
-      </div>
+                  return Axios.post(
+                    '/api/upload?pathIdentifier.organizationKey=' +
+                      this.props.match.params.organization +
+                      '&pathIdentifier.folderKey=' +
+                      this.props.match.params.case +
+                      (this.props.match.params.path
+                        ? '&pathIdentifier.pathKey=' + this.props.match.params.path
+                        : '') +
+                      ['lastModified', 'lastModifiedDate', 'name', 'size', 'type']
+                        .map((k: string) => '&fileInformation.' + k + '=' + (file as any)[k])
+                        .join(''),
+                    file,
+                    { headers: headers },
+                  )
+                    .finally(() => {
+                      self.fetchDirectory();
+                    })
+                    .then(x => '' + x);
+                }}
+              >
+                <p className="ant-upload-drag-icon">
+                  <Icon type="inbox" />
+                </p>
+                <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                <p className="ant-upload-hint">Support for a single or bulk upload.</p>
+              </Dragger>
+            )}
+          </div>
+        </Col>
+      </Row>
+      // </div>
     );
   }
 }

@@ -5,7 +5,7 @@ import Link from 'umi/link';
 
 const BasicLayout: React.FC = props => {
   return (
-    <Layout>
+    <Layout style={{ minHeight: '100vh' }}>
       <Layout.Header>
         {' '}
         <Menu theme="dark" mode="horizontal" style={{ lineHeight: '64px' }}>
@@ -21,7 +21,7 @@ const BasicLayout: React.FC = props => {
           </Menu.Item>
         </Menu>
       </Layout.Header>
-      <Layout.Content>{props.children}</Layout.Content>
+      <Layout.Content style={{ height: 'fill-available' }}>{props.children}</Layout.Content>
       <Layout.Footer></Layout.Footer>
     </Layout>
   );

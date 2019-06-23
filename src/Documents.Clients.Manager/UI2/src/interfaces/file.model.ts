@@ -24,9 +24,9 @@ export interface IFileViewer {
 }
 
 export enum ViewerTypeEnum {
-  Document,
-  Image,
-  Audio,
-  Video,
-  Unknown,
+  Document = 'Document',
+  Image = 'Image',
+  Audio = 'Audio',
+  Video = 'Video',
+  Unknown = 'Unknown',
 }
