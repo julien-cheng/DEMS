@@ -26,7 +26,13 @@ export class FolderService {
       url = '/api/folder';
     return Axios.put(url, newFolder, options);
   }
-
+  deleteCase(dyingFolder: any) {
+    // Working on this
+    let url = '/api/folder/';
+    let headers = { 'Content-type': 'application/json' },
+      options = { headers: headers, body: JSON.stringify(dyingFolder) };
+    return Axios.delete(url, options);
+  }
   saveFolderData(folderData: any) {
     let headers = { 'Content-type': 'application/json' },
       options = { headers: headers },

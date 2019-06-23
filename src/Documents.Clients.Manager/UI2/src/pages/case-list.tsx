@@ -83,7 +83,9 @@ export default class CaseListPage extends React.Component {
     new FolderService().getAllFolders().then(value => {
       me.setState({
         cases: value.data.response.filter(
-          (x: any) => x.identifier.organizationKey == this.props.match.params.id,
+          (x: any) =>
+            x.identifier.organizationKey == this.props.match.params.id ||
+            !this.props.match.params.id,
         ),
       });
     });
