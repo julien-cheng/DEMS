@@ -1,7 +1,7 @@
 import React from 'react';
 
 import styles from './manager.css';
-import { Row, Col, Tree, Table } from 'antd';
+import { Row, Col, Tree, Table, Breadcrumb } from 'antd';
 import { PathService } from '@/services/path.service';
 const { TreeNode, DirectoryTree } = Tree;
 import { Upload, Icon, message } from 'antd';
@@ -13,6 +13,9 @@ import { QuerystringPipe } from '@/pipes/querystring.pipe';
 import CaseTree from '@/components/CaseTree';
 import { IView } from '@/interfaces/view.model';
 import { IPath } from '@/interfaces/path.model';
+import { IFile, IFileViewer } from '@/interfaces/file.model';
+import { IFileIdentifier } from '@/interfaces/identifiers.model';
+import Utils from '@/services/utils';
 
 const { Dragger } = Upload;
 
@@ -32,21 +35,6 @@ var props2 = {
     }
   },
 };
-function mapFileIconToAnt(icon: string): string {
-  if (icon == 'file') {
-    return 'file';
-  } else if (icon == 'video') {
-    return 'video-camera';
-  } else {
-    return 'file-unknown';
-  }
-}
-function urlFromFolderIdentifier(identifier: any) {
-  return (
-    `/manager/${identifier.organizationKey}/${identifier.folderKey}/` +
-    encodeURIComponent(identifier.pathKey)
-  );
-}
 export default class ManagerPage extends React.Component<
   { match: any },
   { pathTree?: IPath; views: IView[] }
@@ -155,17 +143,22 @@ export default class ManagerPage extends React.Component<
     ].map((x: any) => ({ title: x.label, dataIndex: x.keyName })); //view.gridColumns.map((x:any)=>({title:x.label,dataIndex:x.keyName}));
     return (
       <Table
-        dataSource={view.rows.map((x: any) => {
-          var r = { key: x.identifier.fileKey };
+        dataSource={view.rows.map((x: IFile | IPath) => {
+          var r = {
+            key: (x as IPath).type
+              ? (x as IPath).identifier.pathKey
+              : (x as IFile).identifier.fileKey,
+          };
           for (var q of cms) {
             (r as any)[q.dataIndex] = (x as any)[q.dataIndex];
           }
           if ((x as any).type == 'ManagerPathModel') {
+            var p = x as IPath;
             (r as any).name = (
               <Link
-                to={urlFromFolderIdentifier(x.identifier)}
+                to={Utils.urlFromPathIdentifier(p.identifier)}
                 onClick={() => {
-                  this.props.match.params.path = x.identifier.pathKey;
+                  this.props.match.params.path = p.identifier.pathKey;
                   self.fetchDirectory();
                 }}
               >
@@ -173,13 +166,31 @@ export default class ManagerPage extends React.Component<
               </Link>
             );
           } else if ((x as any).type == 'ManagerFileModel') {
+            var f = x as IFile;
             if ((x as any).icons) {
               (r as any).name = (
-                <div>
-                  <Icon type={mapFileIconToAnt((x as any).icons[0])}></Icon> {(r as any).name}
-                </div>
+                <span>
+                  <Icon type={Utils.mapFileIconToAnt((x as any).icons[0])}></Icon> {(r as any).name}
+                </span>
               );
             }
+            // console.log(f.views as IFileViewer[]);
+            (r as any).name = (
+              <Link
+                to={Utils.urlFromFileViewIdentifier(
+                  f.identifier,
+                  decodeURIComponent(this.props.match.params.path || ''),
+                  (f.views as IFileViewer[])[0],
+                )}
+                onClick={() => {
+                  // console.log(f.views as IFileViewer[]);
+                  // this.props.match.params.path = x.identifier.pathKey;
+                  // self.fetchDirectory();
+                }}
+              >
+                {(r as any).name}
+              </Link>
+            );
           }
           return r;
         })}
@@ -190,6 +201,11 @@ export default class ManagerPage extends React.Component<
   render() {
     var self = this;
     var gridView = this.state.views.filter(x => x.type == 'Grid')[0];
+    var path = this.props.match ? decodeURIComponent(this.props.match.params.path || '') : '';
+    var pathList = path.split('/');
+    if (path === '') {
+      pathList = [];
+    }
     return (
       <div className={styles.normal}>
         <Row>
@@ -198,7 +214,46 @@ export default class ManagerPage extends React.Component<
           </Col>
           <Col span={20}>
             <div style={{ padding: 16, paddingBottom: 0 }}>
-              {gridView && this.fileGrid(gridView)}
+              <Breadcrumb>
+                {/* <Breadcrumb.Item href="">
+                <Icon type="home" />
+              </Breadcrumb.Item> */}
+                <Breadcrumb.Item>
+                  <Link
+                    to={Utils.urlFromPathIdentifier({
+                      organizationKey: this.props.match.params.organization,
+                      pathKey: '',
+                      folderKey: this.props.match.params.case,
+                    })}
+                    onClick={() => {
+                      this.props.match.params.path = '';
+                      self.fetchDirectory();
+                    }}
+                  >
+                    <Icon type="user" />
+                    <span> Case Root</span>
+                  </Link>
+                </Breadcrumb.Item>
+                {pathList.map((x, i) => (
+                  <Breadcrumb.Item key={i}>
+                    <Link
+                      to={Utils.urlFromPathIdentifier({
+                        organizationKey: this.props.match.params.organization,
+                        pathKey: pathList.slice(0, i + 1).join('/'),
+                        folderKey: this.props.match.params.case,
+                      })}
+                      onClick={() => {
+                        this.props.match.params.path = pathList.slice(0, i + 1).join('/');
+                        self.fetchDirectory();
+                      }}
+                    >
+                      {x}
+                    </Link>
+                  </Breadcrumb.Item>
+                ))}
+              </Breadcrumb>
+
+              <div style={{ paddingTop: 16 }}>{gridView && this.fileGrid(gridView)}</div>
             </div>
             <div style={{ padding: 16, paddingTop: 0 }}>
               {this.props.match && (

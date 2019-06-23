@@ -5,11 +5,12 @@ import Link from 'umi/link';
 import { Row, Col, Tree, Table } from 'antd';
 import { PathService } from '@/services/path.service';
 import ManagerPage from '@/pages/manager';
+import FilePage from '@/pages/file';
 const { TreeNode, DirectoryTree } = Tree;
 
 class CaseTree extends React.Component<
-  { pathTree: any; manager?: ManagerPage },
-  { pathTree: any; manager?: ManagerPage }
+  { pathTree: any; manager?: ManagerPage | FilePage },
+  { pathTree: any; manager?: ManagerPage | FilePage }
 > {
   constructor(props: any) {
     super(props);

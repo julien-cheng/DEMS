@@ -6,6 +6,8 @@ import { IFileIdentifier, IPathIdentifier } from '@/interfaces/identifiers.model
 import { IFile } from '@/interfaces/file.model';
 import { IView, IGridView, IRow } from '@/interfaces/view.model';
 import * as _ from 'lodash';
+import { IBatchResponse } from '@/interfaces/request-api';
+import { IFileSetBase } from '@/interfaces/file-sets.model';
 const { isEqual } = _;
 // import { IFileIdentifier, IPathIdentifier, IFile, IPath, IRow, IManager, IBatchResponse, IGridView, IView, FileSetTypes, IMediaSegment, IMediaSet } from '../index';
 
@@ -19,7 +21,7 @@ export class FileService {
   fileGet(
     fileIdentifier: IFileIdentifier,
     pathIdentifier: IPathIdentifier,
-  ): Promise<AxiosResponse<any>> {
+  ): Promise<AxiosResponse<IBatchResponse<IFile>>> {
     const url =
       '/api/file?organizationKey=' +
       fileIdentifier.organizationKey +
@@ -45,7 +47,7 @@ export class FileService {
   getFileMediaSet(
     fileIdentifier: IFileIdentifier,
     viewertype: string,
-  ): Promise<AxiosResponse<any>> {
+  ): Promise<AxiosResponse<IBatchResponse<IFileSetBase>>> {
     const apiKey = this.getApiMediaKey(viewertype), // Needs to be dynamic : mediaset for video/audio, imageset for images, textset, documentset for documents and pdf
       url = `/api/views/${apiKey}?fileIdentifier.organizationKey=${fileIdentifier.organizationKey}&fileIdentifier.folderKey=${fileIdentifier.folderKey}&fileIdentifier.fileKey=${fileIdentifier.fileKey}`;
     if (

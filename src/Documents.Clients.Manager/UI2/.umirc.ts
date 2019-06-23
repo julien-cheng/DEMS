@@ -44,6 +44,14 @@ const config: IConfig = {
         { path: '/manager/:organization/:case/:path', component: './manager' }
       ],
     },
+    {
+      path: '/file',
+      component: '../layouts/index',
+      routes: [
+        { path: '/file/:organization/:case/:file/:view', component: './file' },
+        { path: '/file/:organization/:case/:path/:file/:view', component: './file' }
+      ],
+    },
   ],
   proxy: {
     '/api': {
