@@ -24,7 +24,7 @@ export default class ManagerPage extends React.Component {
       .getPathPage({
         organizationKey: this.props.match.params.organization,
         folderKey: this.props.match.params.case,
-        pathKey: this.props.match.params.path || '',
+        pathKey: '',
       })
       .then(value => {
         console.log(value.data.response);
