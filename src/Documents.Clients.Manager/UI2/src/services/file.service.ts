@@ -1,10 +1,10 @@
-﻿import { BatchRequest } from '../models/batch-request.model';
+﻿import { BatchRequest } from '@/interfaces/batch-request.model';
 import { ExplorerService } from './explorer.service';
 import 'axios';
 import Axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { IFileIdentifier, IPathIdentifier } from '@/models/identifiers.model';
-import { IFile } from '@/models/file.model';
-import { IView, IGridView, IRow } from '@/models/view.model';
+import { IFileIdentifier, IPathIdentifier } from '@/interfaces/identifiers.model';
+import { IFile } from '@/interfaces/file.model';
+import { IView, IGridView, IRow } from '@/interfaces/view.model';
 import * as _ from 'lodash';
 const { isEqual } = _;
 // import { IFileIdentifier, IPathIdentifier, IFile, IPath, IRow, IManager, IBatchResponse, IGridView, IView, FileSetTypes, IMediaSegment, IMediaSet } from '../index';

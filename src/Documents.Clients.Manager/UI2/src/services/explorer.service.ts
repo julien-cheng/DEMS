@@ -1,10 +1,10 @@
 ﻿import 'axios';
 import Axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { IPathIdentifier, IFileIdentifier } from '@/models/identifiers.model';
-import { ItemQueryType, ViewMode } from '@/models/view.model';
-import { IManager } from '@/models/manager.model';
-import { IBreadcrumb } from '@/models/breadcrumb.model';
-import { IPath, IPathTreeNode } from '@/models/path.model';
+import { IPathIdentifier, IFileIdentifier } from '@/interfaces/identifiers.model';
+import { ItemQueryType, ViewMode } from '@/interfaces/view.model';
+import { IManager } from '@/interfaces/manager.model';
+import { IBreadcrumb } from '@/interfaces/breadcrumb.model';
+import { IPath, IPathTreeNode } from '@/interfaces/path.model';
 
 export interface IExplorer {
   //folderKey: string;

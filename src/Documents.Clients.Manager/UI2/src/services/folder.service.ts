@@ -1,5 +1,3 @@
-import { Injectable } from '@angular/core';
-// import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import 'axios';
 import Axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 
