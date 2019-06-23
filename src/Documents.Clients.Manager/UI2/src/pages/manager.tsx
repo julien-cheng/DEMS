@@ -10,10 +10,13 @@ import Axios from 'axios';
 import httpAdapter from 'axios';
 import { RcFile } from 'antd/lib/upload';
 import { QuerystringPipe } from '@/pipes/querystring.pipe';
+import CaseTree from '@/components/CaseTree';
+import { IView } from '@/interfaces/view.model';
+import { IPath } from '@/interfaces/path.model';
 
 const { Dragger } = Upload;
 
-var props = {
+var props2 = {
   name: 'file',
   multiple: true,
   action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
@@ -44,20 +47,31 @@ function urlFromFolderIdentifier(identifier: any) {
     encodeURIComponent(identifier.pathKey)
   );
 }
-export default class ManagerPage extends React.Component {
+export default class ManagerPage extends React.Component<
+  { match: any },
+  { pathTree?: IPath; views: IView[] }
+> {
   constructor(props: any) {
     super(props);
     this.state = {
-      pathTree: null,
       views: [],
+      pathTree: {
+        name: '',
+        identifier: {
+          organizationKey: this.props.match ? this.props.match.params.organization : '',
+          folderKey: this.props.match ? this.props.match.params.case : '',
+          pathKey: this.props.match ? decodeURIComponent(this.props.match.params.path || '') : '',
+        },
+        type: 'ManagerPathModel',
+      },
     };
   }
   onSelect = (keys: any, event: any) => {
-    console.log('Trigger Select', keys, event);
+    // console.log('Trigger Select', keys, event);
   };
 
   onExpand = (e: any) => {
-    console.log('Trigger Expand', e);
+    // console.log('Trigger Expand', e);
   };
   fetchDirectory() {
     var me = this;
@@ -70,11 +84,14 @@ export default class ManagerPage extends React.Component {
         })
         .then(value => {
           console.log(value.data.response);
-          console.log(value.data.response.views);
-          this.setState({
-            pathTree: value.data.response.pathTree,
-            views: value.data.response.views,
-          });
+          if (value.data.response) {
+            // console.log("COOL",value.data.response.views,value.data.response.pathTree);
+            this.setState({
+              pathTree: value.data.response.pathTree,
+              views: value.data.response.views,
+            });
+            // (this.pathTreeRef.current as CaseTree).forceUpdate();
+          }
         });
     }
   }
@@ -84,36 +101,36 @@ export default class ManagerPage extends React.Component {
   componentWillReceiveProps() {
     this.fetchDirectory();
   }
-  mapTreeNodeToComponent(node: any, top: bool = false): any {
-    var self = this;
-    // console.log(node.name, node.fullPath);
-    return (
-      <TreeNode
-        title={
-          <Link
-            to={
-              `/manager/${this.props.match.params.organization}/${this.props.match.params.case}/` +
-              encodeURIComponent(node.fullPath)}
-            onClick={() => {
-              this.props.match.params.path = node.fullPath;
-              self.fetchDirectory();
-            }}
-          >
-            {top ? 'Case Files' : node.name}
-          </Link>
-        }
-        key={node.fullPath}
-      >
-        {node.paths &&
-          node.paths.map((x: any) => {
-            return self.mapTreeNodeToComponent(x);
-          })}
-      </TreeNode>
-    );
-  }
+  // mapTreeNodeToComponent(node: any, top: boolean = false): any {
+  //   var self = this;
+  //   // console.log(node.name, node.fullPath);
+  //   return (
+  //     <TreeNode
+  //       title={
+  //         <Link
+  //           to={
+  //             `/manager/${this.props.match.params.organization}/${this.props.match.params.case}/` +
+  //             encodeURIComponent(node.fullPath)}
+  //           onClick={() => {
+  //             this.props.match.params.path = node.fullPath;
+  //             self.fetchDirectory();
+  //           }}
+  //         >
+  //           {top ? 'Case Files' : node.name}
+  //         </Link>
+  //       }
+  //       key={node.fullPath}
+  //     >
+  //       {node.paths &&
+  //         node.paths.map((x: any) => {
+  //           return self.mapTreeNodeToComponent(x);
+  //         })}
+  //     </TreeNode>
+  //   );
+  // }
   fileGrid(view: any) {
     var self = this;
-    console.log(view.rows);
+    // console.log(view.rows);
     var cms = [
       {
         keyName: 'name',
@@ -177,14 +194,7 @@ export default class ManagerPage extends React.Component {
       <div className={styles.normal}>
         <Row>
           <Col span={4}>
-            <DirectoryTree
-              multiple={true}
-              defaultExpandAll={true}
-              onSelect={this.onSelect}
-              onExpand={this.onExpand}
-            >
-              {this.state.pathTree && this.mapTreeNodeToComponent(this.state.pathTree, true)}
-            </DirectoryTree>
+            <CaseTree manager={this} pathTree={() => this.state.pathTree}></CaseTree>
           </Col>
           <Col span={20}>
             <div style={{ padding: 16, paddingBottom: 0 }}>
@@ -193,7 +203,7 @@ export default class ManagerPage extends React.Component {
             <div style={{ padding: 16, paddingTop: 0 }}>
               {this.props.match && (
                 <Dragger
-                  {...props}
+                  {...props2}
                   action={(file: RcFile) => {
                     var headers = {};
                     (headers as any)['Content-Disposition'] =
@@ -214,18 +224,18 @@ export default class ManagerPage extends React.Component {
                           .join(''),
                       file,
                       { headers: headers },
-                    ).finally(() => {
-                      self.fetchDirectory();
-                    });
+                    )
+                      .finally(() => {
+                        self.fetchDirectory();
+                      })
+                      .then(x => '' + x);
                   }}
                 >
                   <p className="ant-upload-drag-icon">
                     <Icon type="inbox" />
                   </p>
                   <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                  <p className="ant-upload-hint">
-                    Support for a single or bulk upload.
-                  </p>
+                  <p className="ant-upload-hint">Support for a single or bulk upload.</p>
                 </Dragger>
               )}
             </div>

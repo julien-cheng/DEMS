@@ -30,9 +30,9 @@ export enum EventType {
 
 // Interfaces
 // ---------------------------------------------
-export interface IBatchResponse {
+export interface IBatchResponse<T> {
   success: boolean;
-  response?: any; //{operationResponses: IBatchResponse[]}
+  response?: T; //{operationResponses: IBatchResponse[]}
   statusCode?: number; // TEMP - will be HttpStatusCode
   exception?: string;
   exceptionType?: string;

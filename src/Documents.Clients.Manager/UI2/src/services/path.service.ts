@@ -2,6 +2,8 @@
 import { IBatchResponse } from '@/interfaces/request-api';
 import Axios, { AxiosResponse } from 'axios';
 import { QuerystringPipe } from '@/pipes/querystring.pipe';
+import { IPath } from '@/interfaces/path.model';
+import { IView } from '@/interfaces/view.model';
 
 export class PathService {
   constructor() {}
@@ -17,7 +19,10 @@ export class PathService {
    */
   // Description: Gets a page of paths - pass filters
   // public pathItemQuery (pageIndex?: number, pageSize?: number, sortField?: string, sortAscending?: boolean, pathKey?: string, folderKey?: string, type?: string, extraHttpRequestParams?: any ) : Observable<models.APIResponseOfItemQueryResponse> {
-  getPathPage(pathIdentifier: IPathIdentifier, params: any = {}): Promise<AxiosResponse<any>> {
+  getPathPage(
+    pathIdentifier: IPathIdentifier,
+    params: any = {},
+  ): Promise<AxiosResponse<IBatchResponse<{ pathTree: IPath; views: IView[] }>>> {
     // console.log('getPathPage - folderKey: ' + folderKey + ' - pathID: ' + pathId + ' - params: '); console.log(params);
     // New new build url querystring global method
     let organizationKey = pathIdentifier.organizationKey,
