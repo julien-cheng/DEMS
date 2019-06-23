@@ -10,9 +10,11 @@
     "fmt": "prettier -c --write 'src/**/*.{ts,tsx,css}'"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.134",
     "antd": "^3.19.5",
     "axios": "^0.19.0",
     "dva": "^2.6.0-beta.6",
+    "lodash": "^4.17.11",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "umi-plugin-routes": "^1.4.0"
