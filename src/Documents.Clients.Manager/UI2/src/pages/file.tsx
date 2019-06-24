@@ -20,7 +20,7 @@ import { FileService } from '@/services/file.service';
 import { ExplorerService } from '@/services/explorer.service';
 import { IImageSet, IMediaSet } from '@/interfaces/file-sets.model';
 import { IAllowedOperation } from '@/interfaces/allowed-operation.model';
-
+import SplitPane from 'react-split-pane';
 const { Dragger } = Upload;
 function getFileContentURL(fileIdentifier: IFileIdentifier) {
   return `/api/file/contents?fileidentifier.organizationKey=${fileIdentifier.organizationKey}&fileidentifier.folderKey=${fileIdentifier.folderKey}&fileidentifier.fileKey=${fileIdentifier.fileKey}&open=true`;
@@ -122,16 +122,20 @@ export default class FilePage extends React.Component<
                             <Card
                               hoverable={true}
                               style={{
-                                maxWidth: '100%',
+                                maxWidth: 'calc( 100% - 32px )',
                                 display: 'inline-block',
-                                transform: 'translate(-50%,-0%)',
+                                transform: 'translate(0%,-0%)',
                                 position: 'absolute',
-                                left: '50%',
+                                left: '16px',
                               }}
                               cover={
                                 <img
                                   src={imgUrl}
-                                  style={{ maxHeight: '50vh', maxWidth: '100%', width: 'auto' }}
+                                  style={{
+                                    maxHeight: 'calc( 100vh - 216px )',
+                                    maxWidth: '100%',
+                                    width: 'auto',
+                                  }}
                                 ></img>
                               }
                             >
@@ -183,17 +187,21 @@ export default class FilePage extends React.Component<
                             <Card
                               hoverable={true}
                               style={{
-                                maxWidth: '100%',
+                                maxWidth: 'calc( 100% - 32px )',
                                 display: 'inline-block',
-                                transform: 'translate(-50%,-0%)',
+                                transform: 'translate(0%,-0%)',
                                 position: 'absolute',
-                                left: '50%',
+                                left: '16px',
                               }}
                               cover={
                                 <video
                                   controls={true}
                                   src={imgUrl}
-                                  style={{ maxHeight: '50vh', maxWidth: '100%', width: 'auto' }}
+                                  style={{
+                                    maxHeight: 'calc( 100vh - 216px )',
+                                    maxWidth: '100%',
+                                    width: 'auto',
+                                  }}
                                 ></video>
                               }
                             >
@@ -274,88 +282,6 @@ export default class FilePage extends React.Component<
   //     </TreeNode>
   //   );
   // }
-  fileGrid(view: any) {
-    var self = this;
-    // console.log(view.rows);
-    var cms = [
-      {
-        keyName: 'name',
-        label: 'Name',
-        isSortable: true,
-      },
-      {
-        keyName: 'modified',
-        label: 'Date Modified',
-        isSortable: true,
-      },
-      {
-        keyName: 'viewerType',
-        label: 'Type',
-        isSortable: true,
-      },
-      {
-        keyName: 'lengthForHumans',
-        label: 'Size',
-        isSortable: true,
-      },
-    ].map((x: any) => ({ title: x.label, dataIndex: x.keyName })); //view.gridColumns.map((x:any)=>({title:x.label,dataIndex:x.keyName}));
-    return (
-      <Table
-        dataSource={view.rows.map((x: IFile | IPath) => {
-          var r = {
-            key: (x as IPath).type
-              ? (x as IPath).identifier.pathKey
-              : (x as IFile).identifier.fileKey,
-          };
-          for (var q of cms) {
-            (r as any)[q.dataIndex] = (x as any)[q.dataIndex];
-          }
-          if ((x as any).type == 'ManagerPathModel') {
-            var p = x as IPath;
-            (r as any).name = (
-              <Link
-                to={Utils.urlFromPathIdentifier(p.identifier)}
-                onClick={() => {
-                  this.props.match.params.path = p.identifier.pathKey;
-                  self.fetchViews();
-                }}
-              >
-                <Icon type="folder"></Icon> {(r as any).name}
-              </Link>
-            );
-          } else if ((x as any).type == 'ManagerFileModel') {
-            var f = x as IFile;
-            if ((x as any).icons) {
-              (r as any).name = (
-                <span>
-                  <Icon type={Utils.mapFileIconToAnt((x as any).icons[0])}></Icon> {(r as any).name}
-                </span>
-              );
-            }
-            console.log(f.views as IFileViewer[]);
-            (r as any).name = (
-              <Link
-                to={Utils.urlFromFileViewIdentifier(
-                  f.identifier,
-                  this.props.match.params.path,
-                  (f.views as IFileViewer[])[0],
-                )}
-                onClick={() => {
-                  console.log(f.views as IFileViewer[]);
-                  // this.props.match.params.path = x.identifier.pathKey;
-                  // self.fetchDirectory();
-                }}
-              >
-                {(r as any).name}
-              </Link>
-            );
-          }
-          return r;
-        })}
-        columns={cms}
-      />
-    );
-  }
   render() {
     var self = this;
     var path = this.props.match ? decodeURIComponent(this.props.match.params.path || '') : '';
@@ -365,11 +291,22 @@ export default class FilePage extends React.Component<
     }
     return (
       // <div className={styles.normal}>
-      <Row type="flex">
-        <Col span={4}>
+      <SplitPane
+        split="vertical"
+        minSize={200}
+        defaultSize={300}
+        resizerClassName={styles.Resizer + ' ' + styles.vertical}
+        style={{
+          left: 0,
+          right: 0,
+          bottom: 0,
+          top: 0,
+        }}
+      >
+        <div>
           <CaseTree manager={this} pathTree={() => this.state.pathTree}></CaseTree>
-        </Col>
-        <Col span={20}>
+        </div>
+        <div>
           <div style={{ padding: 16, paddingBottom: 0 }}>
             <Breadcrumb>
               {/* <Breadcrumb.Item href="/case-list">
@@ -410,8 +347,8 @@ export default class FilePage extends React.Component<
 
             <div style={{ paddingTop: 16, height: '100%' }}>{this.renderView}</div>
           </div>
-        </Col>
-      </Row>
+        </div>
+      </SplitPane>
       // </div>
     );
   }

@@ -16,6 +16,7 @@ import { IPath } from '@/interfaces/path.model';
 import { IFile, IFileViewer } from '@/interfaces/file.model';
 import { IFileIdentifier } from '@/interfaces/identifiers.model';
 import Utils from '@/services/utils';
+import SplitPane from 'react-split-pane';
 
 const { Dragger } = Upload;
 
@@ -208,11 +209,22 @@ export default class ManagerPage extends React.Component<
     }
     return (
       // <div className={styles.normal}>
-      <Row type="flex">
-        <Col span={4}>
+      <SplitPane
+        split="vertical"
+        minSize={200}
+        defaultSize={300}
+        resizerClassName={styles.Resizer + ' ' + styles.vertical}
+        style={{
+          left: 0,
+          right: 0,
+          bottom: 0,
+          top: 0,
+        }}
+      >
+        <div>
           <CaseTree manager={this} pathTree={() => this.state.pathTree}></CaseTree>
-        </Col>
-        <Col span={20}>
+        </div>
+        <div>
           <div style={{ padding: 16, paddingBottom: 0 }}>
             <Breadcrumb>
               {/* <Breadcrumb.Item href="">
@@ -294,8 +306,8 @@ export default class ManagerPage extends React.Component<
               </Dragger>
             )}
           </div>
-        </Col>
-      </Row>
+        </div>
+      </SplitPane>
       // </div>
     );
   }

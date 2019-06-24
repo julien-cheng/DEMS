@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './index.css';
+import './index.css';
 import { Layout, Menu, Icon } from 'antd';
 import Link from 'umi/link';
 
@@ -21,8 +21,10 @@ const BasicLayout: React.FC = props => {
           </Menu.Item>
         </Menu>
       </Layout.Header>
-      <Layout.Content style={{ height: 'fill-available' }}>{props.children}</Layout.Content>
-      <Layout.Footer></Layout.Footer>
+      <Layout.Content style={{ height: 'fill-available', position: 'relative' }}>
+        {props.children}
+      </Layout.Content>
+      {/* <Layout.Footer></Layout.Footer> */}
     </Layout>
   );
 };
