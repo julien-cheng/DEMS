@@ -21,6 +21,7 @@ import { ExplorerService } from '@/services/explorer.service';
 import { IImageSet, IMediaSet } from '@/interfaces/file-sets.model';
 import { IAllowedOperation } from '@/interfaces/allowed-operation.model';
 import SplitPane from 'react-split-pane';
+import FileActions from '@/components/FileActions';
 const { Dragger } = Upload;
 function getFileContentURL(fileIdentifier: IFileIdentifier) {
   return `/api/file/contents?fileidentifier.organizationKey=${fileIdentifier.organizationKey}&fileidentifier.folderKey=${fileIdentifier.folderKey}&fileidentifier.fileKey=${fileIdentifier.fileKey}&open=true`;
@@ -139,36 +140,12 @@ export default class FilePage extends React.Component<
                                 />
                               }
                             >
-                              {imgs.allowedOperations &&
-                                imgs.allowedOperations.map((x: IAllowedOperation, i) => {
-                                  if (imgs.allowedOperations) {
-                                    if (
-                                      x.isSingleton &&
-                                      x.batchOperation &&
-                                      x.batchOperation.type == 'DownloadRequest'
-                                    ) {
-                                      return (
-                                        <Popover
-                                          trigger="click"
-                                          content={<span>not implemented</span>}
-                                          style={{ marginRight: 12 }}
-                                        >
-                                          <Button
-                                            type="primary"
-                                            style={{
-                                              marginRight:
-                                                i == imgs.allowedOperations.length - 1 ? 0 : 12,
-                                            }}
-                                          >
-                                            {x.displayName}
-                                          </Button>
-                                        </Popover>
-                                      );
-                                    }
-                                  }
-
-                                  return '';
-                                })}
+                              {imgs.allowedOperations && (
+                                <FileActions
+                                  file={file}
+                                  allowedOperations={imgs.allowedOperations}
+                                />
+                              )}
                               <br />
                               {/* <p style={{maxWidth:"200px"}}>{JSON.stringify(imgs.allowedOperations)}</p> */}
                             </Card>
@@ -205,36 +182,12 @@ export default class FilePage extends React.Component<
                                 />
                               }
                             >
-                              {vds.allowedOperations &&
-                                vds.allowedOperations.map((x: IAllowedOperation, i) => {
-                                  if (vds.allowedOperations) {
-                                    if (
-                                      x.isSingleton &&
-                                      x.batchOperation &&
-                                      x.batchOperation.type == 'DownloadRequest'
-                                    ) {
-                                      return (
-                                        <Popover
-                                          trigger="click"
-                                          content={<span>not implemented</span>}
-                                          style={{ marginRight: 12 }}
-                                        >
-                                          <Button
-                                            type="primary"
-                                            style={{
-                                              marginRight:
-                                                i == vds.allowedOperations.length - 1 ? 0 : 12,
-                                            }}
-                                          >
-                                            {x.displayName}
-                                          </Button>
-                                        </Popover>
-                                      );
-                                    }
-                                  }
-                                  return '';
-                                })}
-                              <br />
+                              {vds.allowedOperations && (
+                                <FileActions
+                                  file={file}
+                                  allowedOperations={vds.allowedOperations}
+                                />
+                              )}
                               {/* <p style={{maxWidth:"200px"}}>{JSON.stringify(imgs.allowedOperations)}</p> */}
                             </Card>
                           );
