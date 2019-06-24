@@ -1,9 +1,6 @@
-import { Popconfirm, Button } from 'antd';
 import React from 'react';
-import { FolderService } from '@/services/folder.service';
 import Link from 'umi/link';
-import { Row, Col, Tree, Table } from 'antd';
-import { PathService } from '@/services/path.service';
+import { Tree } from 'antd';
 import ManagerPage from '@/pages/manager';
 import FilePage from '@/pages/file';
 const { TreeNode, DirectoryTree } = Tree;
@@ -14,56 +11,49 @@ class CaseTree extends React.Component<
 > {
   constructor(props: any) {
     super(props);
-    // console.log("kdiusgfygfyd",props);
     this.state = {
       pathTree: props.pathTree,
       manager: props.manager,
     };
   }
-  onSelect = (keys: any, event: any) => {
-    // console.log('Trigger Select', keys, event);
-  };
+  onSelect() {}
 
-  onExpand = (e: any) => {
-    // console.log('Trigger Expand', e);
-  };
+  onExpand() {}
+
+  titleOnClick() {
+    (this.state.manager as ManagerPage).props.match.params.path = node.fullPath;
+    (this.state.manager as ManagerPage).fetchDirectory();
+  }
+  title(node: any) {
+    if (this.state.manager) {
+      let path =
+        `/manager/${this.state.manager.props.match.params.organization}/${this.state.manager.props.match.params.case}/` +
+        encodeURIComponent(node.fullPath);
+      return (
+        <Link to={path} onClick={this.titleOnClick}>
+          {top ? 'Case Files' : node.name}
+        </Link>
+      );
+    } else {
+      return top ? 'Case Files' : node.name;
+    }
+  }
 
   mapTreeNodeToComponent(node: any, top: boolean = false): any {
     var self = this;
-    // console.log("FIRE",node.name, node.fullPath);
+    var items =
+      node.paths &&
+      node.paths.map((x: any) => {
+        return self.mapTreeNodeToComponent(x);
+      });
     return (
-      <TreeNode
-        title={
-          self.state.manager ? (
-            <Link
-              to={
-                `/manager/${self.state.manager.props.match.params.organization}/${self.state.manager.props.match.params.case}/` +
-                encodeURIComponent(node.fullPath)}
-              onClick={() => {
-                (self.state.manager as ManagerPage).props.match.params.path = node.fullPath;
-                (self.state.manager as ManagerPage).fetchDirectory();
-              }}
-            >
-              {top ? 'Case Files' : node.name}
-            </Link>
-          ) : top ? (
-            'Case Files'
-          ) : (
-            node.name
-          )
-        }
-        key={node.fullPath}
-      >
-        {node.paths &&
-          node.paths.map((x: any) => {
-            return self.mapTreeNodeToComponent(x);
-          })}
+      <TreeNode title={this.title(node)} key={node.fullPath}>
+        {items}
       </TreeNode>
     );
   }
 
   render() {
-    var self = this;
     return (
       <div>
         <h1>{JSON.stringify(this.state.pathTree)}</h1>

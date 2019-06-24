@@ -2,6 +2,7 @@ import { Table, Popconfirm, Button } from 'antd';
 import React from 'react';
 import { FolderService } from '@/services/folder.service';
 import Link from 'umi/link';
+
 const CaseList = ({ onDelete, cases }: any) => {
   const columns = [
     {

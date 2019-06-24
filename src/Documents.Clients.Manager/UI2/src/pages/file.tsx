@@ -136,7 +136,7 @@ export default class FilePage extends React.Component<
                                     maxWidth: '100%',
                                     width: 'auto',
                                   }}
-                                ></img>
+                                />
                               }
                             >
                               {imgs.allowedOperations &&
@@ -202,7 +202,7 @@ export default class FilePage extends React.Component<
                                     maxWidth: '100%',
                                     width: 'auto',
                                   }}
-                                ></video>
+                                />
                               }
                             >
                               {vds.allowedOperations &&
@@ -304,7 +304,7 @@ export default class FilePage extends React.Component<
         }}
       >
         <div>
-          <CaseTree manager={this} pathTree={() => this.state.pathTree}></CaseTree>
+          <CaseTree manager={this} pathTree={() => this.state.pathTree} />
         </div>
         <div>
           <div style={{ padding: 16, paddingBottom: 0 }}>

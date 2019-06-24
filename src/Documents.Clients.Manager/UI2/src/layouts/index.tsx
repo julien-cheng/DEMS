@@ -11,12 +11,14 @@ const BasicLayout: React.FC = props => {
         <Menu theme="dark" mode="horizontal" style={{ lineHeight: '64px' }}>
           <Menu.Item key="home">
             <Link to="/">
-              <Icon type="home"></Icon>Home
+              <Icon type="home" />
+              Home
             </Link>
           </Menu.Item>
           <Menu.Item key="cases">
             <Link to="/case-list">
-              <Icon type="container"></Icon>Cases
+              <Icon type="container" />
+              Cases
             </Link>
           </Menu.Item>
         </Menu>

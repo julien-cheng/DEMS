@@ -101,7 +101,7 @@ export default class CaseListPage extends React.Component {
   render() {
     return (
       <div className={styles.normal}>
-        <CaseList cases={(this.state as any).cases}></CaseList>
+        <CaseList cases={(this.state as any).cases} />
         {this.props.match.params.id && (
           <div style={{ marginTop: -48 }}>
             <Button type="primary" onClick={this.showModal}>

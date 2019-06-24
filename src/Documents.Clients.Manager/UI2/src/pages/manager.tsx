@@ -17,6 +17,7 @@ import { IFile, IFileViewer } from '@/interfaces/file.model';
 import { IFileIdentifier } from '@/interfaces/identifiers.model';
 import Utils from '@/services/utils';
 import SplitPane from 'react-split-pane';
+import ManagerBreadcrumbs from '@/components/ManagerBreadcrumbs';
 
 const { Dragger } = Upload;
 
@@ -62,7 +63,14 @@ export default class ManagerPage extends React.Component<
   onExpand = (e: any) => {
     // console.log('Trigger Expand', e);
   };
-  fetchDirectory() {
+  onClick(p: any) {
+    this.props.match.params.path = p.identifier.pathKey;
+    this.fetchDirectory();
+  }
+  fetchDirectory(path?: string) {
+    if (path) {
+      this.props.match.params.path = encodeURIComponent(this.props.match.params.path);
+    }
     var me = this;
     if (this.props) {
       new PathService()
@@ -142,62 +150,40 @@ export default class ManagerPage extends React.Component<
         isSortable: true,
       },
     ].map((x: any) => ({ title: x.label, dataIndex: x.keyName })); //view.gridColumns.map((x:any)=>({title:x.label,dataIndex:x.keyName}));
-    return (
-      <Table
-        dataSource={view.rows.map((x: IFile | IPath) => {
-          var r = {
-            key: (x as IPath).type
-              ? (x as IPath).identifier.pathKey
-              : (x as IFile).identifier.fileKey,
-          };
-          for (var q of cms) {
-            (r as any)[q.dataIndex] = (x as any)[q.dataIndex];
-          }
-          if ((x as any).type == 'ManagerPathModel') {
-            var p = x as IPath;
-            (r as any).name = (
-              <Link
-                to={Utils.urlFromPathIdentifier(p.identifier)}
-                onClick={() => {
-                  this.props.match.params.path = p.identifier.pathKey;
-                  self.fetchDirectory();
-                }}
-              >
-                <Icon type="folder"></Icon> {(r as any).name}
-              </Link>
-            );
-          } else if ((x as any).type == 'ManagerFileModel') {
-            var f = x as IFile;
-            if ((x as any).icons) {
-              (r as any).name = (
-                <span>
-                  <Icon type={Utils.mapFileIconToAnt((x as any).icons[0])}></Icon> {(r as any).name}
-                </span>
-              );
-            }
-            // console.log(f.views as IFileViewer[]);
-            (r as any).name = (
-              <Link
-                to={Utils.urlFromFileViewIdentifier(
-                  f.identifier,
-                  decodeURIComponent(this.props.match.params.path || ''),
-                  (f.views as IFileViewer[])[0],
-                )}
-                onClick={() => {
-                  // console.log(f.views as IFileViewer[]);
-                  // this.props.match.params.path = x.identifier.pathKey;
-                  // self.fetchDirectory();
-                }}
-              >
-                {(r as any).name}
-              </Link>
-            );
-          }
-          return r;
-        })}
-        columns={cms}
-      />
-    );
+    let dataSource = view.rows.map((x: IFile | IPath) => {
+      var r = {
+        key: (x as IPath).type ? (x as IPath).identifier.pathKey : (x as IFile).identifier.fileKey,
+      };
+      for (var q of cms) {
+        (r as any)[q.dataIndex] = (x as any)[q.dataIndex];
+      }
+      if ((x as any).type == 'ManagerPathModel') {
+        var p = x as IPath;
+        (r as any).name = (
+          <Link to={Utils.urlFromPathIdentifier(p.identifier)} onClick={this.onClick.bind(p)}>
+            <Icon type="folder" /> {(r as any).name}
+          </Link>
+        );
+      } else if ((x as any).type == 'ManagerFileModel') {
+        var f = x as IFile;
+        if ((x as any).icons) {
+          (r as any).name = (
+            <span>
+              <Icon type={Utils.mapFileIconToAnt((x as any).icons[0])} /> {(r as any).name}
+            </span>
+          );
+        }
+        // console.log(f.views as IFileViewer[]);
+        let path = Utils.urlFromFileViewIdentifier(
+          f.identifier,
+          decodeURIComponent(this.props.match.params.path || ''),
+          (f.views as IFileViewer[])[0],
+        );
+        (r as any).name = <Link to={path}>{(r as any).name}</Link>;
+      }
+      return r;
+    });
+    return <Table dataSource={dataSource} columns={cms} />;
   }
   render() {
     var self = this;
@@ -222,48 +208,16 @@ export default class ManagerPage extends React.Component<
         }}
       >
         <div>
-          <CaseTree manager={this} pathTree={() => this.state.pathTree}></CaseTree>
+          <CaseTree manager={this} pathTree={() => this.state.pathTree} />
         </div>
         <div>
           <div style={{ padding: 16, paddingBottom: 0 }}>
-            <Breadcrumb>
-              {/* <Breadcrumb.Item href="">
-                <Icon type="home" />
-              </Breadcrumb.Item> */}
-              <Breadcrumb.Item>
-                <Link
-                  to={Utils.urlFromPathIdentifier({
-                    organizationKey: this.props.match.params.organization,
-                    pathKey: '',
-                    folderKey: this.props.match.params.case,
-                  })}
-                  onClick={() => {
-                    this.props.match.params.path = '';
-                    self.fetchDirectory();
-                  }}
-                >
-                  <Icon type="user" />
-                  <span> Case Root</span>
-                </Link>
-              </Breadcrumb.Item>
-              {pathList.map((x, i) => (
-                <Breadcrumb.Item key={i}>
-                  <Link
-                    to={Utils.urlFromPathIdentifier({
-                      organizationKey: this.props.match.params.organization,
-                      pathKey: pathList.slice(0, i + 1).join('/'),
-                      folderKey: this.props.match.params.case,
-                    })}
-                    onClick={() => {
-                      this.props.match.params.path = pathList.slice(0, i + 1).join('/');
-                      self.fetchDirectory();
-                    }}
-                  >
-                    {x}
-                  </Link>
-                </Breadcrumb.Item>
-              ))}
-            </Breadcrumb>
+            <ManagerBreadcrumbs
+              manager={this}
+              organization={() => this.props.match.params.organization || ''}
+              path={() => this.props.match.params.path || ''}
+              case={() => this.props.match.params.case || ''}
+            />
 
             <div style={{ paddingTop: 16 }}>{gridView && this.fileGrid(gridView)}</div>
           </div>
