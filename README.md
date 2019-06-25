@@ -1,3 +1,13 @@
+[![NYPTI Logo](https://www.nypti.org/wp-content/uploads/2014/01/NYPTISeal-170.png)](https://www.nypti.org/)
+
+# NYPTI's Digital Evidence Management System (DEMS)
+
+DEMS is a digital evidence file management system from the [New York Prosecutors Training Institute](https://www.nypti.org) designed for today's prosecutors to help them meet Discovery obligations.  
+
+Read about DEMS and it's features [here.](https://books.nypti.org/bedu/dcty/index.html)
+
+Additional information coming in the near future. 
+
 # Documents
 
 ## Development
