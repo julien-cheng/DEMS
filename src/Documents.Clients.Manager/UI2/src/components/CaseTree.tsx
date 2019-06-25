@@ -30,7 +30,7 @@ class CaseTree extends React.Component<
         `/manager/${this.state.manager.props.match.params.organization}/${this.state.manager.props.match.params.case}/` +
         encodeURIComponent(node.fullPath);
       return (
-        <Link to={path} onClick={()=>this.titleOnClick(node)}>
+        <Link to={path} onClick={() => this.titleOnClick(node)}>
           {top ? 'Case Files' : node.name}
         </Link>
       );

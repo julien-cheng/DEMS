@@ -22,7 +22,10 @@ import { IImageSet, IMediaSet } from '@/interfaces/file-sets.model';
 import { IAllowedOperation } from '@/interfaces/allowed-operation.model';
 import SplitPane from 'react-split-pane';
 import FileActions from '@/components/FileActions';
+import ManagerBreadcrumbs from '@/components/ManagerBreadcrumbs';
 const { Dragger } = Upload;
+import { Document, Page } from 'react-pdf';
+import PDFViewer from '@/components/PDFViewer';
 function getFileContentURL(fileIdentifier: IFileIdentifier) {
   return `/api/file/contents?fileidentifier.organizationKey=${fileIdentifier.organizationKey}&fileidentifier.folderKey=${fileIdentifier.folderKey}&fileidentifier.fileKey=${fileIdentifier.fileKey}&open=true`;
 }
@@ -192,6 +195,55 @@ export default class FilePage extends React.Component<
                             </Card>
                           );
                           me.forceUpdate();
+                        } else if (
+                          values.data.response.views[0] &&
+                          values.data.response.views[0].viewerType == 'Document'
+                        ) {
+                          var vds = values.data.response as IMediaSet;
+                          var imgUrl = getFileContentURL(vds.rootFileIdentifier);
+                          if (vds.allowedOperations) {
+                            console.log('allowedOPS:', vds.allowedOperations);
+                          }
+                          me.renderView = (
+                            <Card
+                              hoverable={true}
+                              style={{
+                                maxWidth: 'calc( 100% - 32px )',
+                                display: 'inline-block',
+                                transform: 'translate(0%,-0%)',
+                                position: 'absolute',
+                                left: '16px',
+                              }}
+                              cover={
+                                /* <ReactPDF
+  file={{
+    url: {imgUrl}
+  }}
+  style={{
+    maxHeight: 'calc( 100vh - 216px )',
+    maxWidth: '100%',
+    width: 'auto',
+  }}
+/> */
+                                <PDFViewer
+                                  src={imgUrl}
+                                  style={{
+                                    maxHeight: 'calc( 100vh - 280px )',
+                                    maxWidth: '100%',
+                                    width: 'auto',
+                                  }}
+                                />}
+                            >
+                              {vds.allowedOperations && (
+                                <FileActions
+                                  file={file}
+                                  allowedOperations={vds.allowedOperations}
+                                />
+                              )}
+                              {/* <p style={{maxWidth:"200px"}}>{JSON.stringify(imgs.allowedOperations)}</p> */}
+                            </Card>
+                          );
+                          me.forceUpdate();
                         }
                       }
                     });
@@ -261,42 +313,15 @@ export default class FilePage extends React.Component<
         </div>
         <div>
           <div style={{ padding: 16, paddingBottom: 0 }}>
-            <Breadcrumb>
-              {/* <Breadcrumb.Item href="/case-list">
-                <Icon type="home" />
-              </Breadcrumb.Item> */}
-              <Breadcrumb.Item>
-                <Link
-                  to={Utils.urlFromPathIdentifier({
-                    organizationKey: this.props.match.params.organization,
-                    pathKey: '',
-                    folderKey: this.props.match.params.case,
-                  })}
-                  onClick={() => {
-                    this.props.match.params.path = '';
-                  }}
-                >
-                  <Icon type="user" />
-                  <span> Case Root</span>
-                </Link>
-              </Breadcrumb.Item>
-              {pathList.map((x, i) => (
-                <Breadcrumb.Item key={i}>
-                  <Link
-                    to={Utils.urlFromPathIdentifier({
-                      organizationKey: this.props.match.params.organization,
-                      pathKey: pathList.slice(0, i + 1).join('/'),
-                      folderKey: this.props.match.params.case,
-                    })}
-                  >
-                    {x}
-                  </Link>
-                </Breadcrumb.Item>
-              ))}
-              {this.state.file && (
-                <Breadcrumb.Item key={'f'}>{this.state.file.name}</Breadcrumb.Item>
-              )}
-            </Breadcrumb>
+            {
+              <ManagerBreadcrumbs
+                manager={this}
+                organization={() => this.props.match.params.organization || ''}
+                path={() => this.props.match.params.path || ''}
+                case={() => this.props.match.params.case || ''}
+                fileName={() => (this.state.file ? this.state.file.name : undefined)}
+              />
+            }
 
             <div style={{ paddingTop: 16, height: '100%' }}>{this.renderView}</div>
           </div>

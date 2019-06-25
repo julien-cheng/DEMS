@@ -25,12 +25,44 @@ class FileActions extends React.Component<
 
   render() {
     var self = this;
+    var downloadOperations = self.state.allowedOperations.filter(
+      (x: IAllowedOperation, i) =>
+        x.isSingleton && x.batchOperation && x.batchOperation.type == 'DownloadRequest',
+    );
     return (
       <div>
+        {downloadOperations.length > 0 ? (
+          <Popover
+            trigger="click"
+            content={downloadOperations.map(x => (
+              <Button
+                type="link"
+                style={{
+                  marginRight: 12,
+                }}
+              >
+                {x.displayName}
+              </Button>
+            ))}
+            style={{ marginRight: 12 }}
+          >
+            <Button
+              type="primary"
+              style={{
+                marginRight: 12,
+              }}
+            >
+              Download
+            </Button>
+          </Popover>
+        ) : (
+          ''
+        )}
         {self.state.allowedOperations.map((x: IAllowedOperation, i) => {
           if (x.isSingleton && x.batchOperation && x.batchOperation.type == 'DownloadRequest') {
             return (
               <Popover
+                key={i}
                 trigger="click"
                 content={<span>not implemented</span>}
                 style={{ marginRight: 12 }}

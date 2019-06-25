@@ -12,12 +12,14 @@ class ManagerBreadcrumbs extends React.Component<
     path: () => string;
     case: () => string;
     manager: ManagerPage | FilePage;
+    fileName?: () => string | undefined;
   },
   {
     organization: () => string;
     path: () => string;
     case: () => string;
     manager: ManagerPage | FilePage;
+    fileName?: () => string | undefined;
   }
 > {
   constructor(props: any) {
@@ -27,6 +29,7 @@ class ManagerBreadcrumbs extends React.Component<
       organization: props.organization,
       path: props.path,
       case: props.case,
+      fileName: props.fileName,
     };
   }
   onSelect() {}
@@ -67,13 +70,12 @@ class ManagerBreadcrumbs extends React.Component<
   }
 
   render() {
-    let self = this;
     let caseRoot = Utils.urlFromPathIdentifier({
       organizationKey: this.state.organization(),
       pathKey: '',
       folderKey: this.state.case(),
     });
-    let pathList = this.state.path().split('/');
+    let pathList = decodeURIComponent(this.state.path()).split('/');
     let breadcrumbItems = pathList.map((x, i) => (
       <Breadcrumb.Item key={i}>
         <Link
@@ -83,7 +85,8 @@ class ManagerBreadcrumbs extends React.Component<
             folderKey: this.props.case(),
           })}
           onClick={() => {
-            this.state.manager.fetchDirectory(pathList.slice(0, i + 1).join('/'));
+            if (this.state.manager instanceof ManagerPage)
+              this.state.manager.fetchDirectory(pathList.slice(0, i + 1).join('/'));
           }}
         >
           {x}
@@ -96,7 +99,7 @@ class ManagerBreadcrumbs extends React.Component<
           <Link
             to={caseRoot}
             onClick={() => {
-              this.state.manager.fetchDirectory('');
+              if (this.state.manager instanceof ManagerPage) this.state.manager.fetchDirectory('');
             }}
           >
             <Icon type="user" />
@@ -104,6 +107,13 @@ class ManagerBreadcrumbs extends React.Component<
           </Link>
         </Breadcrumb.Item>
         {breadcrumbItems}
+        {this.state.fileName && this.state.fileName() && (
+          <Breadcrumb.Item>
+            <Link to={'#'}>
+              <span>{this.state.fileName()}</span>
+            </Link>
+          </Breadcrumb.Item>
+        )}
       </Breadcrumb>
     );
   }
