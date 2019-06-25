@@ -24,7 +24,7 @@ class CaseTree extends React.Component<
     (this.state.manager as ManagerPage).props.match.params.path = node.fullPath;
     (this.state.manager as ManagerPage).fetchDirectory();
   }
-  title(node: any) {
+  title(node: any, top: boolean = false) {
     if (this.state.manager) {
       let path =
         `/manager/${this.state.manager.props.match.params.organization}/${this.state.manager.props.match.params.case}/` +
@@ -47,7 +47,7 @@ class CaseTree extends React.Component<
         return self.mapTreeNodeToComponent(x);
       });
     return (
-      <TreeNode title={this.title(node)} key={node.fullPath}>
+      <TreeNode title={this.title(node, top)} key={node.fullPath}>
         {items}
       </TreeNode>
     );
