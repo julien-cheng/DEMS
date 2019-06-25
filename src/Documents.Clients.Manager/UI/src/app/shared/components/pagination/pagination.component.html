@@ -1,0 +1,14 @@
+<nav aria-label="Page navigation example" *ngIf="isPaginationVisible()">
+  <ul class="pagination pagination-sm justify-content-center">
+    <li class="page-item"  [ngClass]="{'disabled': pageNumber <= 1}">
+      <a class="page-link" [routerLink]="baseUrl" [queryParams]="prevParams" >Previous</a>
+    </li>
+     <!-- [ngClass]="{'active': (page === pagination.pageIndex)}" -->
+    <li class="page-item {{page.linkClass}}" *ngFor="let page of pagerObj">
+        <a class="page-link" [routerLink]="[page.pagerUrl]" [queryParams]="page.params">{{ page.pageNumber }} </a>
+    </li> 
+    <li class="page-item"  [ngClass]="{'disabled': pageNumber === totalPages}">
+      <a class="page-link" [routerLink]="baseUrl" [queryParams]="nextParams" >Next</a>
+    </li>
+  </ul>
+</nav>

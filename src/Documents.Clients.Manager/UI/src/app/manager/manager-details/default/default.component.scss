@@ -1,0 +1,25 @@
+/*
+*   File:           default.component.scss
+*   Description:    This files holds styles for default component
+*   Author:         RK - Document Manager API
+*/
+
+
+.myIframe {
+    border: solid #dcdcdc 1px;
+    border-radius: 5px;
+    height: 0;
+    overflow: auto; 
+    position: relative;
+    padding-bottom: 65.25%;
+    padding-top: 30px;
+    -webkit-overflow-scrolling:touch; //<<--- THIS IS THE KEY 
+
+} 
+.myIframe iframe {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}

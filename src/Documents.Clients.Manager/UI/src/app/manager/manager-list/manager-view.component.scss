@@ -1,0 +1,11 @@
+/*
+*   File:           manager-view.component.scss
+*   Description:    This files holds styles for list views: Details, icons and list
+*   Author:         RK - Document Manager API
+*/
+
+@import '../../styles/helpers/_variables.scss';
+@import '../../styles/helpers/_bootstrap-variables.scss';
+.panel{
+    margin-top: -1px;
+}

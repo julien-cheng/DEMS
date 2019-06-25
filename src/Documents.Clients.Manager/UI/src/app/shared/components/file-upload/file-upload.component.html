@@ -1,0 +1,96 @@
+<app-fileUpload #uploader *ngIf="fileUpload" [options]="options" [fileUpload]="fileUpload" (complete)="onCompleteCallback($event)">
+  <div fileUpload-content class="file-upload" *ngIf="!auth.readOnly && fileUpload" appFileDrop [fileUpload]="fileUpload" (postMessage)='postDropMessage($event)'>
+    <h5>File Upload</h5>
+    <hr/>
+    <div class="alert alert-info">
+      <b><i class="fa fa-info-circle"></i> Instructions:</b> Choose files to upload to your directory. You can select more
+      than one file at a time. You can also drag and drop files anywhere on this page to start uploading.
+    </div>
+    <div class="row align-items-center my-2">
+      <div class="col-lg-4 mb-2">
+        <div *ngIf="fileUpload.progress>0">
+          <h5>Queue progress:</h5>
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" [ngStyle]="{'width': fileUpload.progress + '%'}">{{fileUpload.progress}}%</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8 fileupload-buttonbar text-right">
+        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+          <span class="btn btn-success fileinput-button"><i class="fa fa-files-o"></i> <span> Add files</span>
+          <input type="file" appFileSelect [fileUpload]="fileUpload" multiple />
+          </span>
+          <span *ngIf="!fileUpload.isIE11" class="btn btn-success fileinput-button"><i class="fa fa-folder-o"></i> <span> Add Folder</span>
+          <input type="file" appFileSelect [fileUpload]="fileUpload" directory mozDirectory webkitdirectory />
+          </span>
+          <!-- Remove after dev -->
+          <button type="button" *ngIf="!autoUpload" class="btn btn-success" (click)="fileUpload.uploadAllFiles()" [disabled]="fileUpload?.queue?.length <= 0">
+        <i class="fa fa-upload"></i> Upload all</button>
+          <button type="button" class="btn btn-secondary"  (click)="fileUpload.cancelAllFiles()"><i class="fa fa-ban"></i> Cancel All</button>
+          <button type="button" *ngIf="!autoUpload" class="btn btn-danger" [disabled]="!fileUpload?.queue?.length" (click)="fileUpload.clearUploadQueue()">
+          <i class="fa fa-trash"></i> Remove All</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- File Upload Queue -->
+    <div class="container-fluid mt-3" *ngIf="fileUpload?.queue?.length">
+      <h4>Upload queue: <small class="float-right text-info">Queue length: {{ fileUpload?.queue?.length }}</small></h4>
+      <div class="row hidden-xs">
+        <div class="col-sm-4">Name</div>
+        <div class="col-sm-2">Size</div>
+        <div class="col-sm-2 text-center">Status</div>
+        <div class="col-sm-4 text-center">Actions</div>
+      </div>
+      <div class="row" *ngFor="let item of fileUpload.queue">
+        <div class="col-sm-4">
+          <strong>{{item?.file.name}}</strong>
+          <small class="text-muted">{{item?.file.fullPathName}}</small>
+          <div class="progress my-2" *ngIf="item?.fileObjectStatus.isUploading || item?.fileObjectStatus.isUploaded">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"
+              aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{item.progress}}%</div>
+          </div>
+          <small *ngFor="let em of item?.message" class="text-success">
+              {{em}}
+          </small>
+          <small *ngFor="let em of item?.errorMessage" class="invalid-feedback">
+            {{em}}
+          </small>
+        </div>
+        <div class="col-sm-2">{{ item?.file.size | fileSize:true }}</div>
+        <div class="col-sm-2 text-center">
+          <span *ngIf="item.fileObjectStatus.isUploading"><i class="fa fa-cog fa-spin fa-2x" aria-hidden="true"></i></span>
+          <span *ngIf="item.fileObjectStatus.isSuccess"><i class="fa fa-check text-success" aria-hidden="true"></i></span>
+          <span *ngIf="item.fileObjectStatus.isCancel"><i class="fa fa-ban text-warning" aria-hidden="true"></i></span>
+          <span *ngIf="item.fileObjectStatus.isError"><i class="fa fa-exclamation-triangle text-danger" aria-hidden="true"></i></span>
+          <!-- <span *ngIf="item.fileObjectStatus.isPaused"><i class="fa fa-pause text-danger" aria-hidden="true"></i></span> -->
+        </div>
+        <div nowrap class="col-sm-4 text-center">
+          <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+            <button *ngIf="!fileUpload.autoupload" type="button" class="btn btn-success" (click)="fileUpload.uploadFile(item)" [disabled]="item?.fileObjectStatus.isUploading || item?.fileObjectStatus.isSuccess">
+                              <span class="fa fa-upload"></span> Upload</button>
+            <button type="button" class="btn btn-secondary" [disabled]="!item?.fileObjectStatus.isUploading" (click)="fileUpload.cancelFile(item)">
+                              <span class="fa fa-ban"></span> Cancel</button>
+            <button type="button" class="btn btn-danger" (click)="fileUpload.removeFromUploadQueue(item)">
+                              <span class="fa fa-trash"></span> Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3" *ngIf="fileUpload?.failedQueue?.length" class="alert alert-danger">
+      <h4><i class="fa fa-warning"></i> Errors: </h4>
+      <ul *ngFor="let item of fileUpload.failedQueue" class="list-unstyled">
+        <li>
+          <strong>{{item?.file.name}}</strong>
+          <span *ngIf="item?.errorMessage">
+            <small *ngFor="let em of item?.errorMessage" >
+            {{em}}
+            </small>
+         </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</app-fileUpload>

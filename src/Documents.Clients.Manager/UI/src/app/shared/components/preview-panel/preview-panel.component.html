@@ -1,0 +1,12 @@
+<div class="preview-panel" [ngClass]="{'opened': previewVisible, 'bottom': panelBottom, 'right': !panelBottom}">
+  <div class="preview-panel-tab" *ngIf="panelTabText"> 
+    <button type="button" class="btn btn-info btn-sm" aria-label="Open" (click)="closePreviewPanel()">
+    <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{panelTabText}}
+  </button>
+  </div>
+  <div class="preview-panel-content" >
+    <button type="button" class="close" aria-label="Close" (click)="closePreviewPanel()"><span aria-hidden="true">&times;</span></button>
+    <ng-content select="[preview-title]"></ng-content>
+    <ng-content select="[preview-body]"></ng-content>
+  </div>
+</div>

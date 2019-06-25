@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Configurations>Debug;Release;Debug Local</Configurations>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Documents.API.Common\Documents.API.Common.csproj" />
+  </ItemGroup>
+</Project>

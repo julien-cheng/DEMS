@@ -1,0 +1,92 @@
+<div id="manager-detail" class="manager-view" [class.collapsed]="explorerService.fileExplorer.isCollapsed">
+    <div class="row">
+        <div class="left-nav col-md-3">
+            <file-explorer *ngIf="explorerService.fileExplorer.currentExplorer !== undefined" [activeNodeKey]="pathIdentifier.pathKey"></file-explorer>
+        </div>
+        <div class="main-content col-md-9 fullscreenContainer" #fullscreenContainer>
+            <div class="top-toolbar">
+                <div class="row align-items-end">
+                    <div class="col-auto mr-auto breadcrumbs-col mb-1">
+                        <app-breadcrumb *ngIf="!!manager" [manager]="manager" [fileName]="fileName" [pathIdentifier]="pathIdentifier"></app-breadcrumb>
+                    </div>
+                    <div class="col-auto text-right">
+                        <app-search-form [identifier]="pathIdentifier"></app-search-form>
+                    </div>
+                </div>
+                <hr />
+                <div class="text-right mb-2" *ngIf="!!fileSet">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <div app-fileviews-menu *ngIf="fileViews.length > 1" class="btn-group btn-group-sm" role="group" [pathIdentifier]="pathIdentifier"
+                            [fileIdentifier]="fileIdentifier" [fileViews]="fileViews" [viewerType]="viewerType">
+                        </div>
+                        <!-- Dropdown Menu -->
+                        <div class="btn-group btn-group-sm" role="group" *ngIf="allowedOperations.length > 0">
+                            <button id="" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="multiactions">
+                                <div app-operations-menu [allowedOperations]="allowedOperations" [isButton]="false" [itemClass]="'dropdown-item'" (processBatchUiAction)="processBatchUiAction($event);"></div>
+                            </div>
+                        </div>
+                        <button *ngIf="!!file" type="button" class="btn btn-secondary" (click)="togglePreviewPanel()">Properties</button>
+                        <button type="button" class="btn btn-secondary" (click)="toggleFullscreen()">
+                            <i class="fa fa-arrows-alt" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="file-view">
+                <div class="return-div text-right mb-2">
+                    <app-return-link [pathIdentifier]="pathIdentifier" [text]="'Close Preview'" [iconClass]="'fa fa-times'"></app-return-link>
+                </div>
+                <app-messaging *ngIf="!!message" [message]="message"></app-messaging>
+                <ng-template #detailView></ng-template>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Preview panel: remove [panelTab]="'Preview Panel'" to remove panel tab-->
+<app-preview-panel [previewVisible]="previewVisible" (togglePreviewPanel)="togglePreviewPanel()" *ngIf="!!file">
+    <h5 preview-title class="ellipsis">
+        <span>{{file.name}}</span>
+    </h5>
+    <div preview-body>
+        <div class="preview-info">
+            <ng-container [ngSwitch]="file.type">
+                <i aria-hidden="true" class="icon user fa-5x" *ngSwitchCase="'ManagerRecipientModel'"></i>
+                <i aria-hidden="true" class="icon {{file.icons | iconClass }} fa-5x" *ngSwitchDefault></i>
+            </ng-container>
+            <ng-container *ngIf="!!file?.attributes">
+                <div class="row" *ngFor="let key of objectKeys(file.attributes)">
+                    <div class="col-5">{{key}}</div>
+                    <div class="col-7" style="word-wrap:break-word">
+                      {{file.attributes[key]}}
+                      <div *ngIf='IsGPSCoordinate([key])'>
+                        <a href="https://www.google.com/maps/?q= + {{file.attributes[key]}}" target="_blank">View Map</a>
+                      </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            <div class="row" *ngIf="file.name">
+                <div class="col-5">Name:</div>
+                <div class="col-7 ellipsis">{{file.name}}</div>
+            </div>
+            <div class="row" *ngIf="file.lengthForHumans">
+                <div class="col-5">Size:</div>
+                <div class="col-7">{{file.lengthForHumans}}</div>
+            </div>
+            <div class="row" *ngIf="file.created">
+                <div class="col-5">Date Created:</div>
+                <div class="col-7">{{file.created | date:'shortDate'}}</div>
+            </div>
+            <div class="row" *ngIf="file.modified">
+                <div class="col-5">Date Modified:</div>
+                <div class="col-7">{{file.modified | date:'shortDate'}}</div>
+            </div>
+        </div>
+    </div>
+</app-preview-panel>
+
+<app-batch-operations *ngIf="allowedOperations" [allowedOperations]="allowedOperations" (updateViewCallback)="updateView($event)"></app-batch-operations>

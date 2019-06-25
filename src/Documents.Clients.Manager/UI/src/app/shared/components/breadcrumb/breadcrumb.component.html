@@ -1,0 +1,11 @@
+<nav aria-label="breadcrumb" *ngIf="breadcrumbs !== undefined && !!activeNodeKey"  >
+  <ol class="breadcrumb">
+    <ng-container *ngFor="let crumb of breadcrumbs" >
+      <li class="breadcrumb-item" *ngIf="crumb.identifier.pathKey !== activeNodeKey && activeNodeKey!=='root'" >
+        <a [routerLink]="['/manager', crumb.identifier.organizationKey, crumb.identifier.folderKey, crumb.identifier.pathKey]" routerLinkActive="active">{{crumb.name || 'Case Files' }}</a>
+      </li>
+      <li *ngIf="crumb.identifier.pathKey === activeNodeKey || activeNodeKey==='root'" class="breadcrumb-item active" aria-current="page">{{crumb.name || 'Case Files'}}</li>
+    </ng-container>
+    <li *ngIf="!!fileName" class="breadcrumb-item active" aria-current="page">{{fileName}}</li>
+  </ol>
+</nav>

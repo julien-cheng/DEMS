@@ -1,0 +1,49 @@
+<button class="btn btn-sm btn-secondary left-nav-toggler collapsed" type="button" data-toggle="collapse" data-target=".left-navigation"
+  aria-controls="leftNavToggler" aria-expanded="false" aria-label="Toggle navigation">
+  <i class="fa fa-bars"></i>
+</button>
+<div id="media-clips" class="wrapper">
+  <!-- Left content tabbed sections: collapse class for small devices -->
+  <div class="left-navigation collapse show">
+    <app-media-search *ngIf="!!segments && !!videoDuration" 
+    [segments]="segments" 
+    [activeSegment]="activeSegment" 
+    [segmentLabel]="'Video Clips'" 
+    [enableShareLink]="true"
+    [canonicalURLFormat]="mediaSet?.canonicalURLFormat"
+    [pageSize]="100" (onActiveSegmentChange)="changeClipActiveSegmentSearch($event)"></app-media-search>
+  </div>
+  <!-- END OF Left content tabbed sections -->
+  <!-- Middle content tabbed sections -->
+
+  <div class="main-container">
+    <div class="row">
+      <div class="videoCol col-md-5">
+         <app-video-basic *ngIf="!!mediaSet" [mediaSet]="mediaSet" [startTime]="videoStartTime"
+          (onVideoUpdate)="onVideoUpdate($event)" (updateVideoProperties)="updateVideoProperties($event)"></app-video-basic>
+      </div>
+      <div class="col text-right">
+          <app-return-link  [pathIdentifier]="pathIdentifier"></app-return-link>
+      </div>
+    </div>
+
+    <app-media-timeline *ngIf="!!videoDuration; else loadingSliders" [fileIdentifier]="fileIdentifier" [activeSegment]="activeSegment"
+      [allowedOperations]="allowedOperations" [segments]="segments" [videoDuration]="videoDuration" 
+      (onActiveSegmentChange)="changeClipActiveSegment($event)"
+      (onSegmentSave)="onSegmentSave($event)"
+      (processBatchUiAction)="processBatchUiAction($event)" ></app-media-timeline>
+
+    <!-- loading message while sliders and videos are being loaded -->
+    <ng-template #loadingSliders>
+      <div class="alert alert-secondary my-5">
+       <h5><i class="fa fa-cog fa-spin fa-fw"></i> Please wait, we are loading the video... </h5> 
+      </div>
+    </ng-template>
+  </div>
+  <!-- END OF Middle content tabbed sections -->
+</div>
+
+<app-batch-operations *ngIf="!!allowedOperations && !!requestTypesFlags" 
+  [requestTypesFlags]="requestTypesFlags" 
+  [allowedOperations]="allowedOperations" 
+  (updateViewCallback)="updateView($event)" ></app-batch-operations>

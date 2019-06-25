@@ -1,0 +1,44 @@
+/*
+*  File:        transcription-review.component.component.scss
+*  Description: This files holds styles specific for transcription review tab content
+*  Author:      RK - Document Manager API
+*/
+@import '../../styles/helpers/_variables.scss';
+@import '../../styles/helpers/_mixins.scss';
+@import '../../styles/helpers/_bootstrap-variables.scss';
+
+
+// The wrapper container
+.segments-review{
+    padding: 0 30px 30px 40px;
+    overflow-y: auto;
+    max-height: 45em;
+    .row{
+        cursor:pointer;
+    }
+}
+.mark{
+    font-weight: 700;
+    margin-top: 5px;
+}
+hr{
+    opacity: 0.8;
+    &:last-of-type{
+        display: none;
+    }
+}
+
+.btn-after, .btn-before{
+    border-top: solid 1px $hr-border-color;
+    display: block;
+    height: 1px;
+    margin: 20px 0 20px -10px;
+    position: relative;
+    width:102%;
+    .btn{
+        border-radius: 50%;
+        left:-30px;
+        position: absolute;
+        top:-16px;
+    }
+}

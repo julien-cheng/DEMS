@@ -1,0 +1,66 @@
+<!-- panel header section -->
+<div class="panel-header row bg-light">
+  <div class="col pt-2">
+    <h5 *ngIf="!!gridTitle">{{gridTitle}}</h5>
+  </div>
+  <div class="col-auto text-right">
+    <div class="btn-group btn-group-sm">
+        <button *ngIf="!!galleryItems && galleryItems.length>0" class=" btn btn-info" appModalTrigger="galleryModal"><i class="fa fa-picture-o"></i> Image Gallery</button> 
+        <!-- Collapsable Button -->
+        <button class="btn btn-secondary {{!collapsed? '': 'collapsed'}}" type="button" data-toggle="collapse" [attr.data-target]="'#'+viewItemId"
+          aria-expanded="false" aria-controls="collapseExample">
+          <i class="fa" aria-hidden="true"></i>
+        </button>
+    </div>
+     </div>
+</div>
+<div id="{{viewItemId}}" class="panel-body collapse {{!collapsed? 'show': ''}}">
+    <!-- Toolbar -->
+    <div *ngIf="hasRowsAllowedOperations || (!!allowedOperations && allowedOperations.length>0)" class="list-toolbar row">
+      <div class="col-auto mr-auto">
+        <!-- Here goes the hide and show shortcuts -->
+        <div class="pretty checkall" *ngIf="viewMode !== 'details' && rows.length>1">
+          <input type="checkbox" (change)="toggleAllItems($event)" [checked]="gridView.allSelected">
+          <label>
+            <i class="fa fa-check"></i> All
+          </label>
+        </div>
+        <!-- Gridview Rows Intersected AllowedOperation  -->
+        <div app-operations-menu class="btn-group btn-group-sm" *ngIf="gridView.allowedOperationsIntersected.length && gridView.selectedRowItems.length  > 0"
+          [itemClass]="'btn btn-primary'" [showText]="false" [allowedOperations]="gridView.allowedOperationsIntersected" (processBatchUiAction)="processMultipleBatchRequest($event);"></div>
+      </div>
+      <div class="col-auto text-right">
+        <div class="btn-group btn-group-sm" role="group">
+          <!-- Gridview main allowed Operations Obj-->
+          <div app-operations-menu *ngIf="!!allowedOperations" class="btn-group btn-group-sm" [allowedOperations]="allowedOperations"
+            [itemClass]="'btn btn-secondary btn-sm'" (processBatchUiAction)="processMultipleBatchRequest($event);"></div>
+
+          <!-- Multiaction buttons -->
+          <div class="btn-group btn-group-sm" role="group" *ngIf="gridView.allowedOperationsIntersected.length && gridView.selectedRowItems.length  > 0">
+            <button id="" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+            </button>
+              <div app-operations-menu  class="dropdown-menu dropdown-menu-right" aria-labelledby="multiactions" [allowedOperations]="gridView.allowedOperationsIntersected" [isButton]="false" [itemClass]="'dropdown-item'"
+                (processBatchUiAction)="processMultipleBatchRequest($event);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="!!rows && rows.length>0">
+    <!-- Gridview -->
+    <list-view [gridView]="gridView" *ngIf="viewMode === 'list'" (processBatchUiAction)="processMultipleBatchRequest($event, false)"
+      (changeSelectRow)="toggleSelectRow($event)"></list-view>
+    <icons-view [gridView]="gridView" *ngIf="viewMode==='icons'" (processBatchUiAction)="processMultipleBatchRequest($event, false)"
+      (changeSelectRow)="toggleSelectRow($event)"></icons-view>
+    <details-view [gridView]="gridView" *ngIf="viewMode==='details'" (processBatchUiAction)="processMultipleBatchRequest($event, false)"
+      (changeSelectRow)="toggleSelectRow($event)" (toggleAll)="toggleAllItems($event)" [pathIdentifier]="pathIdentifier" [pageFiltersParams]="pageFiltersParams"></details-view>
+    <ng-content select="[pagination-body]"></ng-content>
+    <!--Pagination: -->
+    <app-pagination *ngIf="pagination" [pagination]="pagination" [pathIdentifier]="pathIdentifier" [pageFiltersParams]="pageFiltersParams"></app-pagination>
+  </ng-container>
+  <!--Empty Message for grid: -->
+  <p *ngIf="rows.length <=0" class="folderEmpty my-4">Nothing to show</p>
+</div>
+
+<!--Using this ngIf here will make the gallery only try and download images if the user clicks the download button.-->
+<app-image-gallery *ngIf="!!galleryItems && galleryItems.length>0" [galleryItems]="galleryItems"></app-image-gallery>

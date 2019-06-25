@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  pdfocr:
+    image: registry.violetdata.com/documents.queues.tasks.pdfocr:2.1.1
+    environment:
+      - DocumentsQueuesTasksPDFOCR__API__Uri=http://v-work-acl01:5001/
+      - DocumentsQueuesTasksPDFOCR__API__OrganizationKey=System
+      - DocumentsQueuesTasksPDFOCR__API__UserKey=system
+      - DocumentsQueuesTasksPDFOCR__API__Password=Re#15!%add5

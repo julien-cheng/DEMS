@@ -1,0 +1,13 @@
+/*
+*  File:        subtitles.component.scss
+*  Description: This files holds styles specific for video component
+*  Author:      RK - Document Manager API
+*/
+// @import '../../styles/helpers/_variables.scss';
+//@import '../../styles/helpers/_mixins.scss';
+@import "~bootstrap/scss/mixins";
+@import '../../styles/helpers/_bootstrap-variables.scss';
+
+.card-body{ 
+    min-height: 50px;
+}

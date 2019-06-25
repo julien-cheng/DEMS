@@ -1,0 +1,36 @@
+/*
+*   File:           __perfect-scroll.scss
+*   Description:    This files holds additional styles overrides for the perfect-scrollbar module
+*   Author:         RK - Document Manager API
+*/
+
+/*
+horizontal scroll:
+.ps__rail-x: rail for the scroller
+.ps__thumb-x: the actual scroll
+*/
+.ps__rail-x{
+    //border: solid 1px blue;
+    bottom:0;
+    height: $perfect-scroll-height;
+    margin: 0 $timeline-right 0 1px;
+    z-index: 1000;
+}
+// .ps:hover > .ps__rail-x,
+// .ps--focus > .ps__rail-x
+// .ps__rail-x:hover,
+// .ps__rail-x:focus
+// {
+//   background-color: #ddd;
+//   opacity: 0.2;
+// }
+.ps__thumb-x{
+    bottom: 0;
+}
+.ps__thumb-x,
+.ps__rail-x:hover > .ps__thumb-x,
+.ps__rail-x:focus > .ps__thumb-x {
+    background-color: $perfect-scroll-bg;
+    height: $perfect-scroll-height !important;
+    //opacity: 0.9;
+}

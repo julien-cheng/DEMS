@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <StartupObject>Documents.Clients.Tools.Program</StartupObject>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Documents.API.Client\Documents.API.Client.csproj" />
+    <ProjectReference Include="..\Documents.Provisioning\Documents.Provisioning.csproj" />
+    <ProjectReference Include="..\Documents.Queues.Messages\Documents.Queues.Messages.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Configuration\**" />
+    <EmbeddedResource Remove="Configuration\**" />
+    <None Remove="Configuration\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ConsoleTableExt" Version="2.0.1" />
+    <PackageReference Include="morelinq" Version="2.10.0" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Dockerfile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="dms.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

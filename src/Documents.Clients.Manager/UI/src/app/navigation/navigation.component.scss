@@ -1,0 +1,71 @@
+/*
+*  File:        navigation.component.scss
+*  Description: This files holds styles specific for navigation
+*  Author:      RK - Document Manager API
+*/
+@import '../styles/helpers/_variables.scss';
+@import '../styles/helpers/_mixins.scss';
+@import "~bootstrap/scss/mixins";
+@import '../styles/helpers/_bootstrap-variables.scss';
+
+// Styles specific for navigation
+.navbar{
+    z-index: 200;
+    @media (min-width: 992px){
+        &.navbar-expand-lg .navbar-nav .nav-link{
+            padding-left: 0.8rem;
+            padding-right: 0.8rem;
+        }
+    }
+}
+
+//Large Devices: =<992px
+@include media-breakpoint-down(md) { 
+    .navbar-brand{
+        padding-left: 40px;
+    }
+}
+ .search-form{
+   max-width:300px;
+//     position: relative;
+//     .btn{
+//         box-shadow: none;
+//         outline: none;
+//         position: absolute;
+//         right: 0;
+//         top:0;
+//     }
+    .form-control{
+        width:200px;
+    }
+ }
+
+
+
+#search-results{
+    a{
+        text-decoration: none;
+    }
+}
+
+//TEMPS
+.subnav{
+    display: none;
+    background: #f8f9fa;
+    border-bottom: 1px #ddd solid;
+    position: fixed;
+    top: 56px;
+    z-index: 10;
+    width: 100%;
+    form{
+        max-width: 800px;
+    }
+    .close-panel{
+        font-size: 1.5rem;
+    }
+}
+// Breadcrumb bar
+// .breadcrumb{
+//     position: relative;
+//     z-index: 10;
+// }

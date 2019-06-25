@@ -1,0 +1,7 @@
+<div *ngIf="showFilters" class="search-badges">
+    <ng-container *ngFor="let filter of searchRequest.filters">
+        <p *ngIf="!isIdentifier(filter.name)" class="badge badge-info" >{{filter.label || filter.value}}
+            <a class="fa fa-times" (click)="removeActiveFilter.emit(filter)"></a>
+        </p>
+    </ng-container>
+</div>

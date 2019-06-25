@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>Documents.Queues.Tasks</AssemblyName>
+    <PackageId>Documents.Queues.Tasks</PackageId>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Documents.API.Client\Documents.API.Client.csproj" />
+    <ProjectReference Include="..\Documents.Queues.Messages\Documents.Queues.Messages.csproj" />
+    <ProjectReference Include="..\Documents.Common\Documents.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="PeterKottas.DotNetCore.WindowsService" Version="2.0.3" />
+  </ItemGroup>
+</Project>

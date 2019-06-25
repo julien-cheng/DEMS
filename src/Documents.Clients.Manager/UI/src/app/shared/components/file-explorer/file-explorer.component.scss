@@ -1,0 +1,59 @@
+/*
+*  File:        file-explorer.component.scss
+*  Description: This files holds styles for the FileExplorerComponent.
+*  Author:      RK - Document Manager API
+*/
+
+@import '../../../styles/helpers/_variables.scss';
+@import '../../../styles/helpers/_bootstrap-variables.scss';
+@import "~bootstrap/scss/mixins";
+
+a{
+    color: $gray;
+    &:hover, &:focus{
+        color: $link-hover-color;
+        text-decoration: none;
+    }   
+}
+
+.fe-close{
+    border-radius: 0.2rem 0 0 0.2rem;
+    cursor: pointer;
+    position: absolute;
+    right: -3px;
+    top:2px;
+    z-index: 100;
+}
+
+.tree {
+    margin-top: 20px;
+}
+
+//Mobile 575 and down
+@include media-breakpoint-down(sm) { 
+    .fe-open, .fe-close{
+        border-radius: 0 0 0.2rem 0.2rem;
+        left: 2px;
+        top:0
+    }
+    .fe-open{
+        i.fa::before{
+            content:'\f078';
+        }
+    }
+    .fe-close{
+        right: auto;
+        i.fa::before{
+           content:'\f077';
+        }
+    }
+}
+
+// Nondrop items
+.not-drop-item, .not-drop-item:hover{
+    opacity: 0.2;
+    cursor: not-allowed;
+    .icon{
+        opacity: 0.2;
+    }
+}

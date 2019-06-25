@@ -1,0 +1,37 @@
+<div *ngFor="let row of searchResult.rows" class="col-lg-8">
+    <h5 class="text-primary">
+        <app-link [row]="row" [linkType]="'file'"></app-link>
+    </h5>
+    <small class="sub">Folder:
+        <app-link [row]="buildPathRow(row)" [linkType]="'path'"></app-link>
+    </small>
+    <ng-container [ngSwitch]="row.viewerType.toLowerCase()">
+        <ng-container *ngSwitchDefault>
+            <p [innerHTML]="row.highlights"></p>
+            <ul class="attributes">
+                <li>
+                    <b>Date Created:</b> {{row.created | date}}</li>
+                <li *ngFor="let attribute of row.attributes">
+                    <b>{{attribute.key}}</b> {{ dateService.isDate(attribute.value) ? ( attribute.value | date:'short') : attribute.value}}
+                </li>
+            </ul>
+        </ng-container>
+        <ng-container *ngSwitchCase="'image'">
+            <div class="media mt-2">
+                <app-link [row]="row" [imageLink]="true"></app-link>
+                <div class="media-body">
+                    <p *ngIf="!!row.highlights && row.highlights.length >0" [innerHTML]="row.highlights"></p>
+                    <ul class="attributes">
+                        <li>
+                            <b>Date Created:</b> {{row.created | date}}</li>
+                        <li *ngFor="let attribute of row.attributes">
+                            <b>{{attribute.key}}</b> {{ dateService.isDate(attribute.value) ? ( attribute.value | date:'short')
+                            : attribute.value}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+    <hr>
+</div>

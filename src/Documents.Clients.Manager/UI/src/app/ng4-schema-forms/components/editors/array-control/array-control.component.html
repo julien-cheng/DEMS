@@ -1,0 +1,39 @@
+<div class="card mb-5" [formGroup]="form" >
+  <div class="card-header">
+    <div class="btn-group btn-group-sm float-right" role="group">
+      <button type="button" class="btn btn-primary" (click)="onAddRow($event)">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-secondary {{!collapsed? '': 'collapsed'}}" data-toggle="collapse" [attr.data-target]="'#'+formControlObj.key">
+        <i class="fa" aria-hidden="true"></i>
+      </button>
+    </div>
+    <h5>{{formControlObj.label}}</h5>
+  </div>
+  <div id="{{formControlObj.key}}" class="card-body collapse {{!collapsed? 'show': ''}}">
+    <div class="row no-gutters {{control.controlType + '-row'}}" 
+      *ngFor="let control of mainFormControl; let i = index" 
+      [attr.data-index]="i">
+      <div class="col-auto">
+        <button class="btn btn-sm btn-primary 
+          delete mr-1" type="button" (click)="onDelete(i, $event)">
+          <i class="fa fa-minus-square-o" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="col">
+         <app-schema-form-control 
+          [form]="nestedForm" 
+          [mainFormControl]="control" 
+          (updateFormValue)="updateFormValue(i, control)" >
+        </app-schema-form-control>  
+      </div>
+    </div>
+
+    <!-- Description Messaging Section -->
+    <control-message *ngIf="formControlObj.description" [message]="formControlObj.description" [messageType]="'description'"></control-message>
+    <!-- Validation Messaging Section -->
+    <ng-container *ngIf="isInvalid && !!formControlValidator?.errorMessages && formControlValidator?.errorMessages.length > 0">
+        <control-message *ngFor="let message of formControlValidator.errorMessages" [message]="message" [messageType]="'errorMessage'"></control-message>
+    </ng-container>
+  </div>
+</div>

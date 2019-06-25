@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Documents.Queues.Tasks.Synchronize": {
+      "commandName": "Project"
+    }
+  }
+}

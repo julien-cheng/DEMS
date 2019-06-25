@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>Documents.Clients.Manager</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <DefaultItemExcludes>$(DefaultItemExcludes);UI\node_modules\**</DefaultItemExcludes>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Documents.API.Client\Documents.API.Client.csproj" />
+    <ProjectReference Include="..\Documents.Queues.Messages\Documents.Queues.Messages.csproj" />
+    <ProjectReference Include="..\Documents.Filters.Watermarks\Documents.Filters.Watermarks.csproj" />
+    <ProjectReference Include="..\Documents.Common\Documents.Common.csproj" />
+    <ProjectReference Include="..\Documents.API.Common.EventHooks\Documents.API.Common.EventHooks.csproj" />
+    <ProjectReference Include="..\Documents.Common.WebHost\Documents.Common.WebHost.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Core" Version="1.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.1" />
+    <PackageReference Include="NSwag.AspNetCore" Version="11.12.9" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.1.4" />
+    <PackageReference Include="TimeZoneConverter" Version="2.3.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="UI\**" />
+    <Content Remove="UI\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Modules\oleqyvjf.fbb~" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Dockerfile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <None Update="appsettings.production.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <!-- terrible hack to get this file in the container. should be part
+    of the Documents.Filters.Watermarks nuget but ... reasons -->
+    <None Update="OpenSans-Regular.ttf" Pack="true">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

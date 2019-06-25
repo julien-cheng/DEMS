@@ -1,0 +1,244 @@
+<!-- Download Zip Request -->
+<app-file-download *ngIf="requestTypesFlags.DownloadZipFileRequest &&  !!pathIdentifier" [pathIdentifier]="pathIdentifier"
+    [downloadPayload]="downloadPayload"></app-file-download>
+
+<!-- Global warning confirmation -->
+<app-bootstrap-modal title="Warning" elementID="confirmationDialog" modalSizeClass="modal-md" closeOnBodyCLick="true">
+    <div modal-body>
+        <div [innerHTML]="batchOperationService.batchRequest?.requestDialogConfirmation.message"></div>
+    </div>
+    <div modal-footer>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="processBatchUiAction(batchOperationService.dialogRequestBatchData)">Yes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="batchOperationService.destroy()">No</button>
+    </div>
+</app-bootstrap-modal>
+
+<!-- Move and Copy Modal -->
+<app-bootstrap-modal *ngIf="requestTypesFlags.MoveIntoRequest" title="Move file to folder" elementID="moveExplorerModal"
+    closeOnBodyCLick="true" modalSizeClass="modal-lg">
+    <div id="move-items" modal-body>
+        <div class="alert alert-info">
+            <i class="fa fa-info-circle" aria-hidden="true"></i> Select the target directory below:
+        </div>
+        <div class="container">
+            <file-explorer *ngIf="modalTreeExplorer !== undefined" [currentTreeExplorer]="modalTreeExplorer" (processBatchUiAction)="processBatchUiAction($event)"
+                [isMoveAction]="true"></file-explorer>
+        </div>
+    </div>
+    <div modal-footer>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+    </div>
+</app-bootstrap-modal>
+
+<!-- Create New Folder Modal -->
+<app-bootstrap-modal *ngIf="requestTypesFlags.NewPathRequest" title="Create New Folder" elementID="createPathModal" closeOnBodyCLick="true"
+    modalSizeClass="modal-lg">
+    <div id="create-path" modal-body>
+        <div class="alert alert-info">
+            <i class="fa fa-info-circle" aria-hidden="true"></i> Click on the suggested name to create a new folder or type a new custom name on the text box.
+        </div>
+        <div class="container">
+            <ul class="list-unstyled" *ngIf="suggestedNames">
+                <li *ngFor="let name of suggestedNames">
+                    <span (click)="saveNewPath(name)">
+                        <i class="fa fa-plus" aria-hidden="true"></i> {{name?.name}}</span>
+                </li>
+            </ul>
+            <div class="card bg-light">
+                <form [formGroup]="newPathForm" autocomplete="off" novalidate (ngSubmit)="saveNewPath(newPathForm.value)" class="form-inline card-body">
+                    <label for="newPathName">
+                        <i class="fa fa-folder fa-2x" aria-hidden="true"></i>
+                    </label>
+                    <div class="input-group">
+                        <input #newFolderModalInput id="newPathName" type="text" formControlName="newPathName" class="form-control" placeholder="Enter folder name"
+                        />
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit" [disabled]="newPathName.invalid || modalSaving">
+                                <i class="fa fa-plus"></i> {{modalSaving ?'Saving ...':'Create'}}</button>
+                            <button class="btn btn-outline-secondary" [disabled]="!newPathName.value?.length" type="button" (click)="newPathForm.reset()">
+                                <i class="fa fa-times"></i> Clear</button>
+                        </div>
+                    </div>
+                    <small *ngIf="newPathName.errors?.excludePattern && newPathName.dirty" class="text-danger ml-5">This folder name is not allowed</small>
+                    <small *ngIf="newPathName.errors?.required && newPathName.dirty" class="text-danger ml-5">Folder name is required</small>
+                    <small *ngIf="newPathName.errors?.pattern" class="text-danger ml-5">Special characters are not allowed.</small>
+                    <small *ngIf="newPathName.errors?.maxlength" class="text-danger ml-5">The max allowed number of characters is {{maxLength}}</small>
+                    <input type="hidden" formControlName="pathIdentifierCntrl" />
+                </form>
+            </div>
+        </div>
+    </div>
+    <div modal-footer>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+    </div>
+</app-bootstrap-modal>
+
+<!-- Add Recipient and Add Officer Modal -->
+<app-bootstrap-modal *ngIf="requestTypesFlags.AddRecipientRequest || requestTypesFlags.AddOfficerRequest" title="{{!!addRecipientResponse? recipientModalTemplate.title[0] : recipientModalTemplate.title[1]}}"
+    elementID="addRecipientModal" closeOnBodyCLick="false" modalSizeClass="modal-lg">
+    <div modal-body *ngIf="addRecipientResponse === null">
+        <div class="alert alert-info">
+            <i class="fa fa-info-circle" aria-hidden="true"></i> {{ recipientModalTemplate.instructions }}</div>
+        <form id="addRecipientForm" [formGroup]="newRecipientForm" autocomplete="off" novalidate (keyup.enter)="onEnterSaveNewRecipient(newRecipientForm)"
+            (ngSubmit)="saveNewRecipient(newRecipientForm)">
+            <div class="form-group row">
+                <label for="newRecipientName" class="col-sm-3 col-form-label">{{ recipientModalTemplate.labels.firstName }}</label>
+                <div class="col-sm-9">
+                    <input #modalFocusInput id="newRecipientFName" type="text" formControlName="newRecipientFName" class="form-control" placeholder="Enter first name"
+                    />
+                    <ng-container *ngIf="newRecipientFName?.dirty">
+                        <small *ngIf="newRecipientFName.errors?.required" class="text-danger">{{ recipientModalTemplate.labels.firstName }} is required</small>
+                        <small *ngIf="newRecipientFName.errors?.pattern" class="text-danger">Special Characters are not Allowed.</small>
+                        <small *ngIf="newRecipientFName.errors?.maxlength" class="text-danger">The max allowed number of characters is {{maxLength}}</small>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="newRecipientName" class="col-sm-3 col-form-label">
+                    {{ recipientModalTemplate.labels.lastName }}
+                </label>
+                <div class="col-sm-9">
+                    <input type="text" formControlName="newRecipientLName" class="form-control" placeholder="Enter last name" />
+                    <ng-container *ngIf="newRecipientLName?.dirty">
+                        <small *ngIf="newRecipientLName.errors?.required && newRecipientLName?.dirty" class="text-danger">{{ recipientModalTemplate.labels.lastName }} is required</small>
+                        <small *ngIf="newRecipientLName.errors?.pattern" class="text-danger">Special Characters are not Allowed.</small>
+                        <small *ngIf="newRecipientLName.errors?.maxlength" class="text-danger">The max allowed number of characters is {{maxLength}}</small>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="newRecipientEmail" class="col-sm-3 col-form-label">
+                    {{ recipientModalTemplate.labels.email }}
+                </label>
+                <div class="col-sm-9">
+                    <input type="text" formControlName="newRecipientEmail" class="form-control" placeholder="Enter email" [appInputTrim]="newRecipientEmail"
+                        [isSingleString]="true" />
+                    <small id="emailHelp" class="form-text">*Note: you must send this email yourself. The system does not send emails on your behalf.</small>
+                    <ng-container *ngIf="newRecipientEmail?.dirty">
+                        <small *ngIf="newRecipientEmail.errors?.required && newRecipientEmail?.touched" class="text-danger">{{ recipientModalTemplate.labels.email }} is required</small>
+                        <small *ngIf="!!newRecipientEmail.value && newRecipientEmail.errors?.email && newRecipientEmail?.touched" class="text-danger">{{ recipientModalTemplate.labels.email }} is in the wrong format</small>
+                    </ng-container>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div modal-body *ngIf="!!addRecipientResponse">
+        <div class="alert alert-info" [ngSwitch]="recipientType">
+            <h5>
+                <i class="fa fa-info-circle" aria-hidden="true"></i> Magic Link and Password Instructions</h5>
+            <ng-container *ngSwitchDefault>
+                <p>
+                    These are the password and access links associated with the chosen email address for this discovery package. Click the blue
+                    clipboard icon to copy the information. Once copied you can paste the information in a new email.
+                </p>
+                <p>
+                    It is recommended to send the link and password separately.
+                </p>
+            </ng-container>
+            <ng-container *ngSwitchCase="'leo'">
+                <p>
+                    These are the password and access links associated with the provided email address for this officer upload. Click the blue
+                    clipboard icon to copy the information. Once copied you can paste the information in a new email.
+                </p>
+                <p>
+                    The system will not send an email for you. It is recommended to send the link and password separately.
+                </p>
+            </ng-container>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item" *ngIf="!!addRecipientResponse.name || !!addRecipientResponse.firstName || !!addRecipientResponse.lastName">
+                <strong class="mr-2">{{ recipientModalTemplate.labels.name }}:</strong>
+                <span id="recipientName">{{addRecipientResponse.name || (addRecipientResponse.firstName+ ' ' +addRecipientResponse.lastName)}}</span>
+                <button appClipboardCopy="recipientName" type="button" class="btn btn-info btn-sm float-right" title="Copy recipient's name">
+                    <i class="fa fa-clipboard"></i>
+                </button>
+            </li>
+            <li class="list-group-item">
+                <strong class="mr-2">{{ recipientModalTemplate.labels.email }}:</strong>
+                <span id="recipientEmail">{{addRecipientResponse.email}}</span>
+                <button appClipboardCopy="recipientEmail" type="button" class="btn btn-info btn-sm float-right" title="Copy recipient's  email address">
+                    <i class="fa fa-clipboard"></i>
+                </button>
+                <p class="mt-2" *ngIf="!!addRecipientResponse.email && !!addRecipientResponse.magicLink">
+                    <a [href]="getMailtoUri(addRecipientResponse)">
+                        <i class="fa fa-envelope"></i> Click to compose email</a>
+                </p>
+            </li>
+            <li class="list-group-item" *ngIf="!!addRecipientResponse.password">
+                <strong class="mr-2">{{ recipientModalTemplate.labels.password }}:</strong>
+                <span id="recipientPassword">{{addRecipientResponse.password || '********'}}</span>
+                <button appClipboardCopy="recipientPassword" type="button" class="btn btn-info btn-sm float-right" title="Copy recipient's  password">
+                    <i class="fa fa-clipboard"></i>
+                </button>
+            </li>
+            <li class="list-group-item" *ngIf="!!addRecipientResponse.magicLink">
+                <strong class="mr-2">{{ recipientModalTemplate.labels.magicLink }}:</strong>
+                <button appClipboardCopy="recipientMagicLink" type="button" class="btn btn-info btn-sm float-right" title="Copy magic link">
+                    <i class="fa fa-clipboard"></i>
+                </button>
+                <span id="recipientMagicLink" class="containToken mt-2">{{addRecipientResponse.magicLink}}</span>
+            </li>
+            <li class="list-group-item" *ngIf="!!addRecipientResponse.expirationDate">
+                <strong class="mr-2">Expiration Date:</strong> {{addRecipientResponse.expirationDate | date:'short' }}
+            </li>
+        </ul>
+    </div>
+    <div modal-footer>
+        <ng-container *ngIf="addRecipientResponse ===null">
+            <button class="btn btn-primary" (click)="saveNewRecipient(newRecipientForm)" [disabled]="!newRecipientForm.valid || modalSaving">
+                <i class="fa fa-user-plus"></i> {{modalSaving ?'Saving ...': recipientModalTemplate.saveButtonText}} </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </ng-container>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" *ngIf="!!addRecipientResponse">Done</button>
+    </div>
+</app-bootstrap-modal>
+
+<!-- Turn Over/Publish Modal  -->
+<app-bootstrap-modal *ngIf="requestTypesFlags.PublishRequest || requestTypesFlags.EditPackageNameRequest" title="{{!!editDiscoveryCustomName? 'Edit Package Description': 'Turn Over Shared Discovery Files'}}"
+    elementID="turnOverModal" closeOnBodyCLick="true" modalSizeClass="modal-md">
+    <div modal-body>
+        <div *ngIf="batchOperationService.batchRequest?.requestDialogConfirmation.isSendDisabled;else elsewarning">
+            You must add a receipient before you can turn these files over - you may add recipients here:
+            <a [routerLink]="['/manager/', pathIdentifier.organizationKey, pathIdentifier.folderKey, 'eDiscovery']">Add Recipients</a>
+        </div>
+        <ng-template #elsewarning>
+            <div *ngIf="!batchOperationService.batchRequest?.requestDialogConfirmation.isSendDisabled" [innerHTML]="batchOperationService.batchRequest?.requestDialogConfirmation.message"></div>
+            <form [formGroup]="publishCustomName" autocomplete="off" novalidate (ngSubmit)="saveCustomName(publishCustomName.value, batchOperationService.dialogRequestBatchData)"
+                class="my-3">
+                <label for="customName">Package Description: </label>
+                <small class="text-muted float-right">* optional</small>
+                <input #publishModalFocusInput id="customName" type="text" formControlName="customName" class="form-control" placeholder="Enter package description"
+                    [value]="editDiscoveryCustomName?.customName" />
+            </form>
+        </ng-template>
+    </div>
+    <div modal-footer>
+        <ng-container *ngIf="batchOperationService.batchRequest?.requestDialogConfirmation.isSendDisabled; else elsebuttons">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="batchOperationService.destroy()">Cancel</button>
+        </ng-container>
+        <ng-template #elsebuttons>
+            <button class="btn btn-primary" (click)="saveCustomName(publishCustomName.value, batchOperationService.dialogRequestBatchData)">
+                <i class="fa fa-check"></i> {{!!editDiscoveryCustomName ? 'Save':'Turn Over'}}</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="batchOperationService.destroy()">No</button>
+        </ng-template>
+    </div>
+</app-bootstrap-modal>
+
+<!-- Export Video Clip Name Modal  -->
+<app-bootstrap-modal elementID="exportClipModal" *ngIf="requestTypesFlags.ExportClipRequest" title="{{isFrameExport ?'Export Media Frame' :'Export Media Clip' }}"  closeOnBodyCLick="true"
+    modalSizeClass="modal-md">
+    <div modal-body>
+        <form #exportClipForm="ngForm" autocomplete="off" 
+            (ngSubmit)="saveMediaClipName(exportClipForm, batchOperationService.dialogRequestBatchData)"
+            class="my-3">
+            <label for="clipName">{{isFrameExport ?'Frame':'Clip' }} File Name: </label>
+            <input #clipModalFocusInput [(ngModel)]="filename" type="text" name="fileName" class="form-control" placeholder="Enter file name" />
+            <small class="text-muted">Enter a name for the new {{isFrameExport ?'frame':'clip' }} file</small>
+        </form>
+    </div>
+    <div modal-footer>
+        <button class="btn btn-primary" (click)="exportClipForm.ngSubmit.emit()">
+            <i class="fa fa-share-square-o"></i> Export {{isFrameExport ?'Frame':'Clip' }} </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="batchOperationService.destroy()">No</button>
+    </div>
+</app-bootstrap-modal>

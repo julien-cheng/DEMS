@@ -1,0 +1,42 @@
+/*
+* File: 		_gotop.scss
+* Description:	This file holds styles for the gotop scroller
+* Author:       RK - Document Manager API
+* 
+*
+*/
+
+#gotop {
+    @include opacity(0.2);
+    @include border-radius(50%);
+    background: $gotop-bg;
+    bottom: 10px;
+    color: #fff;
+    cursor: default;
+    display: none;
+    font-size: 40px;
+    font-weight: 100;
+    height: 45px;
+    line-height:45px;
+    padding:0;
+    position: fixed;
+    right: 10px;
+    text-align: center;
+    width: 50px;
+    z-index: 5000;
+    .fa{
+        display:block;
+    }
+    &.active {
+        background: $gotop-bg-active;
+        cursor: pointer;
+        @include opacity(0.8);
+
+        &:hover {
+            @include opacity(1);
+        }
+    }
+    &:hover, &:focus{
+        text-decoration:none;
+    }
+}

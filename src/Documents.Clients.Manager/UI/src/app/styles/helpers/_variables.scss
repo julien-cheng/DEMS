@@ -1,0 +1,72 @@
+﻿/*
+*  File:        _variables.scss
+*  Description: This files holds variables used by site
+*  Author:      RK - Document Manager API
+*/
+$enable-flex:               true;
+
+//Site Colors - TBD
+//---------------------------------------------
+$gray-dark:                 #373a3c;
+$gray:                      #55595c;
+$gray-light:                #818a91;
+$gray-lighter:              #eceeef;
+$gray-lightest:             #f7f7f9;
+
+$folder-yellow:             #ffe999;
+$folder-blue:               #0275d8;
+$hover-blue:                #e5f3ff;
+$folder-green:              #28a745;
+$folder-red:                #dc3545;
+$brand-primary:             #0275d8;
+$link-color:                $brand-primary;
+$btn-primary-bg:            $brand-primary;
+$link-hover-color:          darken($link-color, 15%);
+$text-primary:              theme-color("primary");
+$text-danger:               theme-color("danger");
+$text-warning:              theme-color("warning");
+$text-info:                 theme-color("info");
+
+//Site layouts
+//---------------------------------------------
+$enable-header:                   false; // change if top navigation is enabled
+$header-height:                   56px;
+$main-vertical-padding:           15px;
+
+//New layouts
+// --------------------
+$left-nav-width:                  300px;
+$top-nav-height:                  56px; // Needs to be 0 if nav is not there
+
+// Gotop component
+// --------------------
+$gotop-bg:                        $brand-primary;
+$gotop-bg-active:                 $brand-primary;
+
+// nouislider component
+// --------------------
+$timeline-btns-width:             50px;
+$timeline-right:                  10px;
+$timeline-left:                   0;
+$noui-total-height:               100;
+$noui-mute-total-height:          50;
+$noui-pips-height:                16;
+$noui-marker-height:              23;
+$noui-mute-marker-height:         50;
+$noui-marker-width:               22;
+$noui-border-color:               #CCC;
+$noui-active-bg:                  #e7efef;
+$noui-marker-active-bg:           $brand-primary;
+$noui-marker-inactive-bg:         #ccc;//e5e3e3
+$noui-marker-gray-bg:             #7b7373; //7b7373
+$noui-marker-start-bg:            #4eb8af;
+$noUi-connect-bg:                 #f7fa07;
+$noUi-mute-connect-bg:            #d4edda;
+
+$noui-video-total-height:         4;
+$noUi-video-connect-bg:           $brand-primary;
+$noui-video-marker-top:           -13px; 
+$noui-video-marker-height:        12; 
+
+$perfect-scroll-height:           7px;
+$perfect-scroll-bg:               #797271;

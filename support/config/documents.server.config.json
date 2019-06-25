@@ -1,0 +1,159 @@
+{
+  "DocumentsAPI": {
+    "ElasticSearchUri": "http://localhost:9200",
+    "ElasticSearchIndex": "documents",
+    "QueueURI": "amqp://guest:guest@localhost:5672",
+    "QueueManagementURI": "http://guest:guest@localhost:15672",
+    "ConnectionString": "Server=localhost; Database=Documents; user id=sa; password=wwFRtn9aCa3kAv9J",
+    "BackendGatewayURL": "http://localhost:5020/",
+    "TokenValidationSecret": "SooperSecre1231234t!",
+    "TokenIssuer": "API",
+    "TokenAudience": "API",
+    "TokenExpirationSeconds": 90000,
+    "AuditingEnabled": true,
+    "AuditingExclusion": null
+  },
+  "DocumentsQueuesTasksIndex": {
+    "API": {
+      "Uri": "http://localhost:5001/",
+      "OrganizationKey": "System",
+      "UserKey": "system",
+      "Password": "DocumentsDefault"
+    },
+    "ElasticSearchUri": "http://localhost:9200",
+    "StartupDelay": 4000
+  },
+  "DocumentsQueuesTasksEventRouter": {
+    "API": {
+      "Uri": "http://localhost:5001/",
+      "OrganizationKey": "System",
+      "UserKey": "system",
+      "Password": "DocumentsDefault"
+    }
+  },
+  "DocumentsQueuesTasksToPDF": {
+    "API": {
+      "Uri": "http://localhost:5001/",
+      "OrganizationKey": "System",
+      "UserKey": "system",
+      "Password": "DocumentsDefault"
+    },
+    "UnoConvUri": "http://localhost:3000/proxy/unoconv/pdf"
+  },
+  "DocumentsQueuesTasksImageGen": {
+    "API": {
+      "Uri": "http://localhost:5001/",
+      "OrganizationKey": "System",
+      "UserKey": "system",
+      "Password": "DocumentsDefault"
+    }
+  },
+  "DocumentsQueuesTasksArchive": {
+    "API": {
+      "Uri": "http://localhost:5001/",
+      "OrganizationKey": "System",
+      "UserKey": "system",
+      "Password": "DocumentsDefault"
+    }
+  },
+  "DocumentsQueuesTasksLogReader": {
+    "API": {
+      "Uri": "http://localhost:5001/",
+      "OrganizationKey": "System",
+      "UserKey": "system",
+      "Password": "DocumentsDefault"
+    }
+  },
+  "DocumentsQueuesTasksTextExtract": {
+    "API": {
+      "Uri": "http://localhost:5001/",
+      "OrganizationKey": "System",
+      "UserKey": "system",
+      "Password": "DocumentsDefault"
+    },
+    "ConcurrentInstances": 1,
+    "OCRPDFsIfNoText": true,
+    "MaximumInputFileSize": 52428800,
+    "OutputViewName": "extracted text"
+  },
+  "DocumentsQueuesTasksPDFOCR": {
+    "API": {
+      "Uri": "http://localhost:5001/",
+      "OrganizationKey": "System",
+      "UserKey": "system",
+      "Password": "DocumentsDefault"
+    },
+    "MaximumInputFileSize": 10496000,
+    "OutputViewName": "Searchable PDF",
+    "MaximumSecondsPerPage": 60,
+    "Executable": "/usr/bin/ruby",
+    "Arguments": "/app/pdfocr.rb --input :input: --output :output:"
+  },
+  "DocumentsQueuesTasksExifTool": {
+    "API": {
+      "Uri": "http://localhost:5001/",
+      "OrganizationKey": "System",
+      "UserKey": "system",
+      "Password": "DocumentsDefault"
+    },
+    "MaximumInputFileSize": 2500496000,
+    "OutputViewName": "EXIF"
+  },
+  "DocumentsClientsManager": {
+    "API": {
+      "Uri": "http://localhost:5001/"
+    },
+    "IsBackdoorEnabled": true,
+    "BackdoorOrganizationKey": "demo",
+    "BackdoorUserKey": "user1",
+    "BackdoorPassword": "password",
+
+    "LEOUploadImpersonationOrganization": "System",
+    "LEOUploadImpersonationUser": "system",
+    "LEOUploadImpersonationPasssword": "DocumentsDefault",
+
+    "LEOUploadLandingLocation": "http://localhost:4200/leouploadlanding",
+
+    "EDiscoveryImpersonationOrganization": "System",
+    "EDiscoveryImpersonationUser": "system",
+    "EDiscoveryImpersonationPasssword": "DocumentsDefault",
+
+    "EDiscoveryLandingLocation": "http://localhost:4200/ediscoverylanding",
+
+    "IsFeatureEnabledSearch": true,
+    "MaxFileSize": 12884901888
+  },
+
+  "DocumentsQueuesTasksTranscodeFFMPEG": {
+    "API": {
+      "Uri": "http://localhost:5001/",
+      "OrganizationKey": "System",
+      "UserKey": "system",
+      "Password": "DocumentsDefault"
+    },
+    "OutputViewName": "transcode"
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Warning",
+      "Override": {
+        "Documents": "Information"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "LiterateConsole",
+        "Args": {
+          "outputTemplate": "{Timestamp:mm:ss.fff}-{Level} {SourceContext} {Message}{NewLine}{Exception}"
+        }
+      },
+      {
+        "Name": "Elasticsearch",
+        "Args": {
+          "nodeUris": "http://localhost:9200",
+          "indexFormat": "documents-logging"
+        }
+      }
+    ]
+  }
+}

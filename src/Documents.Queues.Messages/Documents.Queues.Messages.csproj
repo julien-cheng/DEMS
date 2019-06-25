@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Documents.API.Common\Documents.API.Common.csproj" />
+    <ProjectReference Include="..\Documents.Queues.Interfaces\Documents.Queues.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

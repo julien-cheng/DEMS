@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  unoconv:
+    image: zrrrzzt/docker-unoconv-webservice
+    ports:
+      - 3000:3000
+    environment:
+      - PAYLOAD_MAX_SIZE=25000000
+      

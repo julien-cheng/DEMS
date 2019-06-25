@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>Documents.Backends.Drivers.S3</AssemblyName>
+    <PackageId>Documents.Backends.Drivers.S3</PackageId>
+    <RootNamespace>Documents.Backends.Drivers.S3</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Local|AnyCPU'" />
+  <ItemGroup>
+    <ProjectReference Include="..\Documents.Backends.Gateway.Streams\Documents.Backends.Gateway.Streams.csproj" />
+    <ProjectReference Include="..\Documents.Backends.Drivers\Documents.Backends.Drivers.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.3.13" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+  </ItemGroup>
+</Project>

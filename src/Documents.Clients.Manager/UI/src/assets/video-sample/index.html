@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Video WebVTT Example</title>
+  <meta name="keywords" content="html5, webvtt, webvtt example">
+  <meta name="author" content="Breno Polanski">
+  <meta name="description" content="Sample HTML5 code that makes use of a WebVTT file to add subtitles to a video">
+  <style>
+    * {
+      margin: 20px 0 auto;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>HTML5 Video <a href="https://w3c.github.io/webvtt/">WebVTT</a> Example</h1>
+  </header>
+  <section>
+    <p>This video uses the following <a href="./MIB2-subtitles-pt-BR.vtt" target="_blank">WebVTT file</a>.</p>
+    <video width="600" height="400" controls>
+      <source src="./MIB2.mp4" type="video/mp4">
+      <source src="./MIB2.webm" type="video/webm">
+      <track label="pt" kind="subtitles" srclang="pt" src="./MIB2-subtitles-pt-BR.vtt" default />
+    </video>
+  </section>
+  <footer>
+    <p>by <a href="https://github.com/brenopolanski/html5-video-webvtt-example" target="_blank">Breno Polanski</a></p>
+  </footer>
+</body>
+</html>

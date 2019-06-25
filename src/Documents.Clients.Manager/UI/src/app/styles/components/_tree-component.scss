@@ -1,0 +1,76 @@
+﻿/*
+*   File:           _tree-component.scss
+*   Description:    This files holds styles for the tree view component
+*   Author:         RK - Document Manager API
+*/
+
+/*  Available classes:
+   .tree .tree-node 
+  .tree-node-wrapper 
+  .tree-node-expanded 
+  .tree-node-collapsed 
+  .tree-node-focused 
+  .tree-node-active 
+  .tree-node-level-X 
+  .tree-node-leaf .node-wrapper 
+  .toggle-children-wrapper 
+  .toggle-children 
+  .toggle-children-placeholder 
+  .node-content-wrapper 
+  .tree-children 
+  .tree-node-loading 
+  .node-drop-slot 
+  .is-dragging-over 
+  .is-dragging-over-disabled */
+
+//Temp styling for dev
+.tree {
+     max-width: 100%;
+    .node-wrapper{
+        border:solid 1px transparent;
+        display: block;
+        position:relative;
+        .node-content-wrapper{
+            padding: 0 0 0 20px;
+            width: 100%;
+            a{
+                
+                display: block;
+                padding: 5px 20px 5px 0;
+                position:relative;
+                z-index: 5;
+            }
+            &.is-dragging-over-disabled{
+                opacity: 1;  
+            }
+        }
+        
+        .toggle-children-wrapper,
+        .toggle-children-placeholder{
+            left: 0;
+            position: absolute;
+            text-align: center;
+            top:0;
+            width:20px;
+            .toggle-children {
+                top: 1px;
+                z-index: 5;
+            }
+            
+        }
+        &:hover, &:hover .node-content-wrapper
+        {
+            background: #dcf1fa;
+            a{
+                color:#000;
+            }
+        }
+        .pull-right{
+            font-size: 0.8rem;
+            position:absolute;
+            right: 5px;
+            top:5px;
+        }
+       
+    }
+}

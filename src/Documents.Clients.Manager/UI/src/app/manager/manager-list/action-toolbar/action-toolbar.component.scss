@@ -1,0 +1,41 @@
+﻿/*
+*   File:           action-toolbar.component.scss
+*   Description:    This files holds styles for list views: Details, icons and list
+*   Author:         RK - Document Manager API
+*/
+
+@import '../../../styles/helpers/_variables.scss';
+@import '../../../styles/helpers/_bootstrap-variables.scss';
+@import "~bootstrap/scss/mixins";
+
+// Top Action toolbar
+.list-toolbar{
+    //border-bottom: solid 1px $gray-lighter;
+    margin-bottom: 5px;
+    hr{
+        margin: 5px 0;
+        opacity: 0.7;
+    }
+}
+
+ .btn{
+    &.active{
+        background-color: $btn-primary-bg;
+        color:#fff;
+    }
+    &.collapsed{
+         .fa-angle-double-up:before{
+          content: "\F103";
+        }
+    }
+ }
+
+//Responsive
+//-----------------------------------------
+//Mobile 575 and down
+@include media-breakpoint-down(xs) { 
+    .col-auto{
+        text-align: right !important;   
+        width:100%;
+    }
+}

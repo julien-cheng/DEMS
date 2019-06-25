@@ -1,0 +1,126 @@
+﻿/*
+*   File:           _icons.scss
+*   Description:    This files holds base classes for icons
+*   Author:         RK - Document Manager API
+*/
+
+//import your icon library here
+
+
+//Icon classes
+.icon {
+    // @include fa-icon();
+    @extend .fa;
+   // color:#555; // TEMP hardcoded will go in variables
+    &.blue{
+        color: $folder-blue;
+    }
+    &.green{
+        color: $folder-green;
+    }
+    &.red{
+        color: $folder-red;
+    }
+    &.muted{
+        color: $gray-light;
+    }
+    // Files staged and published ***** TBD
+    // &.staged{
+    //     font-weight: bold;   
+    // }
+    
+}
+
+//Default icon for all
+.file{
+    @extend .#{$fa-css-prefix}-file;
+}
+.file-o, .published {
+    @extend .#{$fa-css-prefix}-file-o;
+}
+.folder {
+    @extend .#{$fa-css-prefix}-folder;
+    color: $folder-yellow;
+}
+
+
+.video {
+    @extend .#{$fa-css-prefix}-video-camera;
+}
+
+
+.video-mp4 {
+    @extend .#{$fa-css-prefix}-file-video-o;
+}
+
+.audio {
+    @extend .#{$fa-css-prefix}-file-audio-o;
+}
+
+.pdf{
+    @extend .#{$fa-css-prefix}-file-pdf-o;
+}
+
+.word{
+    @extend .#{$fa-css-prefix}-file-word-o;
+}
+
+.excel{
+    @extend .#{$fa-css-prefix}-file-excel-o;
+}
+
+.img{
+    @extend .#{$fa-css-prefix}-file-image-o;
+}
+
+.txt{
+    @extend .#{$fa-css-prefix}-file-text-o;
+}
+
+.zip{
+    @extend .#{$fa-css-prefix}-file-archive-o;
+}
+.powerpoint{
+    @extend .#{$fa-css-prefix}-file-powerpoint-o;
+}
+
+.user{
+    @extend .#{$fa-css-prefix}-user;
+}
+
+.image{
+    @extend .#{$fa-css-prefix}-image;
+}
+
+.check{
+    @extend .#{$fa-css-prefix}-check;
+}
+
+// Action classes: defaults to '' when empty
+//-----------------------------------------------
+.icon{
+    &.action{ 
+        @extend .#{$fa-css-prefix}-pencil-square-o;
+    }
+    &.upload{
+    @extend .#{$fa-css-prefix}-upload;
+    } 
+    &.download{
+        @extend .#{$fa-css-prefix}-download;
+    } 
+    &.share{
+        @extend .#{$fa-css-prefix}-share-square-o;
+    }
+
+    &.delete{
+        @extend .#{$fa-css-prefix}-pencil-square-o;
+    }
+
+    &.Move{
+        @extend .#{$fa-css-prefix}-sign-in;
+    }
+
+    &.save{
+        @extend .#{$fa-css-prefix}-save;
+    }
+}

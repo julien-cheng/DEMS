@@ -1,0 +1,85 @@
+﻿/*
+* File:             _utilities.scss
+* Description:      This files holds styles for utilities.
+* Author:           RK - Document Manager API
+*/
+
+
+
+//Loading animated gif
+//---------------------------------------------------
+.loading{
+  background: $body-bg url('#{$images-root-directory}/loading.gif') no-repeat center center;
+  background-size: 100% 100%;
+  display: block;
+  height: 200px;
+  overflow: hidden;
+  position: fixed;
+  margin: -100px 0 0 -100px;
+  left:50%;
+  top:50%;
+  text-indent: -9999em;
+  width: 200px;
+  z-index: 1000;
+  &.dark{
+    background-color: transparent;
+  }
+ 
+}
+
+
+
+.btn-panel{
+    border-top: solid 1px #ddd;
+    margin:20px 0;
+    padding:20px 0;
+    text-align: right;
+}
+
+// More button types:
+.btn-collapse{
+  @extend .btn;
+  @extend .btn-sm;
+  @extend .btn-light;
+  border-radius: 8px;
+  height: 30px;
+  width: 30px;
+  .fa{
+    font-size: 18px;
+  }
+}
+
+//Colors:
+.folderYellow{
+   color: $folder-yellow;
+}
+
+.folderEmpty{
+  @extend .text-muted !optional;
+  text-align: center;
+}
+
+
+.ellipses {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.containToken{
+  display: block;
+  max-width: 100%;
+  white-space: normal;
+  width: 100%;
+  word-break: break-all;
+}
+
+.em{
+  @extend .font-italic;
+}
+.bold{
+  @extend .font-weight-bold;
+}
+.normal{
+  @extend .font-weight-normal;
+}

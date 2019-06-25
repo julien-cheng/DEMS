@@ -1,0 +1,10 @@
+<form #form="ngForm" [formGroup]="formGroup" (ngSubmit)="onSchemaFormSubmit($event)">
+    <app-templates [mainFormControl]="mainFormControl" [formGroup]="formGroup" (updateFormValue)="updateFormValue($event)"
+        [columns]="columns" [breakpoint]="breakpoint" ></app-templates>
+    <div *ngIf="displaySubmitButton" class="btn-panel">
+        <button class="btn btn-primary btn-sm" type="submit" [disabled]="!isValid">
+            <i *ngIf="!!submitButtonIcon" class="icon {{submitButtonIcon}}"></i> {{submitButtonText}}</button>
+        <button class="btn btn-secondary btn-sm" type="button" [disabled]="!formGroup.dirty"
+         (click)="onSchemaFormReset($event)" >{{resetButtonText}}</button>
+    </div>
+</form> 

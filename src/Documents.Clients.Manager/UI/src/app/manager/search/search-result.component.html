@@ -1,0 +1,28 @@
+<h5 class="text-primary">
+    <app-link [row]="row" [linkType]="'file'"></app-link>
+</h5>
+<small class="sub">Folder:
+    <app-link [row]="buildPathRow(row)" [linkType]="'path'"></app-link>
+</small>
+<ng-container [ngSwitch]="row.viewerType">
+    <ng-container *ngSwitchDefault>
+        <p [innerHTML]="row.highlights"></p>
+        <p>
+            <b>Date Created:</b> {{row.created | date}}
+        </p>
+    </ng-container>
+    <ng-container *ngSwitchCase="'image'">
+        <div class="media mt-2">
+            <img class="align-self-start mt-2 mr-3" width="120px" *ngIf="!!row.previewImageIdentifier && row.previewImageIdentifier?.fileKey !== null"
+                [src]="'/api/file/contents?fileidentifier.organizationKey='+ row.previewImageIdentifier.organizationKey+ '&fileidentifier.folderKey=' +row.previewImageIdentifier.folderKey+'&fileidentifier.fileKey=' +row.previewImageIdentifier.fileKey"
+                width="120px" />
+            <div class="media-body">
+                <p [innerHTML]="row.highlights"></p>
+                <p>
+                    <b>Date Created:</b> {{row.created | date}}
+                </p>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>
+<hr>

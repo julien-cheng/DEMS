@@ -1,0 +1,211 @@
+{
+	"info": {
+		"name": "documents.api",
+		"_postman_id": "9771e67a-ccc2-9f4a-ee5c-b7494d72766b",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "folder get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:5001/api/folder?organizationKey=PCMS:259&folderKey=BD41619A22F7A09EC2BD52BBD41619A22F7A09EC2BD52B5389EBF129415236A4D487AE1E2E9AFB1CDD505EF5389EBF129415236A4D487AE1E2E9AFB1CDD505EF",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"folder"
+					],
+					"query": [
+						{
+							"key": "organizationKey",
+							"value": "PCMS:259",
+							"equals": true
+						},
+						{
+							"key": "folderKey",
+							"value": "BD41619A22F7A09EC2BD52BBD41619A22F7A09EC2BD52B5389EBF129415236A4D487AE1E2E9AFB1CDD505EF5389EBF129415236A4D487AE1E2E9AFB1CDD505EF",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "folder post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"identifier\": {\r\n        \"folderKey\": null,\r\n        \"organizationKey\": \"PCMS:259\"\r\n    },\r\n    \"files\": {\r\n        \"rows\": [\r\n            {\r\n                \"identifier\": {\r\n                    \"fileKey\": \"filekey\",\r\n                    \"folderKey\": \"testing\",\r\n                    \"organizationKey\": \"PCMS:259\"\r\n                },\r\n                \"name\": \"first.file\",\r\n                \"mimeType\": \"mime/type\",\r\n                \"length\": 1000,\r\n                \"lengthForHumans\": \"1000 B\",\r\n                \"created\": \"2018-01-04T20:20:20.14\",\r\n                \"modified\": \"2018-01-04T20:20:20.14\",\r\n                \"fileMetadata\": {\r\n                    \"file\": {\r\n                        \"meta3\": \"value3\",\r\n                        \"meta4\": \"value4\"\r\n                    }\r\n                },\r\n                \"filePrivileges\": null\r\n            }\r\n        ],\r\n        \"totalRowCount\": 1\r\n    },\r\n    \"fileMetadata\": {\r\n        \"folder\": {\r\n            \"meta1\": \"value1\"\r\n        }\r\n    },\r\n    \"folderMetadata\": {\r\n        \"folder\": {\r\n            \"meta2\": \"value2\"\r\n        }\r\n    },\r\n    \"filePrivileges\": null,\r\n    \"folderPrivileges\": null\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5001/api/folder?organizationKey=PCMS:259",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"folder"
+					],
+					"query": [
+						{
+							"key": "organizationKey",
+							"value": "PCMS:259",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "folder put",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"identifier\": {\r\n        \"folderKey\": \"BD41619A22F7A09EC2BD52B5389EBF129415236A4D487AE1E2E9AFB1CDD505EF\",\r\n        \"organizationKey\": \"PCMS:259\"\r\n    },\r\n    \"fileMetadata\": {\r\n        \"folder\": {\r\n            \"testkey\": \"AwesomeFile\"\r\n        }\r\n    },\r\n    \"folderMetadata\": {\r\n        \"folder\": {\r\n            \"meta2\": \"value3\",\r\n            \"Newkey\": \"testValue\"\r\n        }\r\n    },\r\n    \"filePrivileges\": {},\r\n    \"folderPrivileges\":{\r\n    \t\"folder\": {\r\n    \t\t\"read2\": [\r\n\t\t\t\t{\r\n\t    \t\t\t\"overrideKey\": \"default\",\r\n\t    \t\t\t\"requiredIdentifiers\": [\"abc\", \"def\"]\r\n\t    \t\t},\r\n\t\t\t\t{\r\n\t    \t\t\t\"overrideKey\": \"other\",\r\n\t    \t\t\t\"requiredIdentifiers\": [\"xyz\"]\r\n\t    \t\t}\r\n    \t\t],\r\n    \t\t\"write\": [\r\n\t\t\t\t{\r\n\t    \t\t\t\"overrideKey\": \"default\",\r\n\t    \t\t\t\"requiredIdentifiers\": [\"abc\", \"def\"]\r\n\t    \t\t},\r\n\t\t\t\t{\r\n\t    \t\t\t\"overrideKey\": \"other\",\r\n\t    \t\t\t\"requiredIdentifiers\": [\"xyz\"]\r\n\t    \t\t}\r\n    \t\t]\r\n    \t\t\r\n    \t}\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5001/api/folder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"folder"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "organization get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:5001/api/organization?organizationKey=PCMS:259",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"organization"
+					],
+					"query": [
+						{
+							"key": "organizationKey",
+							"value": "PCMS:259",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "file get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:5001/api/file?organizationKey=PCMS:259&folderKey=testing&fileKey=filekey",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"file"
+					],
+					"query": [
+						{
+							"key": "organizationKey",
+							"value": "PCMS:259",
+							"equals": true
+						},
+						{
+							"key": "folderKey",
+							"value": "testing",
+							"equals": true
+						},
+						{
+							"key": "fileKey",
+							"value": "filekey",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfb2lkIjoiNyIsIl9va3kiOiJTeXN0ZW0iLCJfaWRzIjoiIiwiX3VpZCI6IjM5IiwiX3VreSI6InN5c3RlbSIsIl9zdXAiOiJUcnVlIiwic3ViIjoic3lzdGVtIiwianRpIjoiYWVlODA0YjMtNzU4Ni00MWU2LWIxYjgtMmJkNTYyZmRkYzkxIiwiaWF0IjoxNTE1MDg5MDA2LCJuYmYiOjE1MTUwODkwMDUsImV4cCI6MTUxNTE3NTQwNSwiaXNzIjoiRG9jdW1lbnRzLkFQSSIsImF1ZCI6IkRvY3VtZW50cy5BUEkifQ.Zyx1vHH25KoAr_KAaa_VsutB930lq86Ii_D5cPVjQf4",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3bc44753-e848-4bd0-92be-94a0917b7b06",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "7b0f4f5f-2665-4259-b5c0-110472dd41f5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

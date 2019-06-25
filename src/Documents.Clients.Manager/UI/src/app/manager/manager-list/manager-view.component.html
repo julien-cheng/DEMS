@@ -1,0 +1,35 @@
+<div id="manager-list" class="manager-view" data-iframe-height [class.collapsed]="explorerService.fileExplorer.isCollapsed">
+  <div class="row">
+    <div class="left-nav col-md-3">
+      <file-explorer *ngIf="explorerService.fileExplorer.currentExplorer !== undefined" [currentTreeExplorer]="mainCurrentTreeExplorer"
+        [activeNodeKey]="pathKey" (processBatchUiAction)="processBatchUiAction($event)"></file-explorer>
+    </div>
+    <div class="main-content col-md-9">
+      <!--Toolbar Component-->
+      <app-action-toolbar *ngIf="manager" [pathIdentifier]="pathIdentifier" [manager]="manager" [(viewModeProp)]="viewMode" (updateView)="updateView()"
+        (processBatchUiAction)="processBatchUiAction($event)"></app-action-toolbar>
+      <!-- Views -->
+      <ng-container *ngFor="let view of views; let i = index;" [ngSwitch]="view.type.toLowerCase()">
+        <div class="panel">
+          <object-view *ngSwitchCase="'object'" [viewItem]="view" [viewItemId]="'viewItemId_'+i"></object-view>
+          <grid-view *ngSwitchCase="'grid'" [pathIdentifier]="pathIdentifier" [viewItem]="view" [pageFiltersParams]="pageFiltersParams"
+            [viewMode]="viewMode" [gridviewValidators]="gridviewValidators" [viewItemId]="'viewItemId_'+i" (processBatchUiAction)="processBatchUiAction($event)"></grid-view>
+        </div>
+      </ng-container>
+      
+      <!-- FileUpload if in allowedOperations -->
+       <app-file-upload *ngIf="requestTypesFlags?.UploadRequest" [pathIdentifier]="pathIdentifier" [appConfiguration]="appConfigService.configuration"
+        (updateView)="updateView()"></app-file-upload> 
+    </div>
+  </div>
+</div>
+
+<!-- AutoDownload on Landing and download components -->
+<app-file-autodownload *ngIf="!!autodownloadKeys.autodownloadString" [pathIdentifier]="pathIdentifier" [autodownloadKeys]="autodownloadKeys"></app-file-autodownload>
+
+<!-- Batch Operations Component -->
+<app-batch-operations *ngIf="!!requestTypesFlags" 
+   [pathIdentifier]="pathIdentifier"
+   [validators]="gridviewValidators"
+   [requestTypesFlags]="requestTypesFlags"
+   (updateViewCallback)="updateView($event)"></app-batch-operations>

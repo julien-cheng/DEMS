@@ -1,0 +1,23 @@
+/*
+*  File:        search-result.component.scss
+*  Description: This files holds styles specific for search result component
+*  Author:      RK - Document Manager API
+*/
+
+@import '../../styles/helpers/_variables.scss';
+@import '../../styles/helpers/_bootstrap-variables.scss';
+
+
+h5{
+    margin-bottom: 0;
+}
+.attributes{
+    font-size: 80%;
+    list-style: none;
+    padding: 0;
+}
+.media app-link{
+    margin: 0 16px 0 0;
+    max-height: 120px;
+    overflow: hidden;
+}

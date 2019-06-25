@@ -1,0 +1,16 @@
+
+<!--JSON Forms Component-->
+<div class="mt-2" appGotop>
+  <h6 class="float-right mt-3"><a [routerLink]="['/manager', folderKey]" routerLinkActive="active"><i class="fa fa-home" aria-hidden="true"></i> Home</a></h6>
+  <h2>Schema-Driven Form</h2>
+  <hr/>
+  <!-- <ng4-schema-forms [schema]="schema" [initialFormValue]="initialFormValue" (stateChange)="onStateChange($event)"></ng4-schema-forms> -->
+  <!-- remove (event)="" for development purposes -->
+  <ng4-schema-forms 
+    [options]="schemaFormOptions" 
+    [setFocusOnload]="true"
+    submitButtonText="Save my Form"
+    (event)="onEvent($event)" 
+    (submit)="onSubmit($event)" >
+  </ng4-schema-forms>
+</div>

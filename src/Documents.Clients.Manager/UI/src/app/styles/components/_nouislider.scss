@@ -1,0 +1,416 @@
+/*
+*   File:           _nouislider.scss
+*   Description:    This files holds styles overrides for the nouislider component
+*   Author:         RK - Document Manager API
+*/
+
+
+/*https://github.com/leongersen/noUiSlider/blob/master/src/js/options.js#L398%20}%20});
+target: 'target',
+base: 'base',
+origin: 'origin',
+handle: 'handle',
+handleLower: 'handle-lower',
+handleUpper: 'handle-upper',
+horizontal: 'horizontal',
+vertical: 'vertical',
+background: 'background',
+connect: 'connect',
+connects: 'connects',
+ltr: 'ltr',
+rtl: 'rtl',
+draggable: 'draggable',
+drag: 'state-drag',
+tap: 'state-tap',
+active: 'active',
+tooltip: 'tooltip',
+pips: 'pips',
+pipsHorizontal: 'pips-horizontal',
+pipsVertical: 'pips-vertical',
+marker: 'marker',
+markerHorizontal: 'marker-horizontal',
+markerVertical: 'marker-vertical',
+markerNormal: 'marker-normal',
+markerLarge: 'marker-large',
+markerSub: 'marker-sub',
+value: 'value',
+valueHorizontal: 'value-horizontal',
+valueVertical: 'value-vertical',
+valueNormal: 'value-normal',
+valueLarge: 'value-large',
+valueSub: 'value-sub'*/
+
+// Overrides
+// ------------------------------------------------------
+html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
+    right: -11px;
+}
+
+.noUi-horizontal {
+    height: ($noui-total-height + $noui-pips-height) + px;
+    
+    &.noUi-target {
+        background: none;
+        border-radius: 0;
+        border: solid 0 #fff;
+        box-shadow: none;
+        margin-top:  $noui-pips-height * -1px;
+    }
+    // Handles
+    .noUi-handle{
+        @extend .blue-handle;
+        border: none; 
+        border-radius: 0;
+        box-shadow: none;
+        cursor: ew-resize;
+        height: $noui-marker-height + px;
+        top:  $noui-pips-height  + px;
+        width: $noui-marker-width + px;
+        &::before{
+            display: none;
+        }
+        &::after{
+            //border-left: dashed 1px $noui-marker-active-bg;
+            height: ($noui-total-height - $noui-marker-height) + px;
+            left: 50%; //10px;
+            margin-left: -1px;
+            top: $noui-marker-height + px;
+        }
+        &:focus {
+            outline: none;
+        }
+    }
+    .noUi-active, .noUi-active:focus {
+        box-shadow: none;
+        outline: none;
+    }
+    .noUi-connect{
+        background: $noUi-connect-bg;
+        top: $noui-pips-height + px;
+        margin-bottom: $noui-pips-height * -1px;
+        opacity: 0.12;
+    
+    }
+    .noUi-draggable{
+        cursor: move;
+    }
+
+    // Disabled slider: Attribute added to noUi-target
+    &[disabled]{
+        .noUi-handle, .noUi-draggable{
+            cursor: not-allowed;
+        }
+        
+    }
+}
+
+// Apply half ticks to already saved segments - Edit Mode
+.editMode,.muteMode{
+    .noUi-origin{
+        &:nth-of-type(even){
+            .noUi-handle{
+              @extend .green-handle-left;
+             
+            }
+        }
+        &:nth-of-type(odd){
+            .noUi-handle{
+              @extend .green-handle-right;
+            }
+        }
+    }
+    // Disabled slider
+    [disabled] .noUi-origin {
+        &:nth-of-type(even){
+            .noUi-handle{
+              @extend .disabled-handle-left;
+             
+            }
+        }
+        &:nth-of-type(odd){
+            .noUi-handle{
+              @extend .disabled-handle-right;
+            }
+        }
+     }
+}
+
+// Apply full ticks to new segments - New Mode
+.newMode{
+    .noUi-origin{
+        &:nth-of-type(even){
+            .noUi-handle{
+              @extend .green-handle;
+            }
+        }
+    }
+
+    // Disabled slider
+    [disabled] .noUi-origin .noUi-handle{
+        @extend .disabled-handle;
+     }
+}
+.noUi-pips-horizontal{
+    border-bottom: solid 1px $noui-border-color;
+    height: $noui-pips-height + px;
+    padding: 0;
+    top:0;
+   
+    .noUi-value-horizontal{
+        color:#000;
+        cursor: pointer;
+        font-size: 12px;
+        top:-28px;
+        
+        &:last-of-type{ // Last duration of video pip
+            color: rgb(173, 172, 172);
+            font-style: italic;
+            margin-left: -10px;
+            top:-42px;
+        }
+    }
+    // First value shift right
+    [data-value="0"]{
+      margin-left: 13px;
+    }
+}
+.noUi-marker{
+    top: auto;
+    bottom: 0;
+}
+
+.noUi-pips-horizontal .noUi-marker:nth-last-child(-n+2){
+    background-color: $gray-lighter;
+    height: 30px;
+}
+
+// Tooltip show and hide on active
+.noUi-horizontal .noUi-tooltip {
+    display: none;
+    font-size: 13px;
+    line-height: 1.2em; 
+}
+.noUi-active .noUi-tooltip {
+   display: block;
+}
+
+.noUi-horizontal .noUi-handle-upper .noUi-tooltip {
+    left:-100%;
+}
+.noUi-horizontal .noUi-handle-lower .noUi-tooltip {
+    left: 100%;
+}
+
+// Additional handle classes
+.blue-handle{
+    background:transparent url('#{$images-root-directory}/markers.png') no-repeat left top;
+    opacity:0.95;
+    &::after{
+        border-left: dashed 1px $noui-marker-active-bg;
+    }
+    &:focus{
+        opacity:1;
+    }
+}
+
+
+.green-handle{
+    background:transparent url('#{$images-root-directory}/markers.png') no-repeat -64px top;
+    &::after{
+        border-left: solid 1px $noui-marker-start-bg;
+    }
+    &:focus{
+        background:transparent url('#{$images-root-directory}/markers.png') no-repeat left top;
+        &::after{
+            border-color: $noui-marker-active-bg;
+        }
+    }
+}
+// Disabled controls
+.disabled-handle{
+    background:transparent url('#{$images-root-directory}/markers.png') no-repeat -32px top;
+    &::after{
+        border-left: solid 1px $noui-marker-inactive-bg;
+    }
+    &:focus{
+        background:transparent url('#{$images-root-directory}/markers.png') no-repeat -32 top;
+        &::after{
+            border-color: $noui-marker-inactive-bg;
+        }
+    }
+}
+// Disabled half handles
+.disabled-handle-left{
+    background:transparent url('#{$images-root-directory}/markers-left.png') no-repeat -22px top;
+    &::after{
+        border-left: solid 1px $noui-marker-inactive-bg;
+    }
+    &:focus{
+        background-position:-22px top;
+        &::after{
+            border-color: $noui-marker-inactive-bg;
+        }
+    }
+}
+
+.disabled-handle-right{
+    background:transparent url('#{$images-root-directory}/markers-right.png') no-repeat -32px top;
+    &::after{
+        border-left: solid 1px $noui-marker-inactive-bg;
+    }
+    &:focus{
+        background-position:-32px top;
+        &::after{
+            border-color: $noui-marker-inactive-bg;
+        }
+    }
+}
+
+// Active half handles
+.green-handle-left{
+    background:transparent url('#{$images-root-directory}/markers-left.png') no-repeat -54px top;
+    &::after{
+        border-left: solid 1px $noui-marker-start-bg;
+    }
+    &:focus{
+        background-position:10px top;
+        &::after{
+            border-color: $noui-marker-active-bg;
+        }
+    }
+}
+
+.green-handle-right{
+    background:transparent url('#{$images-root-directory}/markers-right.png') no-repeat -64px top;
+    &::after{
+        border-left: solid 1px $noui-marker-start-bg;
+    }
+    &:focus{
+        background-position:left top;
+        &::after{
+            border-color: $noui-marker-active-bg;
+        }
+    }
+}
+
+// Gray mute
+.gray-bottom-handle-left{
+    background:transparent url('#{$images-root-directory}/markers-left-lg.png') no-repeat -86px top;
+    &::after{
+        border-left: dashed 1px $noui-marker-gray-bg;
+        opacity: 0.5;
+    }
+    &:focus{
+        // background-position: -86px top;
+        &::after{
+            border-color: $noui-marker-gray-bg;
+            opacity: 1;
+        }
+    }
+}
+.gray-bottom-handle-right{
+    background:transparent url('#{$images-root-directory}/markers-right-lg.png') no-repeat -96px top;
+    &::after{
+       border-left: dashed 1px $noui-marker-gray-bg;
+       opacity: 0.5;
+    }
+    &:focus{
+       // background-position: -96px top;
+        &::after{
+           border-color: $noui-marker-gray-bg;
+           opacity: 1;
+        }
+    }
+}
+
+// Slider for Video progress
+// ------------------------------
+.video-container{
+    top:-($noui-video-total-height/2) +px;
+    .noUi-horizontal{
+        background-color: transparent;
+        height: $noui-video-total-height + px;
+        margin-top:0; 
+      
+    }
+    .noUi-handle{
+        border-radius: 50%;
+        height: $noui-video-marker-height + px;
+        right: -6px !important;
+        top: -5px;
+        width: $noui-video-marker-height + px;
+        &::after{
+            display:none;
+            height:0;
+        }
+        &:hover .noUi-tooltip {
+            display: block;
+        }
+        &.noUi-handle-lower .noUi-tooltip {
+            left:-200%;
+        }
+    }
+    .noUi-target{
+        .noUi-origin, &[disabled] .noUi-origin{
+            &:nth-of-type(even){
+                .noUi-handle{
+                    background:$brand-primary; //transparent url('#{$images-root-directory}/markers-sm.png') no-repeat left top;
+                }
+            }
+        }
+    }
+    .noUi-connect{
+        background: $noUi-video-connect-bg;
+        top: 0;
+        opacity:1;
+    }
+   
+}
+// Slider for muting clip video
+// ------------------------------
+.mute-container{
+    margin-top:-$noui-mute-total-height + px;
+    .noUi-horizontal{
+        // background-color:white;
+        height: $noui-mute-total-height + px;
+        margin-top:0; 
+    }
+    
+    .noUi-pips-horizontal{
+        display: none;
+    }
+
+    .noUi-connect{
+        background: $noUi-mute-connect-bg;
+        top: 0;
+        opacity: 0.8;
+    }
+
+    .noUi-handle{
+        top: ($noui-mute-total-height - $noui-mute-marker-height) + px;
+        height: $noui-mute-marker-height + px;
+        &::after{
+            height: ($noui-total-height - $noui-mute-marker-height) + px;
+            top: -($noui-total-height - $noui-mute-marker-height) + px;
+        }
+    }
+
+    // Apply half ticks to already saved segments - Mute Mode
+    .noUi-origin{
+        &:nth-of-type(even){
+            .noUi-handle{
+                @extend .gray-bottom-handle-left;
+            }
+        }
+        &:nth-of-type(odd){
+            .noUi-handle{
+              @extend .gray-bottom-handle-right;
+            }
+        }
+    }
+
+    .noUi-tooltip {
+        bottom: ($noui-total-height + 5) + px;
+        z-index: 20;
+    }
+}

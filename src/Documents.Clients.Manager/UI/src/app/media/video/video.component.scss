@@ -1,0 +1,75 @@
+/*
+*  File:        video.component.scss
+*  Description: This files holds styles specific for video component
+*  Author:      RK - Document Manager API
+*/
+@import '../../styles/helpers/_variables.scss';
+@import '../../styles/helpers/_mixins.scss';
+@import "~bootstrap/scss/mixins";
+@import '../../styles/helpers/_bootstrap-variables.scss';
+
+/* The switch - the box around the slider */
+.switch-wrapper{
+  margin-top: 8px;
+  label{
+    margin: 0;
+    vertical-align: middle;
+  }
+}
+.switch {
+    display: inline-block;
+    position: relative;
+    height: 17px;
+    width: 30px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {display:none;}
+  
+  /* The slider */
+  .slider {
+    bottom: 0;
+    background-color: #ccc;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    top: 0;
+    right: 0; 
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    bottom: 4px;
+    background-color: white;
+    content: "";
+    height: 10px;
+    left: 4px;
+    position: absolute;
+    width: 10px;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(12px);
+    -ms-transform: translateX(12px);
+    transform: translateX(12px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 17px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }

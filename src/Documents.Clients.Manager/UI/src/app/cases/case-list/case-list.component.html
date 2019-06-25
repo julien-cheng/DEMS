@@ -1,0 +1,66 @@
+<!-- <app-loading [loading]="loading"></app-loading> -->
+
+<div class="mt-2">
+    <h6 class="float-right mt-1">
+        <button class="btn btn-primary btn-sm" appModalTrigger="createCaseModal" *ngIf="!!organizationKey">
+            <i class="fa fa-plus" aria-hidden="true"></i> Create Case</button>
+    </h6>
+    <h2>Cases</h2>
+    <hr/>
+</div>
+
+<div class="container-fluid mt-4">
+    <ng-container *ngFor="let case of folderList">
+        <div class="row mb-3">
+            <div class="col-sm-8">
+                <a [routerLink]="['/manager/',case.identifier.organizationKey, case.identifier.folderKey]">{{case.name}}</a>
+                <div class="my-1">
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>First Name:</strong> {{case.fields?.name}}
+                        </div>
+                        <div class="col-6">
+                            <strong>Case Number:</strong> {{case.identifier.folderKey}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Last Name:</strong> {{case.fields?.lastName}}
+                        </div>
+                        <div class="col-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 text-right">
+                <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                    <a class="btn btn-primary" [routerLink]="['/manager/',case.identifier.organizationKey, case.identifier.folderKey]">
+                        <i class="fa fa-files-o"></i> Show Case Files</a>
+                </div>
+            </div>
+        </div>
+        <hr/>
+    </ng-container>
+</div>
+
+
+<!--Add the modal component-->
+<app-bootstrap-modal title="Create a Case Folder" elementID="createCaseModal" closeOnBodyCLick="false" modalSizeClass="modal-lg">
+    <div id="create-case" modal-body>
+        <div class="container">
+            <div class="alert alert-info">
+                <i class="fa fa-info-circle" aria-hidden="true"></i> Create A Digital Evidence Folder for a Case
+            </div>
+            <ng4-schema-forms #schemaForm
+             [options]="schemaFormOptions" 
+             [displaySubmitButton]="false" >
+            </ng4-schema-forms>
+        </div>
+    </div>
+    <div modal-footer>
+        <!-- [disabled]="!!newCaseForm.value" -->
+        <button type="button" [disabled]="!schemaFormComponent.isValid" class="btn btn-primary" 
+        (click)="submitForm($event)">Create Case</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+</app-bootstrap-modal>

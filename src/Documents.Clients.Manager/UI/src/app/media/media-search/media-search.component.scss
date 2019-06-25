@@ -1,0 +1,44 @@
+/*
+*  File:        media-search.component.scss
+*  Description: This files holds styles specific for search component
+*  Author:      RK - Document Manager API
+*/
+
+@import '../../styles/helpers/_variables.scss';
+@import '../../styles/helpers/_mixins.scss';
+@import "~bootstrap/scss/mixins";
+@import '../../styles/helpers/_bootstrap-variables.scss';
+
+.search-results
+{
+    li{
+        border:solid 1px #fff;
+        border-bottom-color: $hr-border-color;
+        border-radius:$border-radius;
+        cursor: pointer;
+        margin-bottom: 10px;
+        padding:5px 10px;
+        &:last-of-type{
+            border-bottom: none;
+        }
+        h5 a{
+            color: $link-color;
+            font-size: 18px;
+            &.btn-link{
+                margin: -8px -10px 0 0; 
+            }
+        }
+        &.active{
+            background:$card-cap-bg;
+            border-color: rgba($black, .125);
+            &:last-of-type{
+                border-bottom:solid 1px $hr-border-color;
+            }
+        }
+        &.active, &:hover {
+            h5 a{
+                color: darken($link-color, 15%);
+            }
+        }
+    }
+}

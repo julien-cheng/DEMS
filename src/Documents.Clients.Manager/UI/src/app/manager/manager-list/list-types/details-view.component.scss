@@ -1,0 +1,238 @@
+/*
+*   File:           details-view.component.scss
+*   Description:    This files holds styles for list views: Details, icons and list
+*   Author:         RK - Document Manager API
+*/
+
+@import '../../../styles/helpers/_variables.scss';
+@import '../../../styles/helpers/_bootstrap-variables.scss';
+@import "~bootstrap/scss/mixins";
+
+//List view
+// ---------------------------------------
+a{
+    cursor: pointer;
+    &.btn-primary{
+        color:#fff !important;
+    }
+}
+
+
+.dropdown{
+    display: inline-block;
+    margin-left: 5px;
+    visibility: hidden;
+}
+.table,li, .col-sm-3{
+    .pretty{
+        i{
+            margin:0;
+        }
+        z-index: 1;
+    }
+}
+
+ul.list-unstyled
+{
+    li{
+        padding:2px 5px 5px;
+        margin-bottom:2px;
+    }
+}
+// Detail View
+// ---------------------------------------
+.table{
+    margin-top: 5px;
+    th{
+        border-top: none;
+        padding-top:5px;
+        vertical-align: middle;
+        // Sort buttons with arrow icons
+        .btn-link{
+            margin-left: 5px; 
+            i{
+              color:$link-color;
+              margin-right: 0;  
+            }
+            &.inactive i{
+               opacity: 0.5;
+            }
+        }
+        span{
+            color: #333;
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 400;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+
+    td,th{
+         text-align: center;
+          &.cb{
+            padding-left: 5px;
+            padding-right: 5px;
+            width: 40px;
+            .pretty{
+                margin:0; 
+                white-space: nowrap;
+                label {
+                    font-size: 0.875rem;
+                    >i{
+                        font-size: 16px !important;
+                       
+                    }
+                }
+            }
+        }
+        &:first-child, &:nth-child(2),
+        &.email, &.entryType{
+            text-align: left;
+        }
+        .dropdown{
+            visibility: visible;
+        }
+  
+        &.actions{
+           text-align: right;
+           width: 30px;
+        }
+        &.magicLink{
+            width: 200px;
+        }
+    }
+    th{
+        &:first-child{
+            padding: 5px 2px 12px 5px;
+            .pretty label{
+               background: transparent;
+              i{
+                background-color:#fff;
+               }
+            }
+        }
+    }
+}
+ 
+// Cells Styles
+// ------------------
+span.magicLink{
+  /// border: solid 1px blue !important;
+    display: block;
+    max-width: 200px;
+    max-height: 50px;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+// Icon View
+// ---------------------------------------
+.row{
+    margin-bottom: 20px;
+    .icon-box{
+        border-radius: 5px;
+        display: table;
+        height: 100%;
+        margin: 5px 0;
+        max-width: 100%;
+        position: relative;
+        text-align: center;
+        
+        .icon-box-content{
+            display: table-cell;
+            height: 100%;
+            padding:0 10px 10px;        
+            vertical-align: bottom;
+           
+        }
+        .hover-toolbar{
+            position: absolute;
+            top:0;
+            width:100%;
+            z-index: 5;
+        }
+    }
+    .hover-toolbar{
+        padding: 5px;
+    }
+}
+
+// Detail View and Icon View
+// ---------------------------------------
+.table, .row{
+    a{
+        color: #333;
+        >i{
+            margin-right: 5px;
+        }
+        &:hover{
+            text-decoration: none;
+        }
+    }  
+}
+
+//Hover states
+//----------------------------------------
+.list-view{
+ li,tr, .icon-box{
+    &:hover, &.selected{
+            background: $hover-blue;
+            .pretty{
+                visibility:visible;
+                z-index: 4 !important;
+            }
+            &.not-draggable{
+                color: #721c24;
+                background-color: #f8d7da;
+                border-color: #f5c6cb;
+                opacity: 0.5;
+                .pretty{
+                    opacity: 0;
+                }
+            }
+        }
+        &> a:hover, &:hover{
+            .dropdown,  .selectme{
+                visibility: visible;
+            }
+        }
+    }
+    .text-center small{
+        text-align: left !important;
+    }
+    
+}
+
+// Hide dropdown when editing
+.editMode{
+    .dropdown, .selectme,  .pretty{
+        visibility: hidden !important;
+        vertical-align: top;
+    }
+}
+
+//Responsive
+//-----------------------------------------
+//Mobile 575 and down
+@include media-breakpoint-down(xs) { 
+    .table{
+        td,th{
+            padding:5px;
+             &:first-child{
+               width: 20px;
+           }
+           &:nth-child(2){
+               width: auto;
+               a{
+                    word-break: break-all;
+                }
+            }
+        }
+        th{
+            vertical-align: center;
+        }
+    }
+}

@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Documents.Clients.Tools": {
+      "commandName": "Project",
+      "commandLineArgs": "search PCMS:259 --native \"+extension:wav\"",
+      "workingDirectory": "c:\\dms\\import"
+    }
+  }
+}

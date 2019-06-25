@@ -1,0 +1,11 @@
+{
+  "CurrentContext": "local",
+  "Contexts": {
+    "local": {
+      "Uri": "http://localhost:5001/",
+      "OrganizationKey": "System",
+      "UserKey": "system",
+      "Password": "DocumentsDefault"
+    }
+  }
+}

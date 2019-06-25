@@ -1,0 +1,153 @@
+/*
+*  File:        media-timeline.component.scss
+*  Description: This files holds styles specific for the timeline/noUISlider component
+*  Author:      RK - Document Manager API
+*/
+
+@import '../../styles/helpers/_variables.scss';
+@import '../../styles/vendors/bootstrap';
+
+nouislider{
+    margin: 0;
+}
+
+.scroll-container {
+    margin-left:$timeline-btns-width;
+    position: relative;
+    padding: 25px 13px 0 0;
+    
+}
+
+.timeline-wrapper{
+    // border: solid 1px $noui-border-color;
+    border-radius: 4px;
+    display: block;
+    margin: 30px 0 0 1px; //must be a min of 16px for neg margin
+    position: relative;
+    padding: 1px 0 0 0;
+    width: 100%;
+    // Actual sliders for media and muting segments
+    .nouislider-container{
+        position: relative;
+        margin-left:$timeline-left;
+        &.video-container{
+            position: absolute;
+            width: 100%;
+        }
+    }
+
+}
+.master-timeline{
+    //border: solid 1px red;
+    position: relative;
+}
+// Horizontal box with buttons and functionality
+.timeline-container{
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top:54px;
+    width: 100%;
+    .row{
+        @extend .no-gutters;
+        @extend .align-items-center;
+        border: solid 1px $noui-border-color;
+        &:first-of-type{
+            border-bottom: none 0;
+        }
+        &.active{
+            background: $noui-active-bg;
+        }
+        &.disabled{
+            background-color: #f5f5f5;
+            .timeline-button{
+                cursor:not-allowed;
+                .btn{
+                    opacity: 0.2;
+                }
+            }
+        }
+    }
+    .timeline-button{
+       border-right:solid 1px $noui-border-color;
+        max-width: $timeline-btns-width;
+        .btn{
+            color: #000;
+            display: block;
+            font-size: 24px;
+            padding: 6px 10px;
+            width: 100%;
+        }
+    }
+}
+//Arrows
+.scroll-arrows {
+    // display:none; //TEMP working
+    position: relative;
+    margin-top:-25px;
+    text-align: right;
+    z-index: 5000;
+    a{
+        color: $brand-primary;
+        font-size: 18px;
+        padding:6px;
+    }
+}
+
+
+// Muted segments
+.list-unstyled{
+    li{
+        border:solid 1px #fff;
+        border-bottom-color: $hr-border-color;
+        border-radius:$border-radius;
+        cursor: pointer;
+        margin-bottom: 5px;
+        min-height: 35px;
+        padding:5px 10px 8px;
+        &:last-of-type{
+            border-bottom: none;
+        }
+        h5{
+            margin-bottom: 0;
+            a{
+                color: $link-color;
+                font-size: 18px;
+            }
+        }
+        .error{
+            display: none;
+        }
+
+        &.active:not(.alert-danger){
+            background:$card-cap-bg;
+            border-color: rgba($black, .125);
+            &:last-of-type{
+                border-bottom:solid 1px $hr-border-color;
+            }
+        }
+        &.active, &:hover {
+            h5 a{
+                color: darken($link-color, 15%);
+            }
+        }
+        // out of range segment
+        &.alert-danger{
+            h5>a{
+                color: theme-color("danger");
+            }
+            &.active{
+                border: solid 1px #721c24;
+            }
+            .error{
+                display: block;
+                font-weight: 700;
+                font-style: italic;
+                margin: 8px 0;                
+            }
+        }
+        .btn-link, .btn-light{
+            margin: -2px -5px 0 0;
+        }
+    }
+}

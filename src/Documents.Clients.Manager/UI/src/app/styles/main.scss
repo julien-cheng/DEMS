@@ -1,0 +1,54 @@
+﻿/*
+ *   File:           main.scss
+ *   Description:    This files holds main default styles
+ *   Author:         RK - Document Manager API
+ */
+
+
+//URLs - adjust url here for proper assets routing
+$assets-root-directory: '/assets';//'assets';
+$images-root-directory: '#{$assets-root-directory}/images';//'assets/images'
+$fonts-root-directory:  '#{$assets-root-directory}/fonts'; //'assets/fonts'
+$fa-font-path:          '../../../node_modules/font-awesome/fonts';  
+
+//helper styles
+@import 'helpers/_variables';
+@import 'helpers/_bootstrap-variables';
+@import 'helpers/_pretty-checkbox-variables';
+@import 'helpers/_css3-mixins';
+@import 'helpers/_mixins';
+@import "base/_fonts"; //Include of Base Fonts
+
+//Vendors
+@import "vendors/bootstrap";
+@import '~font-awesome/scss/font-awesome.scss';
+@import "~angular-tree-component/dist/angular-tree-component.css";
+@import 'vendors/pretty-checkbox/src/pretty';
+@import '~ng2-toastr/bundles/ng2-toastr.min.css';
+@import 'vendors/jquery-ui-1.12.1.custom/jquery-ui.css';
+@import "~nouislider/distribute/nouislider.min.css";
+@import '~perfect-scrollbar/css/perfect-scrollbar.css';
+
+
+//base styles
+@import "base/typography";
+@import "base/utilities";
+
+// //component styles
+@import "components/gotop";
+@import "components/icons";
+@import "components/tree-component";
+@import "components/grid-views";
+@import "components/file-sortables";
+@import "components/search-results";
+@import "components/video-player";
+@import "components/nouislider";
+@import "components/perfect-scroll";
+
+//layout styles
+@import "layouts/layout";
+@import "layouts/page-layout";
+@import "layouts/page";
+
+//Media queries
+@import "layouts/media";

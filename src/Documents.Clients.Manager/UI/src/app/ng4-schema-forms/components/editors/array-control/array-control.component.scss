@@ -1,0 +1,38 @@
+/*
+*   File:           array-control.component.scss
+*   Description:    This files holds styles for Array parent editors
+*   Author:         RK - Document Manager API
+*/
+
+@import '../../../../styles/helpers/_mixins.scss';
+
+.card-body{
+    padding: 10px;
+}
+
+.string-row{
+    >.col-auto{
+        margin-top: 2px;
+    }
+    >.col{
+        border-bottom:solid 1px #e5e5e5;
+        margin: 0 10px 10px;
+    }
+}
+
+
+//Control collapsible angle with mixins
+[data-toggle=collapse]{
+    >i.fa{
+        @include fa-angle('up');
+        transform: rotate( -360deg );            
+        transition: transform 150ms ease;
+    }
+    &.collapsed{
+        >i.fa{
+            // @include fa-angle('down');
+            transform: rotate( -180deg );            
+            transition: transform 150ms ease;
+        }
+    }
+}

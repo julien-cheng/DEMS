@@ -1,0 +1,7 @@
+ <!-- <h5>
+    Image: <em>{{file.name}}</em>
+</h5>
+<hr/> -->
+<div *ngIf="fileUrl !== undefined && fileUrl.length">
+    <img  [src]="saferesourceURL" class="img-fluid img-thumbnail" />
+</div>

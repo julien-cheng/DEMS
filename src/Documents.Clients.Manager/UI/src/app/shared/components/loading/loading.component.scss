@@ -1,0 +1,15 @@
+/*
+* File:             loading.component.scss
+* Description:      This files holds styles for loading bar
+* Author:           RK - Document Manager API
+*/
+
+.global-progress{
+    border-radius: 0;
+    height: 5px;
+    left:0;
+    position: fixed; 
+    top:0;
+    width: 100%;
+    z-index: 9999;
+  }

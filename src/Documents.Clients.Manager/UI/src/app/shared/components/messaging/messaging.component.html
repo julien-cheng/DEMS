@@ -1,0 +1,18 @@
+<ng-container *ngIf="!!message" [ngSwitch]="type">
+  <div class="alert alert-info"  *ngSwitchCase="'alert'">
+    <h5>
+      <i class="fa fa-warning"></i> {{message.title}}</h5>
+    {{message.body}}
+  </div>
+
+  <div *ngSwitchCase="'dialog'">
+    <app-bootstrap-modal [title]="message.title" elementID="messageDialog" closeOnBodyCLick="true">
+      <div modal-body>
+        <div [innerHTML]="message.body"></div>
+      </div>
+      <div modal-footer>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </app-bootstrap-modal>
+  </div>
+</ng-container>

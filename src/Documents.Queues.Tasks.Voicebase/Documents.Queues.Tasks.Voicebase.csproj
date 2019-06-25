@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>Documents.Queues.Tasks.Voicebase</AssemblyName>
+    <PackageId>Documents.Queues.Tasks.Voicebase</PackageId>
+    <OutputType>Exe</OutputType>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Documents.Queues.Tasks\Documents.Queues.Tasks.csproj" />
+    <ProjectReference Include="..\Documents.Queues.Messages\Documents.Queues.Messages.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Dockerfile">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

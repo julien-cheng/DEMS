@@ -1,0 +1,42 @@
+/*
+*   File:          view-types.component.scss
+*   Description:    This files holds styles for Object and grid views
+*   Author:         RK - Document Manager API
+*/
+
+//@import '../../../styles/helpers/_variables.scss';
+@import '../../../styles/helpers/_mixins.scss';
+@import '../../../styles/helpers/_bootstrap-variables.scss';
+// Top Action toolbar
+.list-toolbar{
+    min-height: 35px;
+    margin-top: 5px;
+    .col-auto{
+        &:first-child{
+            .checkall{
+                margin-left: 5px;
+            }
+        }
+    }
+}
+.panel-header{
+    border-top: solid 1px $hr-border-color;
+    border-bottom: solid 1px $gray-200;
+    padding-bottom:10px;
+    padding-top:10px;
+}
+
+//Control collapsible angle with mixins
+[data-toggle=collapse]{
+    >i.fa{
+        @include fa-angle('up');
+        transform: rotate( -360deg );            
+        transition: transform 150ms ease;
+    }
+    &.collapsed{
+        >i.fa{
+            transform: rotate( -180deg );            
+            transition: transform 150ms ease;
+        }
+    }
+}

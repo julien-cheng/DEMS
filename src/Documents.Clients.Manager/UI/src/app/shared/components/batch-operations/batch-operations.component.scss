@@ -1,0 +1,51 @@
+/*
+*   File:           batch-operations.component.scss
+*   Description:    This files holds styles for batch operations dependent components 
+*   Author:         RK - Document Manager API
+*/
+
+@import '../../../styles/helpers/_variables.scss';
+@import '../../../styles/helpers/_bootstrap-variables.scss';
+
+//Add New form in Modal
+//--------------------------------------
+.form-inline {
+    position: relative;
+    label{
+        margin-right: 10px;
+    }
+    .fa-folder{
+        color: $folder-yellow;
+    }   
+    .input-group{
+        width:80%;
+    }
+    
+      
+}
+form .text-danger{
+    display: block;
+    width: 100%;
+}
+.list-unstyled li{
+    cursor: pointer;
+    span{
+        color:$gray;
+        display: block;
+        padding: 5px;
+        i{
+            opacity: 0;
+        }
+      
+    }
+    &:hover{
+        background: $hover-blue;
+        span{
+            color:$gray-dark;
+            i{
+                opacity: 1;
+            }
+        }
+        
+    }
+}

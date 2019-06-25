@@ -1,0 +1,71 @@
+﻿/*
+*   File:           manager-details.component.scss
+*   Description:    This files holds styles for list views: Details, icons and list
+*   Author:         RK - Document Manager API
+*/
+
+@import '../../styles/helpers/_variables.scss';
+
+.btn-primary:focus{
+    color:#fff;
+}
+.main-content{
+    //padding-top: 125px;
+    position: relative;
+}
+.top-toolbar{
+    display: block;
+    left:0;
+    padding: 15px 15px 0;
+    // position: absolute;
+   // top:0;
+    width: 100%;
+    hr{
+        margin: 5px 0;
+        opacity: 0.7;
+    }
+  
+}
+.file-view{
+    position: relative;
+    padding:0;
+    // app-return-link{
+        // position: absolute;
+        // top:-20px;
+        // right: 0;
+    // }
+}
+
+//Preview panel styles
+h5.ellipsis{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.preview-info{
+    margin: 50px 15px;
+    text-align: center;
+    img{
+         margin: 20px 0 50px;
+    }
+    .row{
+        font-size: 0.875rem;
+        text-align: left;
+        >div{
+            font-weight: 500;
+            &:first-child{
+                color:$gray-light;
+                font-style: italic;
+                font-weight: 400;
+            }
+            
+        }
+        .ellipsis{
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+       
+    }
+}
+

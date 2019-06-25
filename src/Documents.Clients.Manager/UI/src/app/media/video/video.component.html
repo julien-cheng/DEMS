@@ -1,0 +1,18 @@
+<div  #playerContainer  *ngIf="!!sources" class="player-wrap" >
+  <video #player id="player" class="player" [autoplay]="mediaSet.autoPlay"  [poster]="(!!poster ? poster : '')" controls
+    [preload]="preload" controlsList="nodownload">
+    <ng-container *ngFor="let source of sources">
+      <source [src]="source.saferesourceURL" type="{{source.type}}" />
+    </ng-container>
+    <ng-container *ngFor="let subtitle of subtitles; let i=index">
+      <track [src]="subtitle.saferesourceURL" kind="subtitles" srclang="en" [label]="subtitle.label">
+    </ng-container>
+  </video>
+</div>
+<div class="switch-wrapper" *ngIf="isEditMode">
+  <label>Loop Video Segment:</label>
+  <label class="switch">
+    <input type="checkbox" [(ngModel)]="loopVideoSegment">
+    <span class="slider round"></span>
+  </label>
+</div>

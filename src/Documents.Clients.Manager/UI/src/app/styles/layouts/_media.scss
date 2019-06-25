@@ -1,0 +1,46 @@
+﻿/*
+* File:             _media.scss
+* Description:      This file holds media querie overrides.
+* Author:           RK - Document Manager API
+*/
+//Usage: http://v4-alpha.getbootstrap.com/layout/overview/
+
+//@import "../../wwwroot/lib/bootstrap/scss/mixins";
+
+
+
+
+@include media-breakpoint-up(xs) {  }
+@include media-breakpoint-up(sm) {  }
+@include media-breakpoint-up(md) {  }
+@include media-breakpoint-up(lg) {  }
+@include media-breakpoint-up(xl) {
+    // body {
+    //     background: blue;
+    // }
+}
+
+//And down:
+//-------------
+@include media-breakpoint-down(md) { 
+   body{
+        font-size: 0.875rem;
+        small, .small{
+            font-size: 0.8rem;
+        }
+    }
+    .left-nav{
+        padding-bottom:0;
+    }
+    .main-content{
+        padding-top: 10px;
+    }
+}
+
+//Mobile 575 and down
+@include media-breakpoint-down(xs) { 
+    .hidden-xs{
+        display: none !important;
+        visibility: none !important;
+    }
+}

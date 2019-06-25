@@ -1,0 +1,8 @@
+<div *ngIf="!!fileSet && !!sources && sources.length >0" class="alert alert-warning mt-1">
+    <h5 class="mb-4"><i class="fa fa-headphones" aria-hidden="true"></i> Play Audio</h5>
+    <audio id="player" [autoplay]="fileSet.autoPlay" controls width="100%">
+        <ng-container *ngFor="let source of sources">
+            <source [src]="source.fileUrl" type="{{source.type}}" />
+        </ng-container>
+    </audio>
+</div>

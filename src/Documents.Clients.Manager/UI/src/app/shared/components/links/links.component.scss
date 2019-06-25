@@ -1,0 +1,17 @@
+/*
+*   File:           file-link.component.scss
+*   Description:    This files holds styles for links
+*   Author:         RK - Document Manager API
+*/
+
+@import '../../../styles/helpers/_variables.scss';
+@import '../../../styles/helpers/_bootstrap-variables.scss';
+
+
+a {
+    cursor: pointer;
+    max-width: 100%;
+    &>img{
+    width: 120px;
+    }
+}

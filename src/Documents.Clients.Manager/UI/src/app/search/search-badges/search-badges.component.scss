@@ -1,0 +1,21 @@
+/*
+*  File:        search-badges.component.scss
+*  Description: This files holds styles specific for search-badges component
+*  Author:      RK - Document Manager API
+*/
+@import '../../styles/helpers/_bootstrap-variables.scss';
+
+.search-badges{
+    border-bottom: solid 1px $hr-border-color;
+}
+
+.badge{
+    font-size: 80%;
+    font-weight: 400;
+    margin-bottom:10px;
+  
+    .fa{
+        cursor: pointer;
+        margin: 0 2px 0 10px;
+    }
+}

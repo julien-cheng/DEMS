@@ -1,0 +1,42 @@
+/*
+*  File:        search-filters.component.scss
+*  Description: This files holds styles specific for search filters
+*  Author:      RK - Document Manager API
+*/
+
+@import '../../styles/helpers/_variables.scss';
+@import '../../styles/helpers/_bootstrap-variables.scss';
+
+li{
+    margin: 2px 0;
+    a{
+        padding:5px;
+        display:block;
+        span{
+            float: right;
+        }
+       
+    
+        &.active{
+            background: $hover-blue;
+            color: $gray;
+            cursor: not-allowed;
+            padding-right: 50px;
+            position: relative;
+            .remove{
+                cursor: pointer;
+                display: inline-block; 
+                height:34px;
+                min-width:40px;
+                padding:8px 10px 0;
+                position: absolute;
+                right:0;
+                text-align: center;
+                top:0;
+            }
+        }
+    }
+}
+
+
+

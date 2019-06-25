@@ -1,0 +1,56 @@
+/*
+*   File:           _file-sortables.scss
+*   Description:    This files holds styles for dragItem and dropTarget (file-sortable.directive)
+*   Author:         RK - Document Manager API
+*/
+
+
+.dragging-helper{
+    background: #e3f4fd;
+    border: solid 1px #cbd3d7;
+    border-radius: 4px;
+    display: block;
+    opacity: 0.95;
+    padding:10px;
+    max-width:50px;
+    z-index: 100;
+    .icon{
+        font-size: 30px;
+        line-height: 30px;
+    }
+    .badge{
+        @extend .badge-pill; 
+        @extend .badge-primary;
+        left:-15px;
+        font-size:10px;
+        padding: 3px 5px;
+        position:absolute;
+        top:-8px;
+    }
+
+    &.inError{
+        background: #f8d7da;
+        border: solid 1px #f5c6cb;
+        color: #721c24;
+        >.icon:before{
+            content: "\F071" ;
+        }
+        .badge{
+           @extend .badge-danger;
+           opacity: 0.4;
+        }
+    }
+}
+
+.ui-dragging{
+    background: $gray-lighter;
+    border: solid 1px $gray-light;
+    opacity: 0.4;
+}
+
+.not-draggable, .not-dropabble{
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    opacity: 0.5;
+}

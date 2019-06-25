@@ -1,0 +1,20 @@
+<button id="" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">File Views</button>
+<div class="dropdown-menu dropdown-menu-right">
+      <ng-container *ngFor="let view of fileViews; let i=index">
+            <a class="dropdown-item active" *ngIf="(view.viewerType.toLowerCase() === viewerType && view.identifier.fileKey === fileKey);else link">
+                  <i class="icon {{ view.icons | iconClass}}"></i> {{view.label}}</a>
+            <ng-template #link>
+                  <ng-container [ngSwitch]="view.viewerType">
+                        <a *ngSwitchDefault class="dropdown-item" [routerLink]="(!!view.identifier && pathIdentifier.pathKey.length > 0) ? ['/file/', view.identifier.organizationKey, view.identifier.folderKey, pathIdentifier?.pathKey, view.identifier.fileKey, view.viewerType ] :
+                     ['/file/', view.identifier.organizationKey, view.identifier.folderKey, view.identifier.fileKey, view.viewerType ]">
+                              <i class="icon {{ view.icons | iconClass}}"></i> {{view.label}}</a>
+                        <a *ngSwitchCase="'Transcript'" class="dropdown-item" [routerLink]="(!!view.identifier && pathIdentifier.pathKey.length > 0) ? ['/media/', view.identifier.organizationKey, view.identifier.folderKey, pathIdentifier?.pathKey, view.identifier.fileKey ] :
+                                                ['/media/', view.identifier.organizationKey, view.identifier.folderKey, view.identifier.fileKey]">
+                              <i class="icon {{ view.icons | iconClass}}"></i> {{view.label}}</a>
+                        <a *ngSwitchCase="'Clip'" class="dropdown-item" [routerLink]="(!!view.identifier && pathIdentifier.pathKey.length > 0) ? ['/mediaclips/', view.identifier.organizationKey, view.identifier.folderKey, pathIdentifier?.pathKey, view.identifier.fileKey ] :
+                                    ['/mediaclips/', view.identifier.organizationKey, view.identifier.folderKey, view.identifier.fileKey]">
+                              <i class="icon {{ view.icons | iconClass}}"></i> {{view.label}}</a>
+                  </ng-container>
+            </ng-template>
+      </ng-container>
+</div>

@@ -1,0 +1,30 @@
+<ng-container *ngIf="!!row" [ngSwitch]="linkType">
+  <app-file-link *ngSwitchCase="'file'" [row]="row" [imageLink]="imageLink" [hideIcon]="hideIcon"></app-file-link>
+
+   <ng-container *ngSwitchCase="'path'">
+    <a *ngIf="!imageLink; else notPathImage" [routerLink]="['/manager/', row.identifier.organizationKey, row.identifier.folderKey, row.identifier.pathKey]">
+      <i *ngIf="!hideIcon" class="icon {{row.icons| iconClass}}" aria-hidden="true"></i> {{row.name}}</a>
+    <ng-template #notPathImage>
+      <a [routerLink]="['/manager/',row.identifier.organizationKey, row.identifier.folderKey, row.identifier.pathKey]" class="imageLink">
+        <i class="icon {{ row.icon | iconClass }}  fa-5x" aria-hidden="true"></i>
+      </a>
+    </ng-template>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'recipient'">
+    <a *ngIf="!imageLink; else notImage" (click)="triggerCallback.emit({requestType: 'DisplayRecipientRequest', eventType: 'initialize', rows: [row]})">
+      <i *ngIf="!hideIcon" class="icon {{ row.icons | iconClass: 'user'}}" aria-hidden="true"></i> {{row.name}}</a>
+    <ng-template #notImage >
+      <a  (click)="triggerCallback.emit({requestType: 'DisplayRecipientRequest', eventType: 'initialize', rows: [row]})" class="imageLink">
+        <i class="icon {{ row.icons | iconClass: 'user'}} fa-5x" aria-hidden="true"></i>
+      </a>
+    </ng-template>
+  </ng-container>
+
+  <ng-container *ngSwitchDefault>
+   <label *ngIf="!imageLink; else notDefaultImage">{{row.name}}</label> 
+   <ng-template #notDefaultImage >
+    <label><i class="icon {{ row.icons | iconClass: 'fa-archive muted'}} fa-5x" aria-hidden="true"></i></label>
+   </ng-template>
+  </ng-container>
+</ng-container>

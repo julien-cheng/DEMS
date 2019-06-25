@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <!-- the following line pins the runtime framework version because of this bug: https://github.com/dotnet/cli/issues/7901 -->
+    <!-- which was preventing adding ef migrations -->
+    <!--<RuntimeFrameworkVersion>2.0.3</RuntimeFrameworkVersion>-->
+    
+    <Configurations>Debug;Release;Debug Local</Configurations>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Local|AnyCPU'" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\Documents.Store\Documents.Store.csproj" />
+    <ProjectReference Include="..\Documents.Common\Documents.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Core" Version="1.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
+</Project>

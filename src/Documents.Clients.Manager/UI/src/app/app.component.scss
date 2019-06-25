@@ -1,0 +1,14 @@
+/*
+*  File:        app.component.scss
+*  Description: This files holds styles specific for main app.component
+*  Author:      RK - Document Manager API
+*/
+.closed{
+    .left-nav{
+        display:none;
+        width:0;
+    }
+    .main-content{
+        width:100% !important;
+    }
+}

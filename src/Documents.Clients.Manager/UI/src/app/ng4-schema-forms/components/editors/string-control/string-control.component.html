@@ -1,0 +1,44 @@
+<div class="form-group"  [formGroup]="form" [ngClass]="{'is-invalid': isInvalid }">
+    <label for="{{formControlObj.key}}" [ngClass]="{'sr-only': !formControlObj.label }">{{formControlObj.label}}
+        <span *ngIf="formControlObj.required" class="text-danger">*</span></label>
+        <!-- [type]="schema.inputType || 'text'"  -->
+    <input *ngIf="stringControlType === 'input'" class="form-control" 
+        [formControlName]="formControlObj.key" 
+        [defaultValue]="value"
+        [placeholder]="schema.placeholder || ''" 
+        [type]="schema.format || 'text'"
+        [readOnly]="isReadOnly" [attr.disabled]="isReadOnly?'':null"
+        [appFocus]="formControlObj.isFocused"
+        (blur) = "formControlObj.isFocused = false;"
+        (change)="onChange($event)" />
+    <textarea 
+        *ngIf="stringControlType === 'textarea'" 
+        class="form-control" rows="10" 
+        [formControlName]="formControlObj.key"
+        [defaultValue]="value" 
+        [placeholder]="schema.placeholder"
+        [readOnly]="isReadOnly" 
+        [attr.disabled]="isReadOnly?'':null"
+        [appFocus]="formControlObj.isFocused"
+        (blur) = "formControlObj.isFocused = false;"
+        (change)="onChange($event)">{{value}}</textarea>
+
+    <select *ngIf="stringControlType === 'select'" 
+        class="form-control" 
+        [formControlName]="formControlObj.key" 
+        [appFocus]="formControlObj.isFocused"
+        (blur) = "formControlObj.isFocused = false;"
+        (change)="onChange($event)">
+        <option *ngIf="schema.optional && !formControlObj.required" selected>{{schema.placeholder || "Choose one..."}}</option>
+        <option *ngFor="let e of schema.enum; let i = index;" [value]="e[1]" [selected]="value === e">
+            {{e[0]}}
+        </option>
+    </select>
+
+    <!-- Description Messaging Section -->
+    <control-message *ngIf="formControlObj.description" [message]="formControlObj.description" [messageType]="'description'"></control-message>
+    <!-- Validation Messaging Section -->
+    <ng-container *ngIf="isInvalid && !!formControlValidator?.errorMessages && formControlValidator?.errorMessages.length > 0">
+        <control-message *ngFor="let message of formControlValidator.errorMessages" [message]="message" [messageType]="'errorMessage'"></control-message>
+    </ng-container>
+</div>

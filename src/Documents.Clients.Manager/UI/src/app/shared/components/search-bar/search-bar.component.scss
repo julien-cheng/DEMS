@@ -1,0 +1,14 @@
+/*
+*  File:        search-bar.component.scss
+*  Description: This files holds styles specific for search bar
+*  Author:      RK - Document Manager API
+*/
+
+
+.search-wrapper{
+    display: block;
+    width: 100%;
+    .btn-info >i{
+        color:#fff;
+    }
+}

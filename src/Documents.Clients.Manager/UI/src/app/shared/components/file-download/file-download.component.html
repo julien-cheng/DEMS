@@ -1,0 +1,7 @@
+<div hidden="hidden">
+  <form ngNoForm action="api/batchnative" target="batchNativeIframe" method="POST">
+    <input name="payloadJSON" [value]="downloadPayload" >
+    <button #downloadButton type="submit">Search</button>
+  </form>
+  <iframe name="batchNativeIframe"  ></iframe>
+</div>

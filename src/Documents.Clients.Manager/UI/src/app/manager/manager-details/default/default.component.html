@@ -1,0 +1,7 @@
+<div class="alert alert-info" *ngIf="fileUrl === undefined">
+    <h5>
+        <i class="fa fa-warning"></i> No preview available for this file type.</h5>
+</div>
+<div class="myIframe">
+    <iframe *ngIf="!!fileUrl" [src]='saferesourceURL' frameborder="0"  ></iframe>
+</div>

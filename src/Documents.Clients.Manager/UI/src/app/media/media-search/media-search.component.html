@@ -1,0 +1,71 @@
+<div class="mb-3">
+    <h6 class="mb-0">List of segments in this video:</h6>
+    <small class="text-muted">Click on the link to skip to segment:</small>
+</div>
+<ng-container *ngIf="!!segments && segments.length>0">
+    <form [formGroup]="searchFormGroup" novalidate>
+        <div class="input-group input-group-sm mb-3">
+            <input type="text" [formControl]="searchTranscriptFormControl" [(ngModel)]="searchText" name="transcriptSearch" class="form-control"
+                [placeholder]="'Search '+segmentLabel+'...'" aria-label="transcript search" aria-describedby="transcript search">
+            <div class="input-group-append">
+                <button class="btn btn-outline-info" type="button" (click)="clearSearch()">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+    <div *ngIf="!!searchResults && searchResults.length > 0; else noresults">
+        <ul class="list-unstyled mt-3 srt-list search-results">
+            <li *ngFor="let segment of searchResults | slice: (currentPage * pageSize) - pageSize :currentPage * pageSize" (click)="setActiveSegment(segment)"
+                [ngClass]="{'active': segment.isActive}">
+                <h5>
+                    <a>
+                        <i class="fa fa-info fa-play-circle"></i> {{segment.startTime | formatTime}} - {{segment.endTime  | formatTime }}</a>
+                    <a *ngIf="enableShareLink" class="float-right btn btn-sm btn-link" (click)="openShareModal($event, segment)">
+                        <i class="fa fa-link" aria-hidden="true"></i>
+                    </a>
+                </h5>
+                <p>
+                    {{segment.text}}
+                </p>
+            </li>
+        </ul>
+        <app-media-pager [pageSize]="pageSize" [(items)]="searchResults" [pageNumber]="currentPage" (onPageChanged)="onPageChanged($event)"></app-media-pager>
+    </div>
+    <ng-template #noresults>
+        <div *ngIf="searchTranscriptFormControl.value" class="alert alert-info">
+            no results were found for
+            <b>"{{searchTranscriptFormControl.value}}"</b>
+        </div>
+    </ng-template>
+</ng-container>
+<ng-container *ngIf="!!segments && segments.length<=0">
+    <div class="alert alert-info">
+        <h6>To add a new clip:</h6>
+        <p>Move sliders to the start time and end time of the video fragment. Click the "Add New Video Segment" button.</p>
+
+        <h6>To Edit saved clips:</h6>
+        <p>Click on clip to modify and save.</p>
+
+    </div>
+</ng-container>
+
+<app-bootstrap-modal *ngIf="enableShareLink" title="Share Segment" elementID="shareSegment" modalSizeClass="modal-md" closeOnBodyCLick="true">
+    <div modal-body>
+        <label *ngIf="!!shareLinkSegment">Share segment:
+            <span class="text-primary">{{shareLinkSegment.startTime | formatTime}} - {{shareLinkSegment.endTime | formatTime}}</span></label>
+        <span id="shareLinkSegmentURL" class="d-none">{{shareLinkSegmentURL}}</span>
+        <div class="input-group mb-3">
+            <input  type="text" class="form-control"  readonly [value]="shareLinkSegmentURL">
+            <div class="input-group-append">
+                <button appClipboardCopy="shareLinkSegmentURL" type="button" class="btn btn-info btn-sm float-right" title="Copy magic link">
+                    <i class="fa fa-clipboard"></i>
+                </button>
+            </div>
+        </div>
+        
+    </div>
+    <div modal-footer>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+</app-bootstrap-modal>

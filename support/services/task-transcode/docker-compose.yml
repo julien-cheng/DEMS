@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  transcode:
+    image: registry.violetdata.com/documents.queues.tasks.transcode.ffmpeg:2.1.1
+    environment:
+      - DocumentsQueuesTasksTranscodeFFMPEG__API__Uri=http://v-work-acl01:5001/
+      - DocumentsQueuesTasksTranscodeFFMPEG__API__OrganizationKey=System
+      - DocumentsQueuesTasksTranscodeFFMPEG__API__UserKey=system
+      - DocumentsQueuesTasksTranscodeFFMPEG__API__Password=Re#15!%add5

@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  admin:
+    image: 359927049497.dkr.ecr.us-east-1.amazonaws.com/dems/documents.clients.admin:2.3.9.1
+    environment:
+      - DocumentsClientsAdmin__HostingURL=http://*:5060
+      - DocumentsClientsAdmin__API__Uri=https://dmsapi.test.dems.nypti.org/
+      - DocumentsClientsAdmin__API__OrganizationKey=System
+      - DocumentsClientsAdmin__API__UserKey=system
+      - DocumentsClientsAdmin__API__Password=Re#15!%add5
+    ports:
+      - "5060:5060"

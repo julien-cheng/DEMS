@@ -1,0 +1,60 @@
+<div class="list-view">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th *ngIf="hasRowsAllowedOperations" class="cb">
+                    <div class="pretty" *ngIf="rows.length>1">
+                        <input type="checkbox" [checked]="gridView.allSelected" (change)="this.toggleAll.emit($event)">
+                        <label>
+                            <i class="fa fa-check"></i> All
+                        </label>
+                    </div>
+                </th>
+                <th *ngFor="let col of gridColumns">
+                    <!-- disable sortables for right now -->
+                    <!-- <a *ngIf="col.isSortable" class="btn btn-sm btn-link" [routerLink]="baseUrl" [queryParams]="{'sortAscending': !sortAscending, sortField: col.keyName}">
+                        {{col.label}}
+                        <i class="fa " [ngClass]="{'fa-sort': sortField !== col.keyName, 'fa-sort-asc': (sortField === col.keyName && sortAscending === true), 'fa-sort-desc':(sortField === col.keyName && sortAscending !== true)  }"></i>
+                    </a>
+                    <span *ngIf="!col.isSortable">{{col.label}}</span> -->
+                    <span>{{col.label}}</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of rows; let i=index" class="{{row.uiClass}}" [ngClass]="{'selected': row.selected, 'editMode':row.editMode}"
+                [appFileSortable]="row" [gridView]="gridView" [dropTarget]="row.dropTarget" [dropSource]="row.dropSource" (saveMove)="saveCallback({requestType: 'MoveIntoRequest', eventType: 'send'}, $event)">
+                <td *ngIf="hasRowsAllowedOperations" class="cb">
+                    <div class="pretty">
+                        <input type="checkbox" (change)="changeSelectRow.emit({selected: $event.target.checked, row: row,index: i})" [checked]="row.selected">
+                        <label>
+                            <i class="fa fa-check"></i>
+                        </label>
+                    </div>
+                </td>
+                <ng-container *ngFor="let col of gridColumns" [ngSwitch]="col.keyName">
+                    <!-- Cellview handles defaults -->
+                    <td app-cell-view *ngSwitchDefault [row]="row" [col]="col" [class]="col.keyName"></td>
+                    <!-- Actions and Allowed Operations -->
+                    <td *ngSwitchCase="'name'" [class]="col.keyName">
+                        <ng-container *ngIf="!row.editMode">
+                            <app-link [row]="row" (triggerCallback)="saveCallback($event)"></app-link>
+                        </ng-container>
+                        <app-inline-editor [row]="row" [(ngModel)]="newName" label="{{row.name}}" [editing]="row.editMode" [required]="true" [inlineValidators]="row.rowInlineValidators"
+                            (saveChange)="saveCallback({requestType: 'RenameRequest', eventType: 'send'}, [row])" type="text"
+                            ngDefaultControl></app-inline-editor>
+                    </td>
+                    <td class="actions" *ngSwitchCase="'allowedOperations'">
+                        <div class="dropdown" *ngIf="!!row.allowedOperationsButtonDriven && row.allowedOperationsButtonDriven.length >0">
+                            <button class="btn btn-link btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Allowed Operations" app-operations-menu [allowedOperations]="row.allowedOperationsButtonDriven"
+                                [isButton]="false" [itemClass]="'dropdown-item'" (processBatchUiAction)="saveCallback($event, [row])"></div>
+                        </div>
+                    </td>
+                </ng-container>
+            </tr>
+        </tbody>
+    </table>
+</div>

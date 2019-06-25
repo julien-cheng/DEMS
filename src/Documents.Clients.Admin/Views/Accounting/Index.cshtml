@@ -1,0 +1,39 @@
+﻿@model List<OrganizationModel>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                Organization Key
+            </th>
+            <th>
+                Organization Name
+            </th>
+            <th>
+                eDiscovery
+            </th>
+            <th>
+                LEO Upload
+            </th>
+            <th>
+                Transcript
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var org in Model)
+        {
+        <tr>
+            <td>@Html.ActionLink(org.Identifier.OrganizationKey, "Transcription", new { organizationKey = org.Identifier.OrganizationKey })</td>
+            <td>@org.Name</td>
+            <td>@(org.FolderMetadata.ContainsKey(OrganizationModel.Tier) && org.FolderMetadata[OrganizationModel.Tier].Read<bool>("eDiscovery[isActive]") ? "on" : "")</td>
+            <td>@(org.FolderMetadata.ContainsKey(OrganizationModel.Tier) && org.FolderMetadata[OrganizationModel.Tier].Read<bool>("LEOUpload[isActive]") ? "on" : "")</td>
+            <td>@(org.Read<bool>("transcript[isActive]") ? "on" : "")</td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    @Html.ActionLink("All", "Transcription")
+</div>

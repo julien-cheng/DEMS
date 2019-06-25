@@ -1,0 +1,49 @@
+<!-- <h6>Form Control Component:</h6> -->
+
+<ng-container *ngIf="formControl" [ngSwitch]="formControl.controlType">
+    <string-control  *ngSwitchCase="'string'"
+    [form]="form"
+    [formControlObj]="formControl"
+    [formControlValidator]="formControl.validator"
+    (updateValue)="updateValue($event)" >
+    </string-control>
+ 
+    <number-control *ngSwitchCase="'number'" 
+    [form]="form"
+    [formControlObj]="formControl"
+    [formControlValidator]="formControl.validator"
+    (updateValue)="updateValue($event)" >
+    </number-control>
+
+    <boolean-control  *ngSwitchCase="'boolean'"
+    [form]="form"
+    [formControlObj]="formControl" 
+    [formControlValidator]="formControl.validator" 
+    (updateValue)="updateValue($event)" >
+    </boolean-control>
+
+    <!-- Editors -->
+    <object-control *ngSwitchCase="'object'"
+    [form]="form"
+    [formControlObj]="formControl"
+    [formControlValidator]="formControl.validator" 
+    (updateValue)="updateValue($event)" >
+    </object-control>
+    
+    <array-control *ngSwitchCase="'array'"
+    [form]="form"
+    [formControlObj]="formControl"
+    [formControlValidator]="formControl.validator"
+    (updateValue)="updateValue($event)" >
+    </array-control>
+
+    <null-control  *ngSwitchCase="'null'"
+        [formControlObj]="formControl">
+    </null-control>
+
+    <ng-container *ngSwitchDefault>
+        <div class="alert alert-warning">
+            This is an undefined type of object <strong>{{controlSchema.type}}</strong>
+        </div>
+    </ng-container>
+</ng-container>

@@ -1,0 +1,160 @@
+version: '3'
+
+services:
+  elasticsearch:
+    restart: always
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1
+    environment:
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    expose:
+      - "9200"
+    volumes:
+      - ../services/data/elasticsearch:/usr/share/elasticsearch/data
+#  kibana:
+#    restart: always
+#    image: docker.elastic.co/kibana/kibana-oss:6.6.1
+#    ports:
+#      - "5601:5601"
+  mssql-server-linux:
+    image: microsoft/mssql-server-linux:latest
+    volumes:
+      - ../services/data/mssql:/var/opt/mssql/data
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=wwFRtn9aCa3kAv9J
+    ports:
+      - "1433:1433"
+  rabbitmq:
+    image: rabbitmq:3.7.4-management-alpine
+    expose:
+      - "5672"
+      - "15672"
+    ports:
+      - 15672:15672
+  redis:
+    image: "redis:alpine"
+    expose:
+      - "6379"
+#  unoconv:
+#    image: zrrrzzt/docker-unoconv-webservice
+#    expose:
+#      - "3000"
+#    environment:
+#      - PAYLOAD_MAX_SIZE=25000000
+  documents-api:
+    depends_on:
+      - rabbitmq
+      - redis
+      - mssql-server-linux
+    restart: always
+    image: documents.api:latest
+    ports:
+      - "5001:5001"
+    environment:
+      - DOCUMENTS_CONFIG_PATH=/etc/documents/config.json
+      - DocumentsAPI:ElasticSearchUri=http://elasticsearch:9200
+      - DocumentsAPI:ConnectionString=Server=mssql-server-linux; Database=Documents; user id=sa; password=wwFRtn9aCa3kAv9J
+      - DocumentsAPI:QueueURI=amqp://guest:guest@rabbitmq:5672
+      - DocumentsAPI:QueueManagementURI=http://guest:guest@rabbitmq:15672
+      - DocumentsAPI:BackendGatewayURL=http://documents-backends-gateway:5020/
+    volumes:
+      - ../config/documents.server.config.json:/etc/documents/config.json
+  documents-clients-manager:
+    depends_on:
+      - documents-api
+    restart: always
+    image: documents.clients.manager:latest
+    ports:
+      - "5000:5000"
+    environment:
+      - DOCUMENTS_CONFIG_PATH=/etc/documents/config.json
+      - DocumentsClientsManager:API:Uri=http://documents-api:5001/
+    volumes:
+      - ../config/documents.server.config.json:/etc/documents/config.json
+  documents-backends-gateway:
+    restart: always
+    image: documents.backends.gateway:latest
+    expose:
+      - "5020"
+    environment:
+      - DOCUMENTS_CONFIG_PATH=/etc/documents/config.json
+    volumes:
+      - ../config/documents.server.config.json:/etc/documents/config.json
+      - ../services/data/store/:/mnt/store
+  documents-queues-tasks-eventrouter:
+    depends_on:
+      - documents-api
+    restart: always
+    image: documents.queues.tasks.eventrouter:latest
+    environment:
+      - DOCUMENTS_CONFIG_PATH=/etc/documents/config.json
+      - DocumentsQueuesTasksEventRouter:API:Uri=http://documents-api:5001/
+    volumes:
+      - ../config/documents.server.config.json:/etc/documents/config.json
+  documents-queues-tasks-imagegen:
+    depends_on:
+      - documents-api
+    restart: always
+    image: documents.queues.tasks.imagegen:latest
+    environment:
+      - DOCUMENTS_CONFIG_PATH=/etc/documents/config.json
+      - DocumentsQueuesTasksImageGen:API:Uri=http://documents-api:5001/
+    volumes:
+      - ../config/documents.server.config.json:/etc/documents/config.json
+  documents-queues-tasks-transcode-ffmpeg:
+    depends_on:
+      - documents-api
+    restart: always
+    image: documents.queues.tasks.transcode.ffmpeg:latest
+    environment:
+      - DOCUMENTS_CONFIG_PATH=/etc/documents/config.json
+      - DocumentsQueuesTasksTranscodeFFMPEG:API:Uri=http://documents-api:5001/
+    volumes:
+      - ../config/documents.server.config.json:/etc/documents/config.json
+  documents-queues-tasks-archive:
+    depends_on:
+      - documents-api
+    restart: always
+    image: documents.queues.tasks.archive:latest
+    environment:
+      - DOCUMENTS_CONFIG_PATH=/etc/documents/config.json
+      - DocumentsQueuesTasksArchive:API:Uri=http://documents-api:5001/
+    volumes:
+      - ../config/documents.server.config.json:/etc/documents/config.json
+  documents-queues-tasks-textextract:
+    depends_on:
+      - documents-api
+    restart: always
+    image: documents.queues.tasks.textextract:latest
+    environment:
+      - DOCUMENTS_CONFIG_PATH=/etc/documents/config.json
+      - DocumentsQueuesTasksTextExtract:API:Uri=http://documents-api:5001/
+    volumes:
+      - ../config/documents.server.config.json:/etc/documents/config.json
+  documents-queues-tasks-pdfocr:
+    depends_on:
+      - documents-api
+    restart: always
+    image: documents.queues.tasks.pdfocr:latest
+    environment:
+      - DOCUMENTS_CONFIG_PATH=/etc/documents/config.json
+      - DocumentsQueuesTasksPDFOCR:API:Uri=http://documents-api:5001/
+    volumes:
+      - ../config/documents.server.config.json:/etc/documents/config.json
+  documents-queues-tasks-exiftool:
+    depends_on:
+      - documents-api
+    restart: always
+    image: documents.queues.tasks.exiftool:latest
+    environment:
+      - DOCUMENTS_CONFIG_PATH=/etc/documents/config.json
+      - DocumentsQueuesTasksExifTool:API:Uri=http://documents-api:5001/
+    volumes:
+      - ../config/documents.server.config.json:/etc/documents/config.json

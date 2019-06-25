@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  transcode:
+    build:
+      context: ./bin/Debug/netcoreapp2.0/publish
+    environment:
+      - DOCUMENTS_CONFIG_PATH=/etc/documents/config.json
+    volumes:
+      - ${DOCUMENTS_CONFIG_PATH}:/etc/documents/config.json

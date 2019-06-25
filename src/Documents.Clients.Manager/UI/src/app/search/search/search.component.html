@@ -1,0 +1,44 @@
+<button class="btn btn-sm btn-secondary left-nav-toggler collapsed" type="button" data-toggle="collapse" data-target=".left-navigation"
+  aria-controls="leftNavToggler" aria-expanded="false" aria-label="Toggle navigation">
+  <i class="fa fa-bars"></i>
+</button>
+<div class="wrapper">
+  <!-- Left content tabbed sections: collapse class for small devices -->
+  <div class="left-navigation collapse show">
+    <div class="left-wrapper">
+      <small *ngIf="!isReturnLinkDisabled" class="float-right">
+        <a [routerLink]="returnLink">
+          <i class="fa fa-reply"></i> Return</a>
+      </small>
+      <app-search-filters *ngIf="!!facetGroups" [identifier]="pathIdentifier" [baseURL]="baseURL" [facetGroups]="facetGroups" [searchRequest]="searchRequest"
+        [activeFilters]="activeFilters" (removeActiveFilter)="removeActiveFilter($event)"></app-search-filters>
+    </div>
+  </div>
+  <div class="main-container">
+    <div class="list-toolbar row">
+      <div class="col-auto mr-auto">
+        <ng-container *ngIf="!!searchResult">
+          <h5 *ngIf="!!keyword; else emptyHeader" class="mb-0">Search Results for:
+            <small class="text-primary em ml-2">"{{keyword}}"</small>
+          </h5>
+          <ng-template #emptyHeader>
+            <h5 class="mb-0">Showing All Files</h5>
+          </ng-template>
+          <small>showing {{pageSize}} results out of {{searchResult.totalMatches}}</small>
+        </ng-container>
+      </div>
+      <div class="col-auto">
+        <app-search-form [identifier]="folderIdentifier" [searchRequest]="searchRequest" (refreshResults)="refreshResults($event)"></app-search-form>
+      </div>
+    </div>
+    <app-search-badges *ngIf="!!searchRequest && !!searchResult" [searchRequest]="searchRequest" (removeActiveFilter)="removeActiveFilter($event)"></app-search-badges>
+    <div class="search-results py-2" *ngIf="!!searchResult?.rows && searchResult.rows.length > 0">
+      <app-search-result [searchResult]="searchResult"></app-search-result>
+      <!-- [pathIdentifier]="pathIdentifier" [pageFiltersParams]="pageFiltersParams" -->
+      <app-search-pagination *ngIf="!!searchResult" [searchRequest]="searchRequest" [baseURL]="baseURL" [totalRecords]="searchResult.totalMatches"></app-search-pagination>
+    </div>
+    <p class="folderEmpty my-4" *ngIf="!!searchResult?.rows && searchResult.rows.length <= 0">No results found for:
+      <b>"{{keyword}}"</b>
+    </p>
+  </div>
+</div>

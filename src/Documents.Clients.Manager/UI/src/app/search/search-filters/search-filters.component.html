@@ -1,0 +1,19 @@
+
+<h5 class="mb-3">Refine Search</h5>
+<div class="facet-group" *ngFor="let facetGroup of facetGroups;let i=index;">
+  <label class="bold mb-2">{{facetGroup.label || facetGroup.name}}</label>
+  <ul *ngIf="!!facetGroup.values && facetGroup.values.length >0" class="list-unstyled">
+    <li *ngFor="let facet of facetGroup.values">
+      <ng-container *ngIf="!!facet.value">
+        <a *ngIf="!isActiveFilter(facet); else disabledLink" [routerLink]="baseUrl" [queryParams]="facet.additionalParams">{{facet.label}}
+          <span class="counts">({{facet.count}})</span>
+        </a>
+        <ng-template #disabledLink>
+          <a class="active">{{facet.label}}
+            <span class="fa fa-times remove" (click)="removeActiveFilter.emit(facet.filter)"></span>
+          </a>
+        </ng-template>
+      </ng-container>
+    </li>
+  </ul>
+</div>

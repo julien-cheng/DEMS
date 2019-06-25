@@ -1,0 +1,75 @@
+/*
+*  File:        media-tools.component.scss
+*  Description: This files holds styles specific for Media tools main component
+*  Author:      RK - Document Manager API
+*/
+
+@import '../../styles/helpers/_variables.scss';
+@import '../../styles/helpers/_mixins.scss';
+@import "~bootstrap/scss/mixins";
+@import '../../styles/helpers/_bootstrap-variables.scss';
+
+.left-navigation{
+    .tab-content .tab-pane{
+        padding: 20px 0;
+    }
+}
+.videoCol{
+    padding: 20px 15px;
+}
+#transcriptionTab{
+    padding-top: 20px;
+}
+
+.nav-tabs{
+    position: relative;
+    padding-right: 60px;
+    .return-li{
+        bottom:10px;
+        position: absolute;
+        right:5px;
+     }
+}
+
+//Responsive
+//Large Devices: =<992px
+@include media-breakpoint-up(lg) { 
+    // For subtitles max width
+    .card{
+        max-width: 50vw;
+    }
+    .tabContentCol{
+        padding-right: 0;
+    }
+    .tab-content {
+        #transcriptionTab{
+            padding: 20px 15px;
+            .tab-pane{
+                padding: 10px 0;
+                &#transcriptionReviewTab{
+                    padding-top:0;
+                }
+            }
+        }
+        #videoTab{
+            padding: 10px 15px;
+        }
+    }
+    .videoCol{
+        &.col-sm-4{
+            padding-top: 20px;
+        }
+
+        &.col-sm-8{
+            padding-top: 30px;
+            padding-left: 35px;
+        }
+    }
+}
+
+.transcriptionBtns{
+    .btn.active{
+        color: $brand-primary;
+        font-weight: 700;
+    }
+}

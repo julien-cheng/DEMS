@@ -1,0 +1,67 @@
+<div class="segments-review" id="segmentReview">
+  <div class="segment" *ngFor="let segment of segments; let i=index">
+    <!-- Button insert segment before -->
+    <div class="btn-before">
+      <button class="btn btn-outline-info btn-sm" type="button" [disabled]="!addBeforeAllowed(segment)" (click)="addSegmentBefore(segment)" title="Add Segment">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+    <!-- segment form -->
+    <form *ngIf="currentEditSegment && segment==currentEditSegment && isEditing">
+      <div class="row" >
+            <div class="card mb-2">
+                <div class="card-header">
+                  Start Time
+                </div>
+                  <app-media-time-picker #startTime [(inputTimeNumber)]="currentEditSegment.startTime" (onTimeChanged)="setStartTime($event)" [maxMilliseconds]="getMaxTime()"
+                  [minMilliseconds]="getMinTime()"></app-media-time-picker>
+              </div>
+      </div>
+      <div class="row">
+            <div class="card mb-2">
+              <div class="card-header">
+                  End Time
+              </div>
+              <app-media-time-picker #endTime [(inputTimeNumber)]="currentEditSegment.endTime" (onTimeChanged)="setEndTime($event)" [maxMilliseconds]="getMaxTime()"
+                [minMilliseconds]="getMinTime()"></app-media-time-picker>
+            </div>
+      </div>
+
+      <div [hidden]="startTime.inputTimeNumber < endTime.inputTimeNumber" class="col-md-12 alert alert-danger">
+          Start time must be less than end time for a segment.
+      </div>
+
+      <textarea  type="text" rows="4" [(ngModel)]="currentEditSegment.text" name="text" class="form-control" placeholder="Transcript Content"></textarea>
+
+      <div class="text-center btn-panel">
+        <button type="submit" [disabled]="!startTime.isTimeControlValid() || !endTime.isTimeControlValid()" class="btn btn-primary" (click)="saveSegment()">Save</button>
+        <button type="button" (click)="cancel()" class="btn btn-default">Cancel</button>
+      </div>
+    </form>
+
+    <!-- Static segment row -->
+    <div class="row" *ngIf="segment!=currentEditSegment" [id]="segment.startTime" (click)="setActiveSegment(segment)" >
+      <div class="col-md-10">
+        <small class="text-muted mb-1">{{segment.startTime | date:"mm:ss:SSS"}} - {{segment.endTime | date:"mm:ss:SSS"}} </small>
+        <p [ngClass]="{'mark': segment.isActive}">{{segment.text}}</p>
+      </div>
+      <div class="col-md-2 text-right">
+        <div class="btn-group btn-group-sm">
+          <button class="btn btn-outline-info btn-sm" type="button" [disabled]="isEditing" (click)="edit(segment)">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button class="btn btn-outline-danger" type="button" [disabled]="isEditing" (click)="delete(segment)">
+            <i class="fa fa-times-circle"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Button insert segment after -->
+    <div class="btn-after" *ngIf="i=== (segments.length -1) ">
+      <button class="btn btn-outline-info btn-sm" type="button" [disabled]="!addAfterAllowed(segment)" (click)="addSegmentAfter(segment)" title="Add Segment">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</div>

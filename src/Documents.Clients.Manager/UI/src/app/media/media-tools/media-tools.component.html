@@ -1,0 +1,67 @@
+<button class="btn btn-sm btn-secondary left-nav-toggler collapsed" type="button" data-toggle="collapse" data-target=".left-navigation"
+  aria-controls="leftNavToggler" aria-expanded="false" aria-label="Toggle navigation">
+  <i class="fa fa-bars"></i>
+</button>
+
+<div id="media-tools" class="wrapper">
+  <!-- Left content tabbed sections: collapse class for small devices -->
+  <div class="left-navigation collapse show">
+    <app-media-search [segments]="segments" *ngIf="!!segments" [activeSegment]="activeSegment" (onActiveSegmentChange)="changeVideoActiveSegment($event)"></app-media-search>
+  </div>
+  <!-- END OF Left content tabbed sections -->
+  <!-- Middle content tabbed sections -->
+  <div class="main-container">
+    <!-- TABS -->
+    <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#videoTab" role="tab" aria-controls="home" aria-selected="true"
+          (click)="switchVideoColClass('video')">Present</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="transcription-tab" data-toggle="tab" href="#transcriptionTab" role="tab" aria-controls="transcription"
+          (click)="switchVideoColClass('transcription')" aria-selected="true">Edit</a>
+      </li>
+      <li *ngIf="!!allowedOperations"  class="nav-item dropdown" >
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Actions</a>
+        <div app-operations-menu class="dropdown-menu" [allowedOperations]="allowedOperations" [isButton]="false" [itemClass]="'dropdown-item'"  
+        (processBatchUiAction)="processBatchUiAction($event);" ></div>
+      </li>
+      <li class="return-li">
+          <app-return-link  [pathIdentifier]="pathIdentifier"></app-return-link>
+        <!-- <a  *ngIf="!!fileIdentifier" [routerLink]="(pathIdentifier.pathKey.length >0) ? ['/file/', fileIdentifier.organizationKey, fileIdentifier.folderKey, pathIdentifier?.pathKey, fileIdentifier.fileKey, 'Video' ] :
+          ['/file/', fileIdentifier.organizationKey, fileIdentifier.folderKey, fileIdentifier.fileKey, 'Video']">
+          <i class="fa fa-reply"></i> Return
+        </a> -->
+      </li>
+    </ul>
+    <!-- END OF TABS -col-sm-4 order-last py-4 -->
+    <div class="row">
+      <div class="videoCol" [ngClass]="videoContainerClass" *ngIf="!!mediaSet">
+        <app-video [mediaSet]="mediaSet" [activeSegment]="activeSegment" [isEditMode]="isEditMode" (onActiveSegmentChange)="onActiveSegmentChange($event)" ></app-video>
+      </div>
+      <div class="col-sm-8 tabContentCol">
+        <!-- Main Tab Content -->
+        <div class="tab-content" *ngIf="!!mediaSet">
+          <!-- Main Video Tab  show active-->
+          <div class="tab-pane fade show active" id="videoTab" role="tabpanel" aria-labelledby="video-tab">
+            <div class="card" *ngIf="!!activeSegment" >
+              <app-media-subtitles [activeSegment]="activeSegment"></app-media-subtitles>
+            </div>
+          </div>
+          <!-- END OF Main Video Tab -->
+          <!-- Main Transcription Tab -->
+          <div class="tab-pane fade" id="transcriptionTab" role="tabpanel" aria-labelledby="transcription-tab">
+            <app-transcription-review *ngIf="!!segments" (onSegmentSave)="segmentSaveHandler($event);" (onActiveSegmentChange)="changeVideoActiveSegment($event);"
+              [activeSegment]="activeSegment" [segments]="segments" [fileIdentifier]="fileIdentifier"></app-transcription-review> 
+            <!--END OF transcription tabbed content -->
+          </div>
+          <!-- END OF Main Transcription Tab -->
+        </div>
+        <!-- END OF Main Tab Content -->
+      </div>
+    </div>
+  </div>
+  <!-- END OF Middle content tabbed sections -->
+</div>
+
+<app-batch-operations *ngIf="allowedOperations" [allowedOperations]="allowedOperations" (updateViewCallback)="updateView()" ></app-batch-operations>

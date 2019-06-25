@@ -1,0 +1,250 @@
+<div *ngIf="videoIsLoaded">
+  <div class="row no-gutters border-bottom mt-4 mb-1 pb-2">
+    <div class="col">
+      <h1 class="h5">
+        <i class="text-muted mr-1 fa" aria-hidden="true" [ngClass]="{'fa-plus-circle':activeAction === eMediaClipActionType.new, 'fa-pencil': activeAction === eMediaClipActionType.edit, 'fa-microphone-slash': activeAction === eMediaClipActionType.mute}"></i>
+        {{activeAction === eMediaClipActionType.new ? 'Create New Segment' : activeAction === eMediaClipActionType.mute ? 'Mute Frames
+        on Selected Segment' : 'Edit Selected Segment' }}</h1>
+    </div>
+    <div class="col text-right">
+      <div class="btn-group btn-group-sm" role="group" aria-label="Clip Actions">
+        <button *ngIf="activeAction !== eMediaClipActionType.new" type="button" class="btn btn-secondary" (click)="deleteSegment()">
+          <i class="fa fa-trash" aria-hidden="true"></i> Delete Segment</button>
+        <!-- Allowed Operations Dropdown Menu -->
+        <div class="btn-group btn-group-sm" role="group" *ngIf="allowedOperations.length > 0">
+          <button id="" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            More...
+          </button>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="multiactions">
+            <div app-operations-menu [allowedOperations]="allowedOperations" [isButton]="false" [itemClass]="'dropdown-item'" (processBatchUiAction)="processBatchUiAction.emit($event);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <label class="mb-0">Fine tune and mute</label>
+  <div class="master-timeline">
+    <!-- Left buttons -->
+    <div  #timelineContainer class="timeline-container">
+      <div class="row" [ngClass]="{'active': activeAction === eMediaClipActionType.new}">
+        <div class="col timeline-button">
+          <button class="btn btn-link" (click)="selectActiveAction(eMediaClipActionType.new)" title="Clip new video segment">
+            <i class="fa fa-scissors"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row" [ngClass]="{'active': activeAction === eMediaClipActionType.mute, 'disabled': activeAction === eMediaClipActionType.new}">
+        <div class="col timeline-button">
+          <button class="btn btn-link" [disabled]="activeAction === eMediaClipActionType.new" (click)="selectActiveAction(eMediaClipActionType.mute)"
+            title="Mute parts of video segment">
+            <i class="fa fa-microphone-slash" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Scrollable timelines -->
+    <div #noUIContainer class="scroll-container ps mb-4" [perfectScrollbar]="config">
+      <div class="scrollable-content">
+        <!--[style]="isIframeStyles" -->
+        <div class="timeline-wrapper {{ (activeAction + 'Mode') }}" [style]="timelineWidth">
+          <!-- Main slider -->
+          <!-- (click)="capturePipClick($event)" " -->
+          <div *ngIf="!!timelineConfig" class="nouislider-container">
+            <nouislider #mainSlider [(ngModel)]="pipValues" [step]="1" [config]="timelineConfig"
+             (change)="onSliderChange($event)"
+             [disabled]="mainSliderDisabled"></nouislider>
+          </div>
+          <!-- Video slider -->
+          <div *ngIf="!!videoDuration" class="nouislider-container video-container">
+            <nouislider #videoSlider [(ngModel)]="videopipValue" [step]="1" [config]="videoConfig" [disabled]="true"></nouislider>
+          </div>
+          <!-- Mute slider -->
+          <div *ngIf="activeAction === eMediaClipActionType.mute" class="nouislider-container mute-container">
+            <nouislider #muteslider [(ngModel)]="mutePipValues" [step]="1" [config]="muteConfig" (change)="onMuteSliderChange($event)"></nouislider>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isScrollable" class="scroll-arrows" >
+      <a class="btn btn-link" (click)="scrollToView(false)"  title="Scroll to the beginning of the timeline.">
+        <i class="fa fa-fast-backward"></i>
+        <span class="sr-only sr-only-focusable">Previous</span>
+      </a>
+      <a class="btn btn-link" (click)="scrollContainerToRight()"  title="Scroll back">
+        <i class="fa fa-step-backward"></i>
+        <span class="sr-only sr-only-focusable">Play Time</span>
+      </a>
+      <a class="btn btn-link" (click)="scrollContainerToLeft()"  title="Scroll ahead">
+        <i class="fa fa-step-forward"></i>
+        <span class="sr-only sr-only-focusable">Play Time</span>
+      </a>
+      <a class="btn btn-link" (click)="scrollToView(true)" title="Scroll to the end of the timeline.">
+        <i class="fa fa-fast-forward"></i>
+        <span class="sr-only sr-only-focusable">Next</span>
+      </a>
+    </div>
+  <!-- Form for adding and modifying clips  (change)="updateMainSlider($event, segmentForm)" -->
+  <div class="timeline-form" *ngIf="activeAction !== eMediaClipActionType.mute; else muteFormTemplate">
+    <form *ngIf="!!activeSegmentRange" #segmentForm="ngForm" (ngSubmit)="onSubmitSaveSegment(segmentForm)" TimeRangeMinimum>
+      <div class="row no-gutters">
+        <div class="col">
+          <div class="input-group">
+            <input type="text" class="form-control form-control-sm" placeholder="Start Time" [(ngModel)]="activeSegmentRange.startTimeFormatted"
+              name="startTimeFormatted" required #startTime="ngModel" timeStringValidator (change)="updateTime($event,startTime,'startTime')">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button" title="Go to current video time" (click)="setToCurrentTime($event, startTime,'startTime')"
+                [disabled]="isAppendBtnDisabled('startTime')">
+                <i class="fa fa-clock-o" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <input type="hidden" [(ngModel)]="activeSegmentRange.startTime" name="startTime" required>
+          <small class="text-muted d-block">Start time for this clip</small>
+          <small *ngIf="startTime.errors?.required && (startTime.touched || startTime.dirty)" class="text-danger d-block">Start time is required</small>
+          <small *ngIf="startTime.errors?.timeStringvalidator && (startTime.dirty || startTime.touched)" class="text-danger">Start time should be in a HH:MM:SS.ms format</small>
+        </div>
+        <div class="col-1 text-center text-muted">
+          <i class="fa fa-minus fa-2x" aria-hidden="true"></i>
+        </div>
+        <div class="col">
+          <div class="input-group">
+            <input type="text" class="form-control form-control-sm" placeholder="End Time" [(ngModel)]="activeSegmentRange.endTimeFormatted"
+              (change)="updateTime($event,endTime,'endTime')" name="endTimeFormatted" required #endTime="ngModel" timeStringValidator>
+            <div class="input-group-append mr-1">
+              <button class="btn btn-outline-secondary" type="button" title="Go to current video time" (click)="setToCurrentTime($event,endTime,'endTime')"
+                [disabled]="isAppendBtnDisabled('endTime')">
+                <i class="fa fa-clock-o" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <input type="hidden" [(ngModel)]="activeSegmentRange.endTime" name="endTime" required [durationMax]="videoDuration" #endTimehidden="ngModel">
+          <small class="text-muted d-block">End time for this clip</small>
+          <small *ngIf="endTime.errors?.required && (endTime.dirty || endTime.touched)" class="text-danger d-block">End time is required</small>
+          <small *ngIf="endTime.errors?.timeStringvalidator && (endTime.dirty || endTime.touched)" class="text-danger">End time should be in a HH:MM:SS.ms format</small>
+          <small *ngIf="endTimehidden.errors?.timeDurationMaxValidator" class="text-danger d-block">End time has to be smaller than {{videoDuration | date:"HH:mm:ss.SSS"}}</small>
+        </div>
+      </div>
+      <ng-container *ngIf="segmentForm.dirty || segmentForm.touched">
+        <small *ngIf="segmentForm.errors?.timeRangeMinvalidator" class="text-danger d-block mt-1">* The segment should be at least 1 sec long</small>
+        <small *ngIf="segmentForm.errors?.timeRangeMinvalidator && !segmentForm.errors?.isStartSmaller.valid" class="text-danger d-block mt-1">* Start time should be smaller than end time</small>
+      </ng-container>
+      <div class="form-group mt-3 mb-0">
+        <label for="clipAnnotation">Annotate Segment:
+          <span class="text-primary"> {{activeSegmentRange.startTimeFormatted }} - {{activeSegmentRange?.endTimeFormatted}}</span>
+        </label>
+        <textarea class="form-control" id="clipAnnotation" rows="3" placeholder="Comment..." [(ngModel)]="activeSegmentRange.text"
+          name="text">{{ activeSegmentRange.text }}</textarea>
+        <small class="text-muted">Enter any comments or annotations about this segment.</small>
+      </div>
+      <input type="hidden" [(ngModel)]="activeSegmentRange.mutes" name="mutes">
+      <div class="text-right">
+        <button *ngIf="activeAction === eMediaClipActionType.edit" [disabled]="segmentForm.invalid || isSaving" class="btn btn-sm btn-primary ml-2"
+          type="submit">
+          <i class="fa fa-save" aria-hidden="true"></i> {{isSaving?' Saving...':'Save'}}</button>
+        <button *ngIf="activeAction === eMediaClipActionType.new" [disabled]="segmentForm.invalid || isSaving" class="btn btn-sm btn-primary ml-2"
+          type="submit">
+          <i class="fa fa-scissors" aria-hidden="true"></i> {{isSaving?' Saving...':'Add New Video Segment'}}</button>
+        <button class="btn btn-sm btn-secondary" type="button" (click)="resetForm(segmentForm)">
+          <i class="fa fa-ban" aria-hidden="true"></i> Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Form for adding and modifying mute segments within -->
+  <ng-template #muteFormTemplate>
+    <div class="row">
+      <div *ngIf="!!activeSegmentRange?.mutes && activeSegmentRange?.mutes.length > 0" class="col-md-4">
+        <h2 class="h6 border-bottom pb-2 mb-2">
+          Muted Segments
+        </h2>
+        <ul class="list-unstyled">
+          <li *ngFor="let segment of activeSegmentRange.mutes; let i=index" [ngClass]="{'active': segment.isActive, 'alert alert-danger': mutedSegmentInvalid(segment) }"
+            (click)="setActivateMuteSegment(segment)">
+            <button type="button" class="btn btn-sm btn-light float-right" (click)="deleteMutedSegment($event, segment)">
+              <i class="fa fa-minus"></i>
+            </button>
+            <h5>
+              <a role="button">
+                <i class="fa fa-microphone-slash"></i> {{segment.startTime | formatTime}} - {{segment.endTime | formatTime}}</a>
+            </h5>
+            <small>
+              {{segment.text}}
+            </small>
+            <small class="error">* This segment falls outside the main segment range, please adjust or delete</small>
+          </li>
+        </ul>
+      </div>
+      <div [ngClass]="(!!activeSegmentRange?.mutes && activeSegmentRange?.mutes.length > 0) ?'col-md-8' : 'col-md-12'">
+        <h2 class="h6 border-bottom pb-2 mb-2">
+            <i class="text-muted mr-1 fa" aria-hidden="true" [ngClass]="{'fa-plus-circle':!muteIsEditMode, 'fa-pencil': muteIsEditMode }"></i>
+              {{muteIsEditMode ? 'Edit Active Muted Segment' : 'New Muted Segment' }}
+        </h2>
+        <form *ngIf="!!activeMuteSegmentRange" #muteForm="ngForm" (ngSubmit)="onSubmitSaveMuteSegment(muteForm)" TimeRangeMinimum>
+          <div class="row no-gutters">
+            <div class="col">
+              <div class="input-group">
+                <input type="text" class="form-control form-control-sm" placeholder="Start Time" [(ngModel)]="activeMuteSegmentRange.startTimeFormatted"
+                  name="startTimeFormatted" required #muteStartTime="ngModel" timeStringValidator (change)="updateTime($event, muteStartTime,'startTime', true)">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" title="Go to current video time" (click)="setToCurrentTime($event, muteStartTime,'startTime', true)"
+                    [disabled]="isAppendBtnDisabled('startTime', true)">
+                    <i class="fa fa-clock-o" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+
+              <input type="hidden" [(ngModel)]="activeMuteSegmentRange.startTime" name="startTime" required>
+              <small class="text-muted d-block">Start time for muted segment</small>
+              <small *ngIf="muteStartTime.errors?.required && (muteStartTime.dirty || muteStartTime.touched)" class="text-danger  d-block">Start time is required</small>
+              <small *ngIf="muteStartTime.errors?.timeStringvalidator && (muteStartTime.dirty || muteStartTime.touched)" class="text-danger">Start time should be in a HH:MM:SS format</small>
+            </div>
+            <div class="col-1 text-center text-muted">
+              <i class="fa fa-minus fa-2x" aria-hidden="true"></i>
+            </div>
+            <div class="col">
+              <div class="input-group">
+                <input type="text" class="form-control form-control-sm" placeholder="End Time" [(ngModel)]="activeMuteSegmentRange.endTimeFormatted"
+                  name="endTimeFormatted" required #muteEndTime="ngModel" timeStringValidator (change)="updateTime($event, muteEndTime, 'endTime', true)">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" title="Go to current video time" (click)="setToCurrentTime($event, muteEndTime, 'endTime', true)"
+                    [disabled]="isAppendBtnDisabled('endTime', true)">
+                    <i class="fa fa-clock-o" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+              <input type="hidden" [(ngModel)]="activeMuteSegmentRange.endTime" name="endTime" required [durationMax]="segmentDuration"
+                #muteEndTimehidden="ngModel">
+              <small class="text-muted d-block">End time for muted segment</small>
+              <small *ngIf="muteEndTime.errors?.required && (muteEndTime.dirty || muteEndTime.touched)" class="text-danger  d-block">End time is required</small>
+              <small *ngIf="muteEndTime.errors?.timeStringvalidator && (muteEndTime.dirty || muteEndTime.touched)" class="text-danger">End time should be in a HH:MM:SS format</small>
+              <small *ngIf="muteEndTimehidden.errors?.timeDurationMaxValidator" class="text-danger d-block">End time has to be smaller than {{segmentDuration | date:"HH:mm:ss.SSS"}}</small>
+            </div>
+          </div>
+          <ng-container *ngIf="muteForm.dirty || muteForm.touched">
+            <small *ngIf="muteForm.errors?.timeRangeMinvalidator && !muteForm.errors?.isStartSmaller.valid" class="text-danger d-block mt-1">* Start time should be smaller than end time</small>
+            <small *ngIf="muteForm.errors?.timeRangeMinvalidator" class="text-danger d-block mt-1">* The segment should be at least 1 sec long</small>
+          </ng-container>
+          <div class="form-group mt-3">
+            <label for="clipAnnotation">Annotate Muted Segment:
+              <span class="text-primary"> {{activeMuteSegmentRange?.startTime | formatTime }} - {{activeMuteSegmentRange?.endTime | formatTime }}</span>
+            </label>
+            <textarea class="form-control" id="clipAnnotation" rows="3" placeholder="Comment..." [(ngModel)]="activeMuteSegmentRange.text"
+              name="text">{{ activeMuteSegmentRange.text }}</textarea>
+            <small class="text-muted">Enter any comments or annotations about this muted segment.</small>
+          </div>
+          <div class="border-top pt-3">
+            <button *ngIf="muteIsEditMode" class="btn btn-success btn-sm" type="button" (click)="newMuteSegment();" [disabled]="isSaving">
+              <i class="fa fa-microphone-slash"></i> {{isSaving? 'Saving...':'Add New Muted Segment'}}</button>
+            <div class="float-right">
+              <button [disabled]="muteForm.invalid || isSaving" class="btn btn-sm btn-primary ml-2" type="submit">
+                <i class="fa fa-save" aria-hidden="true"></i> {{isSaving?' Saving...':'Save'}}</button>
+              <button class="btn btn-sm btn-secondary" type="button" (click)="resetMuteForm(muteForm)" [disabled]="isSaving">
+                <i class="fa fa-ban" aria-hidden="true"></i> Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-template>
+</div>

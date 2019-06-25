@@ -1,0 +1,121 @@
+<!-- <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse"> -->
+<ng-container *ngIf="!!appConfigService.configuration?.isTopNavigationVisible && appConfigService.configuration.isTopNavigationVisible">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" tabindex="1" [routerLink]="['/case-list']" routerLinkActive="active">
+                <i class="fa fa-home" aria-hidden="true"></i> Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button> 
+        <div class="collapse navbar-collapse" id="navbarToggler">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/case-list']" routerLinkActive="active">
+                        <i class="fa fa-suitcase" aria-hidden="true"></i> Cases</a>
+                </li>
+                <li class="nav-item" *ngIf="folderKey">
+                    <a class="nav-link" [routerLink]="['/manager/', folderKey]" routerLinkActive="active">
+                        <i class="fa fa-files-o" aria-hidden="true"></i> Manager</a>
+                </li>
+                <li class="nav-item" *ngIf="folderKey">
+                    <a class="nav-link" [routerLink]="['/upload', folderKey]" routerLinkActive="active">
+                        <i class="fa fa-upload" aria-hidden="true"></i> File Upload</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/login']" routerLinkActive="active">
+                        <i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+                </li> -->
+            </ul>
+            <!-- Requires [folderIdentifier]="folderIdentifier" -->
+            <app-search-form [identifier]="folderIdentifier" ></app-search-form>
+           <!-- <form class="search-form" (ngSubmit)="searchFolder(searchTerm)">
+                <div class="input-group input-group-sm">
+                    <input [(ngModel)]="searchTerm" name="searchTerm" class="form-control" type="text" placeholder="Search">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" data-target=".subnav">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                    </div>
+                </div>
+            </form>  -->
+        </div>
+    </nav>
+  <!-- <div role="search" class="subnav">
+        <a class="btn btn-link close-panel float-right">
+            <i class="fa fa-close"></i>
+        </a>
+        <form class="container py-3">
+            <h6 class="mb-3">Advanced Search</h6>
+            <div class="row mb-2">
+                <div class="col">
+                    <label for="inputEmail4">Search Field 1</label>
+                    <input type="text" class="form-control" placeholder="Search by ...">
+                </div>
+                <div class="col">
+                    <label for="inputEmail4">Search Field 2</label>
+                    <input type="text" class="form-control" placeholder="Search by ...">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col">
+                    <label for="inputEmail4">Search Field 3</label>
+                    <input type="text" class="form-control" placeholder="Search by ...">
+                </div>
+                <div class="col">
+                    <label for="inputEmail4">Search Field 4</label>
+                    <input type="text" class="form-control" placeholder="Search by ...">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col">
+                    <label for="inputEmail4">Search Field 5</label>
+                    <input type="text" class="form-control" placeholder="Search by ...">
+                </div>
+                <div class="col">
+                    <label for="inputEmail4">Search Field 6</label>
+                    <input type="text" class="form-control" placeholder="Search by ...">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col">
+                    <label for="inputEmail4">Search Field 7</label>
+                    <input type="text" class="form-control" placeholder="Search by ...">
+                </div>
+                <div class="col">
+                    <label for="inputEmail4">Search Field 8</label>
+                    <select id="inputState" class="form-control">
+                        <option selected>Choose...</option>
+                        <option>...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="text-right mt-4">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="fa fa-search"></i> Search</button>
+                <button type="submit" class="btn btn-secondary btn-sm">Cancel</button>
+            </div>
+        </form>
+    </div> -->
+
+
+    <!--Add the modal component-->
+    <app-bootstrap-modal title="Search Results" elementID="searchResultsModal" closeOnBodyCLick="true" modalSizeClass="modal-lg">
+        <div id="search-results" modal-body>
+            <div class="container" *ngIf="foundFiles">
+                <p *ngFor="let file of foundFiles">
+                    <!--<a  [routerLink]="['/manager']">{{file.name}}</a>-->
+                    <a [routerLink]="['/file/', folderKey, row.fileKey ]" *ngIf="!file.isPath">
+                        <i class="icon {{ file.icon | iconClass: 'file' }}" aria-hidden="true"></i> {{file.name}}</a>
+                    <a [routerLink]="['/manager/', file.fullPath]" *ngIf="file.isPath">
+                        <i class="icon {{file.icon | iconClass}}" aria-hidden="true"></i> {{file.name}}</a>
+                </p>
+            </div>
+            <div *ngIf="foundFiles && foundFiles.length <= 0" class="alert alert-danger">
+                No files or folders were found that included the term: {{searchTerm}}.
+            </div>
+        </div>
+    </app-bootstrap-modal>
+</ng-container>

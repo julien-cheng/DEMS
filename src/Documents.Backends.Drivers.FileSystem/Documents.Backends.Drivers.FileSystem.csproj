@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>Documents.Backends.Drivers.FileSystem</AssemblyName>
+    <PackageId>Documents.Backends.Drivers.FileSystem</PackageId>
+    <RootNamespace>Documents.Backends.Drivers.FileSystem</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Local|AnyCPU'" />
+  <ItemGroup>
+    <ProjectReference Include="..\Documents.Backends.Gateway.Streams\Documents.Backends.Gateway.Streams.csproj" />
+    <ProjectReference Include="..\Documents.Backends.Drivers\Documents.Backends.Drivers.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,35 @@
+/*
+*  File:        _mixins.scss
+*  Description: This files holds mixins used by site
+*  Author:      RK - Document Manager API
+*/
+
+// Browser specific mixins
+@mixin browser($browsers: Mozilla) {
+  @each $browser in $browsers {
+    html[data-browser*="#{$browser}"] & {
+      @content;
+    }
+  }
+}
+
+// Font Awesome Up, right, down and left angles (>)
+@mixin fa-angle($direction:'up') {
+  @if $direction == "right" {
+      &:before{
+        content: '\f105';
+      }
+  }@else if $direction == "up" {
+    &:before{
+      content: '\f106';
+    }
+  }  @else if $direction == "down" {
+    &:before{
+      content: '\f107';
+    }
+  } @else if $direction == "left" {
+    &:before{
+      content: '\f104';
+    }
+  }
+}

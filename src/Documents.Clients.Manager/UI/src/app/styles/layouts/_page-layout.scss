@@ -1,0 +1,180 @@
+﻿/*
+* File:             _page-layout.scss
+* Description:      This files holds styles overall page styles and structures
+* Author:           RK - Document Manager API
+*/
+
+html,body{
+    @if $enable-header {
+        height: calc(100% - $header-height);
+    }@else{
+        height:100%;
+    }
+   
+}
+body{
+    overflow-x: hidden; // Needed for hidden panels
+    &.modal-open { // Bug with modal opened adding a 17px padding
+       // padding-right: 0px !important;
+       .navbar {
+           margin-right:-17px; 
+       }
+    }
+}
+
+main.container-fluid{
+    min-height: 100%;
+
+    // File view/ detailview
+    .top-toolbar{
+        .breadcrumbs-col{
+            // This needs to be rework to accept proper responsive and wrapping for long names
+            .breadcrumb{
+                padding: 0 16px;
+                max-height: 48px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                li{
+                    margin: 10px 0;
+                }
+            }
+        } 
+    }
+
+    //When interface loaded in iframe
+    &.iframed{
+        .pdf-iframe{ 
+            @include browser("MSIE-11") {
+                height: auto;
+            }
+        }
+     
+        $max-iframe-height:  55vw;   
+        //When interface loaded in iframe - this needs to be cleaned up
+        .gallery-modal{
+            max-height:$max-iframe-height;
+            .modal-content, .carousel, .image-link{
+                max-height:$max-iframe-height !important;
+            }
+            .image-link{
+                min-height:$max-iframe-height !important;
+            }
+            .carousel-indicators-wrapper{
+                background: none !important;
+            }
+        }
+   }
+}
+ 
+.left-nav, .main-content{
+     padding-bottom:20px;
+     padding-top: $main-vertical-padding;
+    @include browser("MSIE-11") {
+        align-items: stretch;
+        .pdf-iframe{ 
+            height: 100%;
+        }
+    }
+}
+
+.main-content{
+    .panel:last-of-type .panel-body{
+        border-bottom: solid 1px $hr-border-color;
+        margin-bottom: 10px;
+    }
+}
+
+.manager-view, .manager-view > .row,
+{
+    @if $enable-header {
+        min-height: calc(100vh - 56px);
+    }@else{
+        //no top navigation/header
+        min-height: 100%;
+    }
+}
+
+//The manager-list and manager details
+@include media-breakpoint-up(md) { 
+    .manager-view:not(.collapsed) {
+        &:after{
+            content:' ';
+            border-right: solid 1px $gray-lighter;
+            display: block;
+            height: 100%;
+            min-height: 100%;
+            left: 25%;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+        }
+    }
+}
+
+//Button to open left navigation
+.fe-open{
+    border-radius: 0 4px 4px 0;
+    display: none;
+    left: 0;
+    position: absolute;
+    top:2px;
+    transition: opacity 0.4s ease-out;
+    -ms-transition: opacity 0.4s ease-out;
+    -moz-transition: opacity 0.4s ease-out;
+    -webkit-transition: opacity 0.4s ease-out;
+}
+
+  //App component specific styles
+ //--------------------------------------------
+ .left-nav{
+    //border-right: solid 1px $gray-lighter;
+   // transition: 0.4s ease-out;
+    .fileexplorer-pnl{
+        opacity: 1;
+        transition: opacity 0.4s ease-out;
+        -ms-transition: opacity 0.4s ease-out;
+        -moz-transition: opacity 0.4s ease-out;
+        -webkit-transition: opacity 0.4s ease-out;
+    }
+ }
+.collapsed{
+    .left-nav{
+        border: 0;
+        height: 0;
+        max-width: 0;
+        padding:0;
+        width:0;
+        .fileexplorer-pnl{
+            display:none;
+            opacity: 0;
+            transition: opacity 0.4s ease-in;
+            -ms-transition: opacity 0.4s ease-in;
+            -moz-transition: opacity 0.4s ease-in;
+            -webkit-transition: opacity 0.4s ease-in;
+        }
+    }
+    .main-content{
+        @extend .col-md-12;
+    }
+    .fe-open{
+        cursor: pointer;
+        display: block;
+        z-index: 5;
+    }
+    .checkall{
+        margin-left: 40px;
+    }
+}
+
+
+// Temporary styles for long breadcrumbs in manager-details page until style restructuring and theming conversation
+.breadcrumbs-col{
+    overflow: hidden;
+    max-width: 75%;
+    .breadcrumb-item.active{
+        max-width: 30vw;
+        overflow: hidden;
+        @extend .ellipses;
+    }   
+}

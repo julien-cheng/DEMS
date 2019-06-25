@@ -1,0 +1,98 @@
+/*
+*   File:           file-upload.component.scss
+*   Description:    This files holds styles for upload component
+*   Author:         RK - Document Manager API
+*/
+
+@import '../../../styles/helpers/_variables.scss';
+
+small{
+    display: block;
+}
+//File Upload component styles
+.file-upload {
+  margin: 60px 90px 30px;
+  padding: 10px 20px 20px;
+  border: dashed 1px #929292;
+}
+
+.drag-box,.inner-drag-box{
+    border-radius: 5px;
+    border: solid 1px #999;
+    padding: 20px;
+}
+
+.drag-box {
+    .inner-drag-box{
+        border: 1px dashed #ccc;
+        text-align: left;
+        min-height: 100px; 
+    }
+    #fileInput {
+        display:none;
+    }
+    .fileInputLabel {
+        cursor: pointer;
+        text-decoration: underline;
+        margin-bottom: 0;
+    }
+
+    .uploading-ph, .selecting-ph{
+        display: block;
+        margin: 10px 10px 20px;
+        width: 100%;
+    }
+     .selecting-ph{
+         text-align: center;
+     }
+     .uploading-ph{
+         label{
+            display: block;
+             margin: 10px 0;
+              width: 100%;
+             >i{
+                 font-size: 30px;
+                 margin: 0 5px;
+             }
+             a{
+                 color: $gray-light;
+                 cursor: pointer;
+             }
+         }
+     }
+}
+
+//For the file input button
+.fileinput-button {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+  .fileinput-button input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    opacity: 0;
+    -ms-filter: 'alpha(opacity=0)';
+    // font-size: 200px !important;
+    direction: ltr;
+    cursor: pointer;
+  }
+  
+  /* Fixes for IE < 8 */
+  @media screen\9 {
+    .fileinput-button input {
+      filter: alpha(opacity=0);
+      font-size: 100%;
+      height: 100%;
+    }
+  }
+  
+
+  // Result table
+ div.row{
+     border-bottom: solid 1px #f0f0f0;
+     margin-bottom: 10px;
+     padding-bottom: 10px;
+ }

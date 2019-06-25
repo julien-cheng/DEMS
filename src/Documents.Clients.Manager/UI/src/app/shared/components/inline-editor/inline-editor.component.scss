@@ -1,0 +1,40 @@
+/*
+*   File:           inline-editor.component.scss
+*   Description:    This files holds styles for inline editor component
+*   Author:         RK - Document Manager API
+*/
+
+@import '../../../styles/helpers/_variables.scss';
+@import '../../../styles/helpers/_bootstrap-variables.scss';
+@import "~bootstrap/scss/mixins";
+
+.inline{
+    display: inline-block;
+    min-width: 90%;
+    width: 80%;
+    .input-group{
+        max-width: 250px;
+    }
+}
+
+//Responsive
+//-----------------------------------------
+//Mobile 768 and down
+@include media-breakpoint-down(sm) { 
+    .inline{
+        min-width: 90%;
+        width: 90%;
+        *{
+            font-size: 0.85rem;    
+
+        }
+        small{
+            font-size: 0.75rem; 
+         
+        }
+        .input-group{
+            max-width: 250px;
+            width: 100%;
+        }
+    }
+}

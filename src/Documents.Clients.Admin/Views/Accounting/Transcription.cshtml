@@ -1,0 +1,64 @@
+﻿@model ReportModel
+<p></p>
+<form class="form-horizontal">
+    <div class="form-group">
+        <label for="text" class="control-label col-xs-4">Organization Key</label>
+        <div class="col-xs-8">
+            <input name="organizationKey" type="text" value="@Model.OrganizationKey" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="text" class="control-label col-xs-4">Start Date</label>
+        <div class="col-xs-8">
+            <input name="startDate" type="text" value="@Model.Start.ToShortDateString()" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="text1" class="control-label col-xs-4">End Date</label>
+        <div class="col-xs-8">
+            <input name="endDate" type="text" value="@Model.End.ToShortDateString()" class="form-control">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-xs-offset-4 col-xs-8">
+            <button name="reportAction" value="view" type="submit" class="btn btn-primary">View</button>
+            <button name="reportAction" value="csv" type="submit" class="btn btn-primary">CSV</button>
+        </div>
+    </div>
+</form>
+
+
+@if (Model?.Report != null)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Organization</th>
+                <th>Date</th>
+                <th>User</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Name</th>
+                <th>File</th>
+                <th>Folder</th>
+                <th>MediaID</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model?.Report)
+            {
+            <tr>
+                <td>@row.OrganizationName</td>
+                <td>@row.Date</td>
+                <td>@row.User</td>
+                <td>@row.Duration</td>
+                <td>@row.Status</td>
+                <td>@row.Name</td>
+                <td>@row.File</td>
+                <td>@row.Folder</td>
+                <td>@row.MediaID</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}

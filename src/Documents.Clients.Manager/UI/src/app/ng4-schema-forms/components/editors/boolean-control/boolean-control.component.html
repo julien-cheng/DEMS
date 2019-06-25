@@ -1,0 +1,57 @@
+<div class="form-group" [formGroup]="form" [ngClass]="{'is-invalid': isInvalid }">
+  <!-- Default Checkbox not optional -->
+  <div *ngIf="booleanControlType === 'checkbox'">
+    <div class="form-check form-check-inline">
+      <label class="form-check-label">
+        <input type="checkbox" [formControlName]="formControlObj.key" [checked]="value" [attr.disabled]="isReadOnly?'':null" [appFocus]="formControlObj.isFocused"
+          (blur)="formControlObj.isFocused = false;" (change)="onChange($event)" /> {{formControlObj.label}}
+      </label>
+    </div>
+  </div>
+
+  <!-- Inline Radio boxes not optional -->
+  <ng-container *ngIf="booleanControlType === 'radio'">
+    <label>{{formControlObj.label}}
+      <span *ngIf="formControlObj.required" class="text-danger">*</span>
+    </label>
+    <div class="row">
+      <div class="form-check form-check-inline">
+        <label class="form-check-label">
+          <input type="radio" [value]="true" [formControlName]="formControlObj.key" [checked]="value" [attr.disabled]="isReadOnly?'':null"
+            [appFocus]="formControlObj.isFocused" (blur)="formControlObj.isFocused = false;" (change)="onChange($event)" /> true
+        </label>
+      </div>
+      <div class="form-check form-check-inline">
+        <label class="form-check-label">
+          <input type="radio" [value]="false" [formControlName]="formControlObj.key" [checked]="value === false" [attr.disabled]="isReadOnly?'':null"
+            (change)="onChange($event)" /> false
+        </label>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Inline Radio boxes not optional -->
+  <ng-container *ngIf="booleanControlType === 'select'">
+    <label>{{formControlObj.label}}
+      <span *ngIf="formControlObj.required" class="text-danger">*</span>
+    </label>
+    <select class="form-control" [formControlName]="formControlObj.key" [appFocus]="formControlObj.isFocused" (blur)="formControlObj.isFocused = false;"
+      (change)="onChange($event)">
+      <option *ngIf="schema.optional &&  !formControlObj.required" [ngValue]="null" selected>
+        {{schema.placeholder || "Choose one..."}}</option>
+      <option *ngFor="let e of valueArray; let i = index;" [ngValue]="e" [selected]="value === e">
+        {{e}}
+      </option>
+      <!-- <option [value]="true"  [selected]="value">true</option>
+      <option  [value]="false" [selected]="value === false">false</option> -->
+    </select>
+  </ng-container>
+
+  <!-- Description Messaging Section -->
+  <control-message *ngIf="formControlObj.description" [message]="formControlObj.description" [messageType]="'description'"></control-message>
+  <!-- Validation Messaging Section -->
+  <ng-container *ngIf="isInvalid && !!formControlValidator?.errorMessages && formControlValidator?.errorMessages.length > 0">
+    <control-message *ngFor="let message of formControlValidator.errorMessages" [message]="message" [messageType]="'errorMessage'"></control-message>
+  </ng-container>
+
+</div>

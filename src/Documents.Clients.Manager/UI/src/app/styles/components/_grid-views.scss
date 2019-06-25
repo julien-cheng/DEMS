@@ -1,0 +1,45 @@
+/*
+* File: 		_grid-views.scss
+* Description:	This file holds styles for gridviews displaying file in 3 viewmodes: details, list, and icons
+* Author:       RK - Document Manager API
+* 
+*
+*/
+
+.list-view{
+    a{
+        color: #333;
+        >i{
+            margin-right: 5px;
+        }
+        &:hover{
+            text-decoration: none;
+        }
+    }   
+}
+
+.icon-box{
+    //overflow: hidden;
+    max-width: 100%;
+    width: 100%;
+    .icon-box-content{
+        app-link{
+            display: block;
+            position: relative;
+            min-height: 24px;
+            max-width: 100%;
+            overflow: hidden;
+            width: 100%;
+            a:not(.imageLink){
+                left:0;
+                overflow: hidden;
+                position: absolute;
+                max-width: 100%;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                width: 100%;
+            }
+        }
+        
+    }
+}

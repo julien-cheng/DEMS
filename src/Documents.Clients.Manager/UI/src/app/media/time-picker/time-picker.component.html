@@ -1,0 +1,104 @@
+<div class="ml-2 mr-2">
+  <div class="row mb-2">
+
+    <div class="col-md-3">
+        <div class="row">
+            <small class="col-md-12 bold mt-2">Hours:</small>
+            <div class="col-sm-12">
+                <input type="text"
+                [(ngModel)]="hours"
+                name="startHours"
+                class="form-control"
+                placeholder="Hours"
+                pattern="^[0-9]+$"
+                required
+                (change)="emitTimeChanged()"
+                [formControl]="hoursControl">
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="row">
+            <small class="col-md-12 bold mt-2">Minutes:</small>
+            <div class="col-md-12">
+              <input type="text"
+                [(ngModel)]="minutes"
+                name="startMinutes"
+                class="form-control"
+                placeholder="Minutes"
+                pattern="^[0-9]+$"
+                required
+                (change)="emitTimeChanged()"
+                [formControl]="minutesControl">
+          </div>
+      </div>
+    </div>
+
+      <div class="col-md-3">
+        <div class="row">
+          <small class="col-md-12  bold mt-2">Seconds:</small>
+          <div class="col-md-12">
+            <input type="text"
+              [(ngModel)]="seconds"
+              name="startSeconds"
+              class="form-control"
+              placeholder="Seconds"
+              pattern="^[0-9]+$"
+              required
+              (change)="emitTimeChanged()"
+              [formControl]="secondsControl">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="row">
+          <small class="col-md-12 bold mt-2">Milliseconds:</small>
+          <div class="col-md-12">
+            <input type="text"
+              [(ngModel)]="milliseconds"
+              name="startMilliseconds"
+              class="form-control"
+              placeholder="Milliseconds"
+              pattern="^[0-9]+$"
+              required
+              (change)="emitTimeChanged()"
+              [formControl]="millisecondsControl">
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <div class="row alert alert-danger mr-2 ml-2" [hidden]="hoursControl.valid || hoursControl.pristine">
+    <div class="col-md-12">
+        Hours should be a value between 0, and 23.
+    </div>
+    </div> 
+  
+  
+  
+  <div class="row alert alert-danger mr-2 ml-2" [hidden]="minutesControl.valid || minutesControl.pristine">
+      <div class="col-md-12">
+        Minutes should be a value between 0, and 59.
+      </div>
+    </div>
+  
+  
+  
+  <div class="row alert alert-danger mr-2 ml-2" [hidden]="secondsControl.valid || secondsControl.pristine" >
+    <div class="col-md-12" >
+      Seconds should be a value between 0, and 59 Seconds.
+    </div>
+  </div>
+
+  <div class="row alert alert-danger mr-2 ml-2" [hidden]="millisecondsControl.valid || millisecondsControl.pristine" >
+      <div class="col-md-12" >
+        Milliseconds should be a value between 0, and 999.
+      </div>
+    </div>
+  
+  <div [hidden]="isTimeWithinBounds()" class="row alert alert-danger mr-2 ml-2">
+      The time must be between {{minHours}}:{{minMinutes}}:{{minSeconds}}:{{maxMillisecondsValidator}} and {{maxHours}}:{{maxMinutes}}:{{maxSeconds}}:{{minMillisecondsValidator}}
+  </div>
+</div>

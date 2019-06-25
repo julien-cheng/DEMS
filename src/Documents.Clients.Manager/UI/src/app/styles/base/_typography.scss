@@ -1,0 +1,78 @@
+﻿/*
+* File:            _typography.scss
+* Description:      This files holds styles for typography.
+* Author:           RK - Document Manager API
+*/
+
+
+//Misc Bootstrap Classes overrides
+// ---------------------------------------------------------
+.btn{
+    cursor: pointer;
+    &:disabled{
+        cursor: not-allowed;
+    }
+}
+.close{
+    cursor: pointer;
+}
+
+// Buttons overrides: 
+.btn-link{
+    color:$gray;
+    &:focus, &.focus{
+        box-shadow: 0 0 0 2px rgba(204, 204, 204, 0.25); 
+    }
+}
+
+.breadcrumb-item{
+    max-height: 24px;
+    // border-top: solid 1px red;
+}
+.breadcrumb-item::before{
+    color:$gray;
+    font-size: 22px;
+    line-height: 20px;
+    //margin-top:-4px; 
+}
+
+
+// Pretty Checkboxes Overrides for now
+// ---------------------------------------------------------
+.pretty{
+    @extend .primary;
+    @extend .smooth;
+    label{
+        background:#fff;
+        margin-bottom:0;
+        i{
+            color: #fff;
+            &:after{
+                left:-1px;
+            }
+        }
+    }
+}
+
+
+// Links in view dropdowns
+// ---------------------------------------------------------
+.dropdown-item{
+     cursor: pointer;
+     &.active, &:active {
+        color: #fff !important;
+    }
+ }
+
+
+ //Form Validation Styles
+ // ---------------------------------------------------------
+ .is-invalid{
+    label{
+        color: theme-color("danger");
+    }
+    .form-control{
+        @extend .is-invalid;
+    
+    }
+ } 

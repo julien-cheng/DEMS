@@ -1,0 +1,16 @@
+/*
+*   File:           _search-results.scss
+*   Description:    This files holds styles for the search results component
+*   Author:         RK - Document Manager API
+*/
+
+.search-results{
+    p{
+        font-size: 0.875rem;
+        margin-bottom: 5px;
+        em{
+            color: $gray-800;
+            font-weight: 700;
+        }
+    }
+}

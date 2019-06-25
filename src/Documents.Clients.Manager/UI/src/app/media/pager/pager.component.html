@@ -1,0 +1,25 @@
+<nav *ngIf="!!pagerObj && pagerObj.length > 1" aria-label="Media search pagination">
+    <ul class="pagination pagination-sm justify-content-center">
+        <li class="page-item" [ngClass]="{'disabled': pageNumber === 1}">
+            <a class="page-link" (click)="goToPage(1)" tabindex="0">First</a>
+        </li> 
+        <li class="page-item" [ngClass]="{'disabled': pageNumber === 1}">
+            <a class="page-link" (click)="goToPage(pageNumber-1)" aria-label="Previous" tabindex="1">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+        <li class="page-item" *ngFor="let page of pagerObj; let i=index" [ngClass]="{'active': page === pageNumber}">
+            <a class="page-link" (click)="goToPage(page)" [tabindex]="i+2">{{ (page ) }} </a>
+        </li>
+        <li class="page-item"  [ngClass]="{'disabled': pageNumber === numberOfPages()}">
+            <a class="page-link" (click)="goToPage(pageNumber+1)" aria-label="Next" [tabindex]="(pagerCount + 2)">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled': pageNumber === numberOfPages()}" >
+            <a class="page-link" (click)="goToPage(totalPages)" [tabindex]="(pagerCount + 3)" >Last</a>
+        </li>
+    </ul>
+</nav>

@@ -1,0 +1,31 @@
+/*
+*  File:        search.component.scss
+*  Description: This files holds styles specific for search component
+*  Author:      RK - Document Manager API
+*/
+
+@import '../../styles/helpers/_variables.scss';
+@import '../../styles/helpers/_bootstrap-variables.scss';
+
+.list-toolbar{
+    border-bottom: solid 1px $hr-border-color;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+.left-wrapper{
+    display: block;
+}
+// .return{
+//     position: absolute;
+//     right: 5px;
+//     top: 5px;
+// }
+.sub{
+    font-weight: bold;
+    *{
+        font-weight: normal;
+    }
+}
+h5{
+    font-weight: 400;
+}

@@ -1,0 +1,111 @@
+/*
+*   File:           preview-panel.component.scss
+*   Description:    This files holds styles for list views: Details, icons and list
+*   Author:         RK - Document Manager API
+*/
+
+@import '../../../styles/helpers/_variables.scss';
+@import '../../../styles/helpers/_bootstrap-variables.scss';
+@import "~bootstrap/scss/mixins";
+$tab-height: 29px;
+
+.preview-panel{
+    transition: 0.2s ease-in-out;
+    .preview-panel-content{
+        background: #fff;
+        padding: 1rem;
+    }
+    .preview-panel-tab{
+        position: fixed;
+        transition: 0.2s ease-in-out;
+    }
+    
+    // RIGHT LAYOUT: add class bottom to the button
+    &.right{
+        height: 100%;
+        position: absolute;
+        right: -100%; // -33vw
+        top:0;
+        z-index: 300;
+        .close{
+            font-size: 40px;
+            margin-top:-10px;
+        }
+        .preview-panel-content{
+            border-left: solid 1px #ddd;
+            height: 100%;
+            width: 33vw;
+        }
+        .preview-panel-tab{
+            right: 0;
+            top:50vh;
+            margin-top:-$tab-height;
+            width: $tab-height;
+            .btn{
+                border-radius: 4px 4px 0 0;
+                transform: rotate(-90deg);
+                transform-origin: left top 0;
+                height: $tab-height;
+            }
+        } 
+        &.opened{
+            position: fixed;
+            right: 0;
+            .preview-panel-tab{
+                right: 33vw;
+            }
+        }
+        
+    }
+
+    // BOTTOM LAYOUT: add class bottom to the button
+     &.bottom{
+        bottom: -50vh;
+        left:0;
+        max-height: 50vh;
+        padding-top:0;
+        position: fixed;
+        top:auto;
+        width:100%;
+        .preview-panel-content{
+            border-top: solid 1px #ddd;
+            display: block;
+            height: 50vh;
+            overflow-y:auto;
+            width:100%;
+        }
+        .preview-panel-tab{
+            position: absolute;
+            right: 10px;
+            top: -28px;
+           .btn{
+              border-radius: 4px 4px 0 0;
+           }
+        }
+        &.opened{
+             bottom: 0;
+        }
+     }
+
+
+    //Responsive
+    //-----------------------------------------
+    //Mobile 767px and down
+    @include media-breakpoint-down(sm) { 
+        width:100%;
+        &.right{
+            right: -100vw;
+            .preview-panel-content{
+               border-left: none;
+               width: 100%;
+            }
+        }
+    }
+
+    // Responsive Mobile 576 and down
+    // @include media-breakpoint-down(xs) { 
+    //      background: blue;
+    //     width:100%;
+    // }
+}
+

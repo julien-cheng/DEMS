@@ -1,0 +1,18 @@
+<div *ngIf="editing" class="inline">
+  <label hidden>{{value}}</label>
+  <div class="input-group input-group-sm" >
+    <input #inlineEditControl class="form-control" [required]="required" [formControl]="newPathName" [name]="value" [(ngModel)]="value"
+    (keyup.enter)="saveInlineEdit($event)" [type]="type" [placeholder]="label" (blur)="cancelInlineEdit($event)" />
+    <div _ngcontent-c5="" class="input-group-append">
+      <button type="button" class="btn btn-outline-secondary" (click)="saveInlineEdit($event)">
+        <i class="fa fa-check" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+  <div class="clearfix errors">
+    <small *ngIf="newPathName.errors?.excludePattern" class="text-danger">This folder name is not allowed</small>
+    <small *ngIf="newPathName.errors?.required" class="text-danger">Name is required</small>
+    <small *ngIf="newPathName.errors?.pattern" class="text-danger">Special Characters are not Allowed.</small>
+    <small *ngIf="newPathName.errors?.maxlength" class="text-danger">The max allowed number of characters is {{maxLength}}</small>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+<!-- Loading bar -->
+<app-loading [loading]="loadingService.loading"></app-loading>
+
+<app-navigation *ngIf="!!appConfigService.configuration" ></app-navigation>
+<main id="main-wrapper" class="container-fluid" [ngClass]="{'iframed': isIframe}">
+  <div data-iframe-height='' >
+    <router-outlet></router-outlet>
+  </div>
+<main>

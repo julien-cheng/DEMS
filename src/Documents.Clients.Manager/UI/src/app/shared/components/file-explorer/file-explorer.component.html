@@ -1,0 +1,25 @@
+<button type="button" class="btn btn-secondary btn-sm fe-open" aria-label="Open" (click)="explorerService.collapseFileExplorer(false)">
+  <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+<div class="fileexplorer-pnl" *ngIf="fileExplorer && identifier">
+  <button type="button" class="btn btn-secondary btn-sm fe-close" aria-label="Close" (click)="explorerService.collapseFileExplorer(true)" 
+    *ngIf="!isMoveAction"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
+  <div class="tree">
+    <tree-root #tree [nodes]="currentTreeExplorer" [options]="fileExplorerTreeOptions" [focused]="true" 
+    (initialized)="onTreeInitialized()" (updateData)="onTreeUpdate()"  >
+      <ng-template #treeNodeTemplate let-node>
+        <div *ngIf="!isMoveAction" [appFileSortable]='node.data' [dropTarget]='isDropTarget(node.data)' [dropSource]='false' 
+          (saveMove)="saveCallback({requestType: 'MoveIntoRequest', eventType: 'send'}, $event)" >
+          <a *ngIf="node.data.fullPath?.length" title="{{node.data.subTitle}}" [routerLink]="['/manager/', identifier.organizationKey, identifier.folderKey, node.data.identifier.pathKey]">
+          <i class="icon {{node.data.icon}}"></i> {{ node.data.name }}</a>
+          <a *ngIf="!node.data.fullPath?.length" title="{{node.data.subTitle}}" [routerLink]="['/manager', identifier.organizationKey,identifier.folderKey,node.data.identifier.pathKey ]"><i class="icon {{node.data.icon}}"></i> {{ node.data.name }}</a>
+        </div>
+        <!--  [ngClass]="{'not-drop-item': !isDropTarget(node.data)}" -->
+        <div *ngIf="isMoveAction"  [ngSwitch]="isDropTarget(node.data)" > 
+          <a  *ngSwitchCase="true" (click)="saveMoveItem($event, node)" ><i class="icon {{node.data.icon}}"></i> {{ node.data.name }}</a>
+          <label title="Do not move anything into this folder" *ngSwitchDefault class="not-drop-item"><i class="icon {{node.data.icon}}"></i> {{ node.data.name }}</label>
+        </div>
+      </ng-template>
+      <ng-template #loadingTemplate>Loading, please hold....</ng-template>
+    </tree-root>
+  </div>
+</div>
