@@ -10,56 +10,26 @@ Additional information coming in the near future.
 
 # Documents
 
-## Development
-### Windows
+## Requirements
 * Install [Docker for Windows](https://www.docker.com/docker-windows)
-* Install [Visual Studio Community](https://www.visualstudio.com/downloads/) update 15.5 or later
+* Install [Node.js](https://www.nodejs.org/)
 
-Start docker services
+## First Run
+1. Download project
+2. `\> build.cmd`
+3. `\support\compose-full> up.cmd`
+4. `\support> init.cmd`
+5. In a new shell `\src\Documents.Clients.Manager\UI> npm i` 
+6. `\src\Documents.Clients.Manager\UI> npm run start` 
+7. Open https://localhost:4200/JWTAuth/Backdoor
 
-```
-\support\services> up.cmd
-```
-
-this should start 5 containers
-
-```
-CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS              PORTS                                                                                        NAMES
-b0aa6d0aa55b        rabbitmq:3.7.4-management-alpine      "docker-entrypoint.s…"   31 hours ago        Up 31 hours         4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, 15671/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp   rabbit_rabbitmq_1
-f60448dada40        microsoft/mssql-server-linux:latest   "/bin/sh -c /opt/mss…"   7 weeks ago         Up 38 hours         0.0.0.0:1433->1433/tcp                                                                       mssql_mssql-server-linux_1
-465c4964740e        zrrrzzt/docker-unoconv-webservice     "/bin/sh -c '/usr/bi…"   7 weeks ago         Up 32 hours         0.0.0.0:3000->3000/tcp                                                                       unoconv_unoconv_1
-00567759d55f        elk_kibana                            "/bin/bash /usr/loca…"   3 months ago        Up 38 hours         0.0.0.0:5601->5601/tcp                                                                       elk_kibana_1
-d7bb329a5f55        elk_elasticsearch                     "/usr/local/bin/dock…"   3 months ago        Up 38 hours         0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp                                               elk_elasticsearch_1
-```
-
-This will open TCP ports 
-
-* 15672 - [RabbitMQ Web-based admin interface](http://localhost:15672) [login guest/guest]
-* 5672 - RabbitMQ protocol
-* 1433 - Microsoft SQL Server Express
-* 3000 - Unoconv (http service that uses open office to convert documents to PDF)
-* 5601 - Kibana connected to elastic
-* 9200 - Elastic Search Service
-
-Create system environment variable named `DOCUMENTS_CONFIG_PATH` pointing
-to the config.json (non-public-state/contains-secrets).
-
-Open Documents.sln in visual studio
-
-Projects to consider adding to your Solution Startup Projects
-* Documents.API - [link](http://localhost:5001/api/v1/health)
-* Documents.Backends.Gateway - [link](http://localhost:5020/healthcheck)
-* Documents.Backends.Manager - (needs ng client: see ng.cmd) [link](http://localhost:4200/JWTAuth/Backdoor)
-* Documents.Queues.Tasks.EventRouter
-* Documents.Queues.Tasks.Index
-
-The database will be created at first use and initialized with
+A database will be created at first use and initialized with
 an organization named `System`, user `system` (note case)
 
 That user will have privileges to create other organizations
 and define their security models. see: Documents.Provisioning
 
-### dms.cmd
+### Creating dms.cmd
 Adapt the following with your source path and place
 this in the windows (c:\windows perhaps) path named dms.cmd
 ```
@@ -96,6 +66,51 @@ Commands:
   user
 
 Run 'Documents.Clients.Tools [command] --help' for more information about a command.
-
-
 ```
+
+## Development
+We recommend [Visual Studio Code](https://code.visualstudio.com/download/)
+
+Create system environment variable named `DOCUMENTS_CONFIG_PATH` pointing
+to the config.json (non-public-state/contains-secrets). For example, `export DOCUMENTS_CONFIG_PATH=/Users/you/Documents/support/config/documents.server.config.json`
+
+Open Documents in VSCode
+
+Once you have changed a few files run:
+1. Run `docker build -t documents:localbuild .` to copy the files into the docker containers
+2. Run `docker build -t documents.api src/Documents.API` or equivalent to rebuild your container
+3. Restart the container from the VSCode [Docker extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker)
+
+The core projects:
+* Documents.API - [link](http://localhost:5001/api/v1/health)
+* Documents.Backends.Gateway - [link](http://localhost:5020/healthcheck)
+* Documents.Backends.Manager/UI - (needs ng client: see ng.cmd) [link](http://localhost:4200/JWTAuth/Backdoor)
+* Documents.Queues.Tasks.EventRouter
+* Documents.Queues.Tasks.Index
+
+### Containers
+```
+IMAGE                                                     PORTS
+documents.clients.manager:latest                          0.0.0.0:5000->5000/tcp, 5001/tcp
+documents.queues.tasks.pdfocr:latest                      
+documents.queues.tasks.archive:latest                     
+documents.queues.tasks.imagegen:latest                    
+documents.queues.tasks.eventrouter:latest                 
+documents.queues.tasks.transcode.ffmpeg:latest            
+documents.queues.tasks.textextract:latest                 
+documents.queues.tasks.exiftool:latest                    
+documents.api:latest                                      0.0.0.0:5001->5001/tcp
+redis:alpine                                              6379/tcp
+documents.backends.gateway:latest                         5020/tcp
+rabbitmq:3.7.4-management-alpine                          4369/tcp, 5671-5672/tcp, 15671/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp
+docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1   9200/tcp, 9300/tcp
+mcr.microsoft.com/mssql/server:latest                     0.0.0.0:1433->1433/tcp
+```
+
+These continers expose TCP ports:
+* 15672 - [RabbitMQ Web-based admin interface](http://localhost:15672) [login guest/guest]
+* 5672 - RabbitMQ protocol
+* 1433 - Microsoft SQL Server Express
+* 3000 - Unoconv (http service that uses open office to convert documents to PDF)
+* 5601 - Kibana connected to elastic
+* 9200 - Elastic Search Service
