@@ -1,87 +1,57 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { usePdf } from 'react-pdf-js';
+import './PDF.css';
+import { Document, Page } from 'react-pdf';
 
-const PDFViewer = (props: any) => {
-  const [page, setPage] = useState(1);
-  const [pages, setPages] = useState(null);
-
-  const renderPagination = (page, pages) => {
-    if (!pages) {
-      return null;
-    }
-    let previousButton = (
-      <li className="previous" onClick={() => setPage(page - 1)}>
-        <a href="#">
-          <i className="fa fa-arrow-left"></i> Previous
-        </a>
-      </li>
-    );
-    if (page === 1) {
-      previousButton = (
-        <li className="previous disabled">
-          <a href="#">
-            <i className="fa fa-arrow-left"></i> Previous
-          </a>
-        </li>
-      );
-    }
-    let nextButton = (
-      <li className="next" onClick={() => setPage(page + 1)}>
-        <a href="#">
-          Next <i className="fa fa-arrow-right"></i>
-        </a>
-      </li>
-    );
-    if (page === pages) {
-      nextButton = (
-        <li className="next disabled">
-          <a href="#">
-            Next <i className="fa fa-arrow-right"></i>
-          </a>
-        </li>
-      );
-    }
-    return (
-      <nav>
-        <ul className="pager">
-          {previousButton}
-          {nextButton}
-        </ul>
-      </nav>
-    );
+export default class PDFViewer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { src: props.src, numPages: null, pageNumber: 1 };
+  }
+  removeTextLayerOffset() {
+    const textLayers = document.querySelectorAll('.react-pdf__Page__textContent');
+    textLayers.forEach(layer => {
+      const { style } = layer;
+      style.top = '0';
+      style.left = '0';
+      style.bottom = '0';
+      style.right = '0';
+      style.transform = '';
+      style.transform = '';
+    });
+    const textLayers2 = document.querySelectorAll('.react-pdf__Page__annotations');
+    textLayers2.forEach(layer => {
+      const { style } = layer;
+      style.top = '0';
+      style.left = '0';
+      style.bottom = '0';
+      style.right = '0';
+      style.transform = '';
+      style.position = 'absolute';
+      style.display = 'none';
+    });
+  }
+  onDocumentLoadSuccess = ({ numPages }) => {
+    this.setState({ numPages });
+    this.removeTextLayerOffset();
   };
 
-  const canvasEl = useRef(null);
+  render() {
+    const { pageNumber, numPages } = this.state;
 
-  const [loading, numPages] = usePdf({
-    file: props.src,
-    undefined,
-    page,
-    canvasEl,
-    scale: 0.5,
-  });
-
-  useEffect(() => {
-    setPages(numPages);
-  }, [numPages]);
-
-  return (
-    <div>
-      {loading && <span>Loading...</span>}
-      {
-        <canvas
-          ref={canvasEl}
-          style={{
-            //  maxHeight: window.innerHeight- 280,
-
-            width: 'auto',
-            maxWidth: '100%',
-          }}
-        />
-      }
-      {renderPagination(page, pages)}
-    </div>
-  );
-};
-
-export default PDFViewer;
+    return (
+      <div style={{ overflow: 'hidden', height: window.innerHeight - 216 }}>
+        <Document file={this.state.src} onLoadSuccess={this.onDocumentLoadSuccess}>
+          <Page
+            pageNumber={pageNumber}
+            height={window.innerHeight - 280}
+            onLoadSuccess={this.removeTextLayerOffset}
+          />
+        </Document>
+        <p>
+          Page {pageNumber} of {numPages}
+        </p>
+      </div>
+    );
+  }
+}

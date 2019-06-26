@@ -58,7 +58,7 @@ class FileActions extends React.Component<
         ) : (
           ''
         )}
-        {self.state.allowedOperations.map((x: IAllowedOperation, i) => {
+        {/* {self.state.allowedOperations.map((x: IAllowedOperation, i) => {
           if (x.isSingleton && x.batchOperation && x.batchOperation.type == 'DownloadRequest') {
             return (
               <Popover
@@ -80,7 +80,7 @@ class FileActions extends React.Component<
           }
 
           return '';
-        })}
+        })} */}
       </div>
     );
   }
