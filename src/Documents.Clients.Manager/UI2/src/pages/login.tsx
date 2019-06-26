@@ -6,6 +6,7 @@ import Link from 'umi/link';
 export default class LoginForm extends React.Component {
   handleSubmit = (e: any) => {
     e.preventDefault();
+    window.location.pathname = '/JWTAuth/Backdoor';
     //   this.props.form.validateFields((err, values) => {
     //     if (!err) {
     //       console.log('Received values of form: ', values);
@@ -34,11 +35,9 @@ export default class LoginForm extends React.Component {
           <a className={styles.loginFormForgot} href="">
             Forgot password
           </a>
-          <Link to="/JWTAuth/Backdoor">
-            <Button type="primary" htmlType="submit" className={styles.loginFormButton}>
-              Log in
-            </Button>
-          </Link>
+          <Button type="primary" htmlType="submit" className={styles.loginFormButton}>
+            Log in
+          </Button>
           Or <a href="">register now!</a>
         </Form.Item>
       </Form>
