@@ -1,4 +1,5 @@
 [![NYPTI Logo](https://www.nypti.org/wp-content/uploads/2014/01/NYPTISeal-170.png)](https://www.nypti.org/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjulien-cheng%2FDEMS.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjulien-cheng%2FDEMS?ref=badge_shield)
 
 # NYPTI's Digital Evidence Management System (DEMS)
 
@@ -25,11 +26,11 @@ this should start 5 containers
 
 ```
 CONTAINER ID        IMAGE                                 COMMAND                  CREATED             STATUS              PORTS                                                                                        NAMES
-b0aa6d0aa55b        rabbitmq:3.7.4-management-alpine      "docker-entrypoint.s…"   31 hours ago        Up 31 hours         4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, 15671/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp   rabbit_rabbitmq_1
-f60448dada40        microsoft/mssql-server-linux:latest   "/bin/sh -c /opt/mss…"   7 weeks ago         Up 38 hours         0.0.0.0:1433->1433/tcp                                                                       mssql_mssql-server-linux_1
-465c4964740e        zrrrzzt/docker-unoconv-webservice     "/bin/sh -c '/usr/bi…"   7 weeks ago         Up 32 hours         0.0.0.0:3000->3000/tcp                                                                       unoconv_unoconv_1
-00567759d55f        elk_kibana                            "/bin/bash /usr/loca…"   3 months ago        Up 38 hours         0.0.0.0:5601->5601/tcp                                                                       elk_kibana_1
-d7bb329a5f55        elk_elasticsearch                     "/usr/local/bin/dock…"   3 months ago        Up 38 hours         0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp                                               elk_elasticsearch_1
+b0aa6d0aa55b        rabbitmq:3.7.4-management-alpine      "docker-entrypoint.sâ€¦"   31 hours ago        Up 31 hours         4369/tcp, 5671/tcp, 0.0.0.0:5672->5672/tcp, 15671/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp   rabbit_rabbitmq_1
+f60448dada40        microsoft/mssql-server-linux:latest   "/bin/sh -c /opt/mssâ€¦"   7 weeks ago         Up 38 hours         0.0.0.0:1433->1433/tcp                                                                       mssql_mssql-server-linux_1
+465c4964740e        zrrrzzt/docker-unoconv-webservice     "/bin/sh -c '/usr/biâ€¦"   7 weeks ago         Up 32 hours         0.0.0.0:3000->3000/tcp                                                                       unoconv_unoconv_1
+00567759d55f        elk_kibana                            "/bin/bash /usr/locaâ€¦"   3 months ago        Up 38 hours         0.0.0.0:5601->5601/tcp                                                                       elk_kibana_1
+d7bb329a5f55        elk_elasticsearch                     "/usr/local/bin/dockâ€¦"   3 months ago        Up 38 hours         0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp                                               elk_elasticsearch_1
 ```
 
 This will open TCP ports 
@@ -99,3 +100,6 @@ Run 'Documents.Clients.Tools [command] --help' for more information about a comm
 
 
 ```
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjulien-cheng%2FDEMS.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjulien-cheng%2FDEMS?ref=badge_large)
